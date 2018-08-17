@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 public class SpriteSheet
 {
 	private ArrayList<Animation> animations = new ArrayList<Animation>();
@@ -64,6 +69,6 @@ public class SpriteSheet
 	 */
 	private void openAtlas(InputStream p_stream) throws Exception
 	{
-		
+		JSONParser parser = new JSONParser();
 	}
 }
