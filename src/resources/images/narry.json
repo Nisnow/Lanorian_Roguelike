@@ -1,0 +1,15 @@
+{ "atlas":
+	{
+		"animation":
+		{
+			"name": "default",
+			"x": 0,
+			"y": 0,
+			"w": 32,
+			"h": 32,
+			"frames": 4,
+			"interval": 100,
+			"loop": true
+		}
+	}
+}
