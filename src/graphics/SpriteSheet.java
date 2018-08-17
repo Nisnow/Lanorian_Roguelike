@@ -1,7 +1,11 @@
 package graphics;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class SpriteSheet
 {
@@ -35,12 +39,30 @@ public class SpriteSheet
 		return image;
 	}
 	
-	private void openImage()
+	/**
+	 * Open an image
+	 * @param p_stream Stream to JSON file atlas
+	 * @throws IOException throws if image isn't formatted correctly
+	 */
+	private void openImage(InputStream p_stream) throws IOException
 	{
-		
+		try
+		{
+			image = ImageIO.read(p_stream);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
-	private void openAtlas()
+	/**
+	 * Open an image
+	 * @param p_stream Stream to JSON file atlas
+	 * @throws IOException throws if parsing fails
+	 */
+	private void openAtlas(InputStream p_stream) throws Exception
 	{
 		
 	}
