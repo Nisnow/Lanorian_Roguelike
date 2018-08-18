@@ -57,6 +57,18 @@ public class Vector
 		return new Vector(x * p_scalar, y * p_scalar); 
 	}
 	
+	public void set(double p_x, double p_y)
+	{
+		x = p_x;
+		y = p_y;
+	}
+	
+	public void set(Vector p_vector)
+	{
+		x = p_vector.x;
+		y = p_vector.y;
+	}
+	
 	public String toString()
 	{
 		//adjusted precision to two decimal places

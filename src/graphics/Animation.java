@@ -33,7 +33,15 @@ public class Animation
 	 */
 	public IntRect getFrame(int p_frame)
 	{
-		return null;
+		int frameIdx = 0;
+		if(!loop)
+			frameIdx = (p_frame % frameCount + frameCount) % frameCount;
+		else
+			frameIdx = Math.max(Math.min(p_frame, frameCount - 1), 0);
+		
+		IntRect currentFrame = new IntRect(frame);
+		currentFrame.x += frame.w * frameIdx;
+		return currentFrame;
 	}
 
 	/*
