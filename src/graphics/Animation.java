@@ -1,5 +1,7 @@
 package graphics;
 
+import org.json.simple.JSONObject;
+
 import util.IntRect;
 
 public class Animation
@@ -70,8 +72,37 @@ public class Animation
 		return name;
 	}
 	
-	public void parse()
+	/**
+	 * Parse animation information from a JSON Object
+	 * @param p_object the JSONObject to retrieve data from
+	 */
+	public void parse(JSONObject p_object)
 	{
-		// TODO: parse JSON files
+		// TODO: refactor so there aren't so many casts?
+		name = (String) p_object.get("name");
+		
+		frame.x = Integer.parseInt((String) p_object.get("x"));
+		frame.y = Integer.parseInt((String) p_object.get("y"));
+		frame.w = Integer.parseInt((String) p_object.get("w"));
+		frame.h = Integer.parseInt((String) p_object.get("h"));
+		
+		if(hasObject(p_object, "frames"))
+			frameCount = Integer.parseInt((String) p_object.get("frames"));
+		else
+			frameCount = 1;
+		
+		if(hasObject(p_object, "interval"))
+			interval =  Float.parseFloat((String) p_object.get("frames")) /1000f; // convert from milliseconds to seconds
+		
+		if(hasObject(p_object, "loop"))
+			loop =  Boolean.parseBoolean((String) p_object.get("frames"));
+	}
+	
+	/**
+	 * Checks if an animation has a certain value from a JSON key
+	 */
+	private boolean hasObject(JSONObject p_object, String p_key)
+	{
+		return ((String) p_object.get(p_key)) != null;
 	}
 }
