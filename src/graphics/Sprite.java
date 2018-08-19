@@ -1,6 +1,9 @@
 package graphics;
 
+import javax.print.attribute.standard.PrinterLocation;
+
 import util.Clock;
+import util.IntRect;
 import util.Vector;
 
 public class Sprite implements Drawable
@@ -15,13 +18,34 @@ public class Sprite implements Drawable
 	
 	public Sprite(SpriteSheet p_sheet)
 	{
-		
+		setSpriteSheet(p_sheet);
+	}
+	
+	public Sprite(SpriteSheet p_sheet, String p_animation)
+	{
+		setSpriteSheet(p_sheet);
+		setAnimation(p_animation);
 	}
 
 	@Override
 	public void draw(Renderer p_renderer) 
 	{
+		IntRect frame;
+		System.out.println("sdfjslkdfj");
+		if(animation.getFrameCount() > 1 
+				&& animation.getInterval() > 0)
+		{
+			// Display current frame of an animation
+			int frameIdx = (int) (clock.getElapse() / animation.getInterval());
+			frame = animation.getFrame(frameIdx);
+		}
+		else
+		{
+			// Unmoving image
+			frame = animation.getFrame();
+		}
 		
+		p_renderer.drawSprite(spriteSheet, frame);
 	}
 	
 	public SpriteSheet getSpriteSheet()

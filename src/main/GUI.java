@@ -5,6 +5,8 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
 
+import graphics.Renderer;
+
 public class GUI
 {
 	private JFrame window;
@@ -13,6 +15,8 @@ public class GUI
 	private final float xRatio = .9f;
 	private final float yRatio = .6f;
 	private final float scale  = .8f;
+	
+	public Renderer renderer = new Renderer(); //temporary until I implement GameState
 	
 	public GUI()
 	{
@@ -45,6 +49,7 @@ public class GUI
 		window.setVisible(true);
 		window.setLocationRelativeTo(null);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.add(renderer.getComponent());
 	}
 	
 	public JFrame getWindow()

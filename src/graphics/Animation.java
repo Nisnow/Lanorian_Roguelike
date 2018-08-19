@@ -34,7 +34,7 @@ public class Animation
 	public IntRect getFrame(int p_frame)
 	{
 		int frameIdx = 0;
-		if(!loop)
+		if(loop)
 			frameIdx = (p_frame % frameCount + frameCount) % frameCount;
 		else
 			frameIdx = Math.max(Math.min(p_frame, frameCount - 1), 0);
@@ -100,10 +100,10 @@ public class Animation
 			frameCount = 1;
 		
 		if(hasObject(p_object, "interval"))
-			interval =  Float.parseFloat((String) p_object.get("frames")) /1000f; // convert from milliseconds to seconds
+			interval =  Float.parseFloat((String) p_object.get("interval")) /1000f; // convert from milliseconds to seconds
 		
 		if(hasObject(p_object, "loop"))
-			loop =  Boolean.parseBoolean((String) p_object.get("frames"));
+			loop =  Boolean.parseBoolean((String) p_object.get("loop"));
 	}
 	
 	/**
