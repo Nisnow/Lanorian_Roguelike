@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
 
+import editor.Editor;
 import graphics.Renderer;
 
 public class GUI
@@ -16,6 +17,7 @@ public class GUI
 	private final float yRatio = .6f;
 	private final float scale  = .8f;
 	
+	private Editor editor = new Editor();
 	public Renderer renderer = new Renderer(); //temporary until I implement GameState
 	
 	public GUI()
@@ -51,6 +53,8 @@ public class GUI
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.add(renderer.getComponent());
 	}
+	
+	// TODO: toggle editor open and close with 'E'
 	
 	public JFrame getWindow()
 	{

@@ -1,7 +1,5 @@
 package graphics;
 
-import javax.print.attribute.standard.PrinterLocation;
-
 import util.Clock;
 import util.IntRect;
 import util.Vector;
@@ -31,7 +29,6 @@ public class Sprite implements Drawable
 	public void draw(Renderer p_renderer) 
 	{
 		IntRect frame;
-		System.out.println("sdfjslkdfj");
 		if(animation.getFrameCount() > 1 
 				&& animation.getInterval() > 0)
 		{
