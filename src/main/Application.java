@@ -45,7 +45,7 @@ public class Application
 			// Delay
 			try
 			{
-				long totalNanos = (int)(1e9/30) - (int)(gameClock.getElapse()*1e9f);
+				long totalNanos = (int)(1e9/60) - (int)(gameClock.getElapse()*1e9f);
 				if(totalNanos > 0)
 				{
 					int nanos = (int) (totalNanos % 1000000);

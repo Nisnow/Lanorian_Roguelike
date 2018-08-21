@@ -22,6 +22,7 @@ public class GUI
 	
 	public GUI()
 	{
+		editor.getFrame().setVisible(true);
 		// get the resolution of the user's computer
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		
