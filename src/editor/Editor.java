@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,6 +30,9 @@ public class Editor
 	private JTextField hField;
 	private JTextField intervalField;
 	private JTextField frameField;
+	
+	private int width = 1250;
+	private int height = 1000;
 
 	public Editor()
 	{
@@ -35,9 +40,10 @@ public class Editor
 	}
 
 
-	private void initialize() {
+	private void initialize() 
+	{
 		frame = new JFrame();
-		frame.setBounds(100, 100, 708, 422);
+		frame.setSize(1250, 1000);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel container = new JPanel();
@@ -45,23 +51,28 @@ public class Editor
 		frame.getContentPane().add(container);
 		
 		JPanel imagePreviewer = new JPanel();
+		imagePreviewer.setBackground(Color.BLACK);
 		imagePreviewer.setAlignmentX(Component.LEFT_ALIGNMENT);
+		imagePreviewer.setPreferredSize(new Dimension((int)(width*0.8), height));
 		container.add(imagePreviewer);
 		imagePreviewer.setLayout(new BorderLayout(0, 0));
 		
 		JPanel dataContainer = new JPanel();
 		//frame.getContentPane().add(panel, BorderLayout.CENTER);
 		dataContainer.setLayout(new BoxLayout(dataContainer, BoxLayout.Y_AXIS));
+		dataContainer.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		
 		JPanel animationPreviewer = new JPanel();
-		animationPreviewer.setBackground(Color.WHITE);
+		animationPreviewer.setBackground(Color.BLACK);
 		dataContainer.add(animationPreviewer);
 		animationPreviewer.setLayout(new BorderLayout(0, 0));
+		animationPreviewer.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		
 		JPanel playPanel = new JPanel();
 		FlowLayout fl_playPanel = (FlowLayout) playPanel.getLayout();
 		fl_playPanel.setAlignment(FlowLayout.LEFT);
-		playPanel.setBackground(Color.ORANGE);
+		playPanel.setBackground(Color.BLACK);
+		playPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		dataContainer.add(playPanel);
 		
 		JButton btnPlay = new JButton("Play");
@@ -70,7 +81,8 @@ public class Editor
 		JPanel framePanel = new JPanel();
 		FlowLayout fl_framePanel = (FlowLayout) framePanel.getLayout();
 		fl_framePanel.setAlignment(FlowLayout.LEFT);
-		framePanel.setBackground(Color.MAGENTA);
+		framePanel.setBackground(Color.BLACK);
+		framePanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		dataContainer.add(framePanel);
 		
 		frameField = new JTextField();
@@ -78,14 +90,15 @@ public class Editor
 		frameField.setColumns(10);
 		
 		JLabel lblFrames = new JLabel("Frames");
+		lblFrames.setForeground(Color.WHITE);
 		framePanel.add(lblFrames);
 		
-		JCheckBox loopBox = new JCheckBox("Loop?");
-		framePanel.add(loopBox);
+		JCheckBox l00pBox = new JCheckBox("Loop");
+		framePanel.add(l00pBox);
 		
 		JPanel intervalPanel = new JPanel();
 		dataContainer.add(intervalPanel);
-		intervalPanel.setBackground(Color.GREEN);
+		intervalPanel.setBackground(Color.BLACK);
 		intervalPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		
 		intervalField = new JTextField();
@@ -93,28 +106,30 @@ public class Editor
 		intervalField.setColumns(10);
 		
 		JLabel lblInterval = new JLabel("Interval");
+		lblInterval.setForeground(Color.WHITE);
 		intervalPanel.add(lblInterval);
 		
 		JPanel dimensionPanel = new JPanel();
 		dimensionPanel.setBackground(Color.BLACK);
 		dataContainer.add(dimensionPanel);
 		dimensionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		dimensionPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		
 		xField = new JTextField("x");
 		dimensionPanel.add(xField);
-		xField.setColumns(10);
+		xField.setColumns(5);
 		
 		yField = new JTextField("y");
 		dimensionPanel.add(yField);
-		yField.setColumns(10);
+		yField.setColumns(5);
 		
 		wField = new JTextField("w");
 		dimensionPanel.add(wField);
-		wField.setColumns(10);
+		wField.setColumns(5);
 		
 		hField = new JTextField("h");
 		dimensionPanel.add(hField);
-		hField.setColumns(10);
+		hField.setColumns(5);
 		
 		JPanel animationPanel = new JPanel();
 		animationPanel.setBackground(Color.RED);
