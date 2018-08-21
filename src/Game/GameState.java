@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 /*
  * A class that represents various game states like
