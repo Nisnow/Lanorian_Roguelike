@@ -39,10 +39,9 @@ public class Editor
 		initialize();
 	}
 
-
 	private void initialize() 
 	{
-		frame = new JFrame();
+		frame = new JFrame("Atlas Editor");
 		frame.setSize(1250, 1000);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -56,6 +55,16 @@ public class Editor
 		imagePreviewer.setPreferredSize(new Dimension((int)(width*0.8), height));
 		container.add(imagePreviewer);
 		imagePreviewer.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_1 = new JPanel();
+		imagePreviewer.add(panel_1, BorderLayout.NORTH);
+		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		
+		JButton btnNewButton = new JButton("Load File");
+		panel_1.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Save File");
+		panel_1.add(btnNewButton_1);
 		
 		JPanel dataContainer = new JPanel();
 		//frame.getContentPane().add(panel, BorderLayout.CENTER);
@@ -117,19 +126,19 @@ public class Editor
 		
 		xField = new JTextField("x");
 		dimensionPanel.add(xField);
-		xField.setColumns(5);
+		xField.setColumns(3);
 		
 		yField = new JTextField("y");
 		dimensionPanel.add(yField);
-		yField.setColumns(5);
+		yField.setColumns(3);
 		
 		wField = new JTextField("w");
 		dimensionPanel.add(wField);
-		wField.setColumns(5);
+		wField.setColumns(3);
 		
 		hField = new JTextField("h");
 		dimensionPanel.add(hField);
-		hField.setColumns(5);
+		hField.setColumns(3);
 		
 		JPanel animationPanel = new JPanel();
 		animationPanel.setBackground(Color.RED);
@@ -140,10 +149,27 @@ public class Editor
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		animationPanel.add(scrollPane, BorderLayout.CENTER);
 		
-		JList animationList = new JList();
+		String[] random = {"loop", "sldfkjs", "sdjfh"};
+		
+		JList animationList = new JList(random);
+		animationList.setForeground(Color.WHITE);
+		animationList.setBackground(Color.BLACK);
 		scrollPane.setViewportView(animationList);
 		
 		container.add(dataContainer);
+		
+		JPanel panel = new JPanel();
+		dataContainer.add(panel);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JButton newButton = new JButton("New");
+		panel.add(newButton);
+		
+		JButton renameButton = new JButton("Rename");
+		panel.add(renameButton);
+		
+		JButton deleteButton = new JButton("Delete");
+		panel.add(deleteButton);
 	}
 	
 	public JFrame getFrame()
