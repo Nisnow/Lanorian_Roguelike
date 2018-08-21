@@ -6,23 +6,31 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JButton;
 import java.awt.Component;
 
 public class Editor
 {
-
 	private JFrame frame;
 	private JTextField yField;
 	private JTextField xField;
@@ -31,8 +39,15 @@ public class Editor
 	private JTextField intervalField;
 	private JTextField frameField;
 	
+	private JButton btnNewButton, saveButton, btnPlay, newButton, renameButton, deleteButton;
+	private JPanel animationPreviewer;
+	private JCheckBox l00pBox, sameDimensionBox; 
+	
 	private int width = 1250;
 	private int height = 1000;
+	
+	private BufferedImage spriteSheet;
+	private File atlas;
 
 	public Editor()
 	{
@@ -43,7 +58,8 @@ public class Editor
 	{
 		frame = new JFrame("Atlas Editor");
 		frame.setSize(1250, 1000);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
@@ -60,18 +76,47 @@ public class Editor
 		imagePreviewer.add(panel_1, BorderLayout.NORTH);
 		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		
-		JButton btnNewButton = new JButton("Load File");
+		btnNewButton = new JButton("Load File");
+		btnNewButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".png Files", "png");
+		        fileChooser.setFileFilter(filter);
+		        
+		        int returnValue = fileChooser.showOpenDialog(null);
+		        
+		        if(returnValue == JFileChooser.APPROVE_OPTION)
+		        {
+		        	try
+		        	{
+		        		String fileName = fileChooser.getSelectedFile().getPath();
+		        		File file = new File(fileName);
+		        		spriteSheet = ImageIO.read(file);
+		        		
+		        		String atlasName = fileName.substring(0, fileName.indexOf("."));
+		        		atlas = new File(fileName + ".json");
+		        	}
+		        	catch (IOException ioe)
+		        	{
+		        		ioe.printStackTrace();
+		        	}
+		        }
+			}
+		});
 		panel_1.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("Save File");
-		panel_1.add(btnNewButton_1);
+		saveButton = new JButton("Save File");
+		panel_1.add(saveButton);
 		
 		JPanel dataContainer = new JPanel();
 		//frame.getContentPane().add(panel, BorderLayout.CENTER);
 		dataContainer.setLayout(new BoxLayout(dataContainer, BoxLayout.Y_AXIS));
 		dataContainer.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		
-		JPanel animationPreviewer = new JPanel();
+		animationPreviewer = new JPanel();
 		animationPreviewer.setBackground(Color.BLACK);
 		dataContainer.add(animationPreviewer);
 		animationPreviewer.setLayout(new BorderLayout(0, 0));
@@ -84,7 +129,7 @@ public class Editor
 		playPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		dataContainer.add(playPanel);
 		
-		JButton btnPlay = new JButton("Play");
+		btnPlay = new JButton("Play");
 		playPanel.add(btnPlay);
 		
 		JPanel framePanel = new JPanel();
@@ -102,7 +147,7 @@ public class Editor
 		lblFrames.setForeground(Color.WHITE);
 		framePanel.add(lblFrames);
 		
-		JCheckBox l00pBox = new JCheckBox("Loop");
+		l00pBox = new JCheckBox("Loop");
 		framePanel.add(l00pBox);
 		
 		JPanel intervalPanel = new JPanel();
@@ -117,6 +162,9 @@ public class Editor
 		JLabel lblInterval = new JLabel("Interval");
 		lblInterval.setForeground(Color.WHITE);
 		intervalPanel.add(lblInterval);
+		
+		sameDimensionBox = new JCheckBox("= dims");
+		intervalPanel.add(sameDimensionBox);
 		
 		JPanel dimensionPanel = new JPanel();
 		dimensionPanel.setBackground(Color.BLACK);
@@ -158,18 +206,31 @@ public class Editor
 		
 		container.add(dataContainer);
 		
-		JPanel panel = new JPanel();
-		dataContainer.add(panel);
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		JPanel filePanel = new JPanel();
+		dataContainer.add(filePanel);
+		filePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JButton newButton = new JButton("New");
-		panel.add(newButton);
+		newButton = new JButton("New");
+		filePanel.add(newButton);
 		
-		JButton renameButton = new JButton("Rename");
-		panel.add(renameButton);
+		renameButton = new JButton("Rename");
+		filePanel.add(renameButton);
 		
-		JButton deleteButton = new JButton("Delete");
-		panel.add(deleteButton);
+		deleteButton = new JButton("Delete");
+		filePanel.add(deleteButton);
+	}
+	
+	/**
+	 * Displays the chosen image to the imagePreviwer
+	 */
+	public void displayImage()
+	{
+		
+	}
+	
+	public void displayAtlasData()
+	{
+		
 	}
 	
 	public JFrame getFrame()
