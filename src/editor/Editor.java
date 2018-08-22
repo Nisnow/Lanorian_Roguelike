@@ -16,11 +16,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import graphics.Renderer;
+import graphics.SpriteSheet;
+import util.Debug;
+import util.IntRect;
+
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -40,14 +47,18 @@ public class Editor
 	private JTextField frameField;
 	
 	private JButton btnNewButton, saveButton, btnPlay, newButton, renameButton, deleteButton;
-	private JPanel animationPreviewer;
+	private JPanel imagePreviewer, animationPreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
 	
 	private int width = 1250;
 	private int height = 1000;
 	
-	private BufferedImage spriteSheet;
+	private SpriteSheet spriteSheet;
 	private File atlas;
+	
+	private File saveFile;
+	
+	private Renderer textureRenderer, animationRenderer;
 
 	public Editor()
 	{
@@ -65,16 +76,17 @@ public class Editor
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 		frame.getContentPane().add(container);
 		
-		JPanel imagePreviewer = new JPanel();
+		imagePreviewer = new JPanel();
 		imagePreviewer.setBackground(Color.BLACK);
 		imagePreviewer.setAlignmentX(Component.LEFT_ALIGNMENT);
 		imagePreviewer.setPreferredSize(new Dimension((int)(width*0.8), height));
 		container.add(imagePreviewer);
-		imagePreviewer.setLayout(new BorderLayout(0, 0));
+		imagePreviewer.setLayout(new BorderLayout());
 		
 		JPanel panel_1 = new JPanel();
 		imagePreviewer.add(panel_1, BorderLayout.NORTH);
-		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));	
+		panel_1.setBackground(Color.BLACK);
 		
 		btnNewButton = new JButton("Load File");
 		btnNewButton.addActionListener(new ActionListener()
@@ -90,19 +102,15 @@ public class Editor
 		        
 		        if(returnValue == JFileChooser.APPROVE_OPTION)
 		        {
-		        	try
-		        	{
-		        		String fileName = fileChooser.getSelectedFile().getPath();
-		        		File file = new File(fileName);
-		        		spriteSheet = ImageIO.read(file);
-		        		
-		        		String atlasName = fileName.substring(0, fileName.indexOf("."));
-		        		atlas = new File(fileName + ".json");
-		        	}
-		        	catch (IOException ioe)
-		        	{
-		        		ioe.printStackTrace();
-		        	}
+		        	String fileName = fileChooser.getSelectedFile().getName();
+		        	String atlasName = fileName.substring(0, fileName.indexOf("."));       		
+	        		// TODO: new atlas implementation
+		        	
+		        	// Only works if atlas exists for now
+		        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
+		       
+		        	displayImage();
+		        	displayAtlasData();
 		        }
 			}
 		});
@@ -220,17 +228,52 @@ public class Editor
 		filePanel.add(deleteButton);
 	}
 	
+	public void openFile(File p_file) throws IOException
+	{
+		if(!p_file.exists())
+			throw new FileNotFoundException("Could not find file \"" + p_file + "\"");
+		saveFile = p_file;
+	}
+	
+	public void setSaveFile(File p_file)
+	{
+		saveFile = p_file;
+	}
+	
+	public File getSaveFile()
+	{
+		return saveFile;
+	}
+	
 	/**
-	 * Displays the chosen image to the imagePreviwer
+	 * Save the atlas to a file
 	 */
-	public void displayImage()
+	public void save()
 	{
 		
 	}
 	
-	public void displayAtlasData()
+	/**
+	 * Displays the chosen image to the imagePreviwer
+	 */
+	private void displayImage()
 	{
+		textureRenderer = new Renderer(imagePreviewer);
 		
+		int width = spriteSheet.getImage().getWidth();
+		int height = spriteSheet.getImage().getHeight();
+
+		textureRenderer.drawSprite(spriteSheet, new IntRect(0, 0, width, height));
+		textureRenderer.display();
+		
+		imagePreviewer.add(textureRenderer.getComponent(), BorderLayout.CENTER);
+		imagePreviewer.validate();
+		imagePreviewer.repaint();
+	}
+	
+	private void displayAtlasData()
+	{
+		Debug.say("Cheese and rice");
 	}
 	
 	public JFrame getFrame()

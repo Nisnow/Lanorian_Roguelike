@@ -40,6 +40,24 @@ public class Renderer
 		backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		graphics = backBuffer.createGraphics();
 		
+		initialize();
+	}
+	
+	public Renderer(JPanel p_panel)
+	{
+		// Create the buffers to draw stuff on
+		frontBuffer = new BufferedImage(p_panel.getWidth(), p_panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		backBuffer = new BufferedImage(p_panel.getWidth(), p_panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		graphics = backBuffer.createGraphics();
+		
+		initialize();
+	}
+	
+	/**
+	 * Creates the JPanel canvas. Called in constructor only.
+	 */
+	private void initialize()
+	{
 		// Create the JPanel to hold the canvas
 		panel = new JPanel() {
 			@Override
@@ -56,7 +74,7 @@ public class Renderer
 	
 	/**
 	 * Switches the buffers. 
-	 * Ensures the current frame is being displayed/
+	 * Ensures the current frame is being displayed
 	 */
 	public void display()
 	{
@@ -72,8 +90,7 @@ public class Renderer
 	 */
 	public void clear()
 	{
-		graphics.setColor(Color.WHITE);
-		graphics.fillRect(0, 0, width, height);
+		addScreenOverlay(Color.BLACK, 1.0f);
 	}
 	
 	/**
@@ -90,6 +107,19 @@ public class Renderer
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
 	}
 	
+	/**
+	 * Cover the canvas with a color
+	 * @param p_color The color to overlay the screen
+	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
+	 */
+	public void addScreenOverlay(Color p_color, float p_opacity)
+	{
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
+		
+		graphics.setColor(p_color);
+		graphics.fillRect(0, 0, width, height);
+	}
+	
 	public int getWidth()
 	{
 		return width;
@@ -100,7 +130,7 @@ public class Renderer
 		return height;
 	}
 	
-	public JComponent getComponent()
+	public JPanel getComponent()
 	{
 		return panel;
 	}
