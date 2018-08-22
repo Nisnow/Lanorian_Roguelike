@@ -1,8 +1,11 @@
 package editor;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractListModel;
 
 import graphics.Animation;
+import util.Debug;
 
 public class AnimationList extends AbstractListModel
 {
@@ -14,7 +17,7 @@ public class AnimationList extends AbstractListModel
 	}
 	
 	@Override
-	public Object getElementAt(int index)
+	public Animation getElementAt(int index)
 	{
 		return animations[index];
 	}

@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -96,6 +97,14 @@ public class Renderer
 		addScreenOverlay(Color.BLACK, 1.0f);
 	}
 	
+	/*
+	 * Set scale that only the size of images are affected by
+	 */
+	public void setScale(float p_scale)
+	{
+		scale = p_scale;
+	}
+	
 	/**
 	 * Draws a sprite
 	 * @param p_sheet the sprite sheet of the image
@@ -105,6 +114,13 @@ public class Renderer
 	{
 		//reset opacity
 		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+		
+		//scale image according to the current scale
+		AffineTransform scaleTransform = new AffineTransform();
+		scaleTransform.scale(scale, scale);
+		
+		//temporary
+		graphics.setTransform(scaleTransform);
 		
 		graphics.drawImage(p_sheet.getImage(), 0, 0, p_frame.w, p_frame.h,
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);

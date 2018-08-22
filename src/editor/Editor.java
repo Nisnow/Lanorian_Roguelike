@@ -14,6 +14,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +24,7 @@ import java.io.IOException;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import graphics.Animation;
@@ -57,7 +61,10 @@ public class Editor
 	
 	private SpriteSheet spriteSheet;
 	private AnimationList animationList;
+	private Animation currentAnimation;
 	private File atlas;
+	
+	private Color backgroundColor = Color.BLACK;
 	
 	private File saveFile;
 	
@@ -218,6 +225,17 @@ public class Editor
 		animations.setBackground(Color.BLACK);
 		scrollPane.setViewportView(animations);
 		
+		MouseListener LISTener = new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				currentAnimation = (Animation) animations.getSelectedValue();
+				Debug.say(currentAnimation);
+			}
+		};
+		animations.addMouseListener(LISTener);
+		
 		container.add(dataContainer);
 		
 		JPanel filePanel = new JPanel();
@@ -270,11 +288,24 @@ public class Editor
 		int width = spriteSheet.getImage().getWidth();
 		int height = spriteSheet.getImage().getHeight();
 
+		textureRenderer.setScale(3.0f);
 		textureRenderer.drawSprite(spriteSheet, new IntRect(0, 0, width, height));
+		textureRenderer.getComponent().setBackground(backgroundColor);
 		textureRenderer.display();
 		
 		imagePreviewer.validate();
 		imagePreviewer.repaint();
+	}
+	
+	/**
+	 * Displays the current selected animation to animationPreviewer
+	 */
+	private void displayAnimation()
+	{
+		// TODO: some method in AnimationList
+		animationRenderer = new Renderer(animationPreviewer);
+		animationPreviewer.add(animationRenderer.getComponent());
+		
 	}
 	
 	private void displayAtlasData()
