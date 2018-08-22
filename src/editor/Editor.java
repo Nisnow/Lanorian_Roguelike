@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import graphics.Animation;
 import graphics.Renderer;
 import graphics.SpriteSheet;
 import util.Debug;
@@ -49,11 +50,13 @@ public class Editor
 	private JButton btnNewButton, saveButton, btnPlay, newButton, renameButton, deleteButton;
 	private JPanel imagePreviewer, animationPreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
+	private JList animations;
 	
 	private int width = 1250;
 	private int height = 1000;
 	
 	private SpriteSheet spriteSheet;
+	private AnimationList animationList;
 	private File atlas;
 	
 	private File saveFile;
@@ -88,7 +91,7 @@ public class Editor
 		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));	
 		panel_1.setBackground(Color.BLACK);
 		
-		btnNewButton = new JButton("Load File");
+		btnNewButton = new JButton("Load Image");
 		btnNewButton.addActionListener(new ActionListener()
 		{
 			@Override
@@ -104,11 +107,16 @@ public class Editor
 		        {
 		        	String fileName = fileChooser.getSelectedFile().getName();
 		        	String atlasName = fileName.substring(0, fileName.indexOf("."));       		
-	        		// TODO: new atlas implementation
+	        		// TODO: new atlas implementation; check if JSON file exists
 		        	
 		        	// Only works if atlas exists for now
 		        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
-		       
+		        	// why java why
+		        	Animation[] a = new Animation[spriteSheet.getAnimations().size()];
+		        	a = spriteSheet.getAnimations().toArray(a);
+		        	
+		        	animationList = new AnimationList(a); 
+		        	
 		        	displayImage();
 		        	displayAtlasData();
 		        }
@@ -205,12 +213,10 @@ public class Editor
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		animationPanel.add(scrollPane, BorderLayout.CENTER);
 		
-		String[] random = {"loop", "sldfkjs", "sdjfh"};
-		
-		JList animationList = new JList(random);
-		animationList.setForeground(Color.WHITE);
-		animationList.setBackground(Color.BLACK);
-		scrollPane.setViewportView(animationList);
+		animations = new JList();
+		animations.setForeground(Color.WHITE);
+		animations.setBackground(Color.BLACK);
+		scrollPane.setViewportView(animations);
 		
 		container.add(dataContainer);
 		
@@ -259,6 +265,7 @@ public class Editor
 	private void displayImage()
 	{
 		textureRenderer = new Renderer(imagePreviewer);
+		imagePreviewer.add(textureRenderer.getComponent(), BorderLayout.CENTER);	
 		
 		int width = spriteSheet.getImage().getWidth();
 		int height = spriteSheet.getImage().getHeight();
@@ -266,7 +273,6 @@ public class Editor
 		textureRenderer.drawSprite(spriteSheet, new IntRect(0, 0, width, height));
 		textureRenderer.display();
 		
-		imagePreviewer.add(textureRenderer.getComponent(), BorderLayout.CENTER);
 		imagePreviewer.validate();
 		imagePreviewer.repaint();
 	}
@@ -274,6 +280,7 @@ public class Editor
 	private void displayAtlasData()
 	{
 		Debug.say("Cheese and rice");
+		animations.setModel(animationList);
 	}
 	
 	public JFrame getFrame()

@@ -1,15 +1,18 @@
 package graphics;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import util.DoubleRect;
 import util.IntRect;
 
 public class Renderer
@@ -105,6 +108,34 @@ public class Renderer
 		
 		graphics.drawImage(p_sheet.getImage(), 0, 0, p_frame.w, p_frame.h,
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
+	}
+	
+	/**
+	 * Draws a solid rectangle
+	 * @param p_rect the dimensions of the rectangle
+	 * @param p_color the color of the rectangle (Color.RED, Color.BLUE, etc)
+	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
+	 */
+	public void drawRect(DoubleRect p_rect, Color p_color, float p_opacity)
+	{
+		graphics.setColor(p_color);
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
+		graphics.draw(new Rectangle2D.Double(p_rect.x, p_rect.y, p_rect.w, p_rect.h));
+	}
+	
+	/**
+	 * Draws a rectangle border
+	 * @param p_rect the dimensions of the rectangle
+	 * @param p_color the color of the rectangle (Color.RED, Color.BLUE, etc.)
+	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
+	 * @param p_thickness THICCness in pixels
+	 */
+	public void drawRect(DoubleRect p_rect, Color p_color, float p_opacity, float p_thickness)
+	{
+		graphics.setColor(p_color);
+		graphics.setStroke(new BasicStroke(p_thickness));
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
+		graphics.draw(new Rectangle2D.Double(p_rect.x, p_rect.y, p_rect.w, p_rect.h));
 	}
 	
 	/**

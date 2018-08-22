@@ -39,6 +39,15 @@ public class SpriteSheet
 	}
 	
 	/**
+	 * Used in the editor
+	 * @return all the animations of this sprite sheet
+	 */
+	public ArrayList<Animation> getAnimations()
+	{
+		return animationList;
+	}
+	
+	/**
 	 * Open an image from the resources folder. Note that it only opens png and json files
 	 * @param p_path The name of the image without the extension
 	 */

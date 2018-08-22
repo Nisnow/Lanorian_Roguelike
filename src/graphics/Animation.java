@@ -113,4 +113,9 @@ public class Animation
 	{
 		return ((String) p_object.get(p_key)) != null;
 	}
+	
+	public String toString()
+	{
+		return name;
+	}
 }
