@@ -51,7 +51,7 @@ public class Editor
 	private JTextField intervalField;
 	private JTextField frameField;
 	
-	private JButton btnNewButton, saveButton, btnPlay, newButton, renameButton, deleteButton;
+	private JButton btnNewButton, saveButton, btnPlay, btnStop, newButton, renameButton, deleteButton;
 	private JPanel imagePreviewer, animationPreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
 	private JList animations;
@@ -69,6 +69,8 @@ public class Editor
 	private File saveFile;
 	
 	private Renderer textureRenderer, animationRenderer;
+	private Thread animationThread;
+	private boolean animationPlaying = false;
 
 	public Editor()
 	{
@@ -125,7 +127,7 @@ public class Editor
 		        	animationList = new AnimationList(a); 
 		        	
 		        	displayImage();
-		        	displayAtlasData();
+		    		animations.setModel(animationList);
 		        }
 			}
 		});
@@ -153,7 +155,22 @@ public class Editor
 		dataContainer.add(playPanel);
 		
 		btnPlay = new JButton("Play");
+		btnPlay.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(!animationPlaying)
+				{
+					animationPlaying = true;
+					animationThread.start();
+				}
+			}
+		});
 		playPanel.add(btnPlay);
+		
+		btnStop = new JButton("Stop");
+		playPanel.add(btnStop);
 		
 		JPanel framePanel = new JPanel();
 		FlowLayout fl_framePanel = (FlowLayout) framePanel.getLayout();
@@ -231,7 +248,20 @@ public class Editor
 			public void mouseClicked(MouseEvent e)
 			{
 				currentAnimation = (Animation) animations.getSelectedValue();
-				Debug.say(currentAnimation);
+			
+				xField.setText(currentAnimation.getFrame().x+""); // lol
+				yField.setText(currentAnimation.getFrame().y+"");
+				wField.setText(currentAnimation.getFrame().w+"");
+				hField.setText(currentAnimation.getFrame().h+"");
+			
+				frameField.setText(currentAnimation.getFrameCount()+"");
+				intervalField.setText(currentAnimation.getInterval()+"");
+			
+				l00pBox.setSelected(currentAnimation.isLoop());
+			
+				//put this in play button later
+				animationPlaying = false;
+				displayAnimation(currentAnimation);
 			}
 		};
 		animations.addMouseListener(LISTener);
@@ -294,24 +324,42 @@ public class Editor
 		textureRenderer.display();
 		
 		imagePreviewer.validate();
-		imagePreviewer.repaint();
-	}
+		imagePreviewer.repaint();}
 	
 	/**
 	 * Displays the current selected animation to animationPreviewer
+	 * @param the animation currently selected
 	 */
-	private void displayAnimation()
+	private void displayAnimation(Animation p_animation)
 	{
-		// TODO: some method in AnimationList
 		animationRenderer = new Renderer(animationPreviewer);
 		animationPreviewer.add(animationRenderer.getComponent());
+	
+		int width = spriteSheet.getImage().getWidth();
+		int height = spriteSheet.getImage().getHeight();
+
+		animationRenderer.setScale(3.0f);
 		
+		animationThread = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						playCurrentAnimation();
+					}
+				});
+	}
+	
+	private void playCurrentAnimation()
+	{
+		while(animationPlaying)
+		{
+			Debug.say("BOO!");
+		}
 	}
 	
 	private void displayAtlasData()
 	{
 		Debug.say("Cheese and rice");
-		animations.setModel(animationList);
 	}
 	
 	public JFrame getFrame()
