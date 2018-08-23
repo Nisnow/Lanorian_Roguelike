@@ -28,8 +28,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import graphics.Animation;
+import graphics.RenderList;
 import graphics.Renderer;
+import graphics.Sprite;
 import graphics.SpriteSheet;
+import util.Clock;
 import util.Debug;
 import util.IntRect;
 
@@ -62,6 +65,9 @@ public class Editor
 	private SpriteSheet spriteSheet;
 	private AnimationList animationList;
 	private Animation currentAnimation;
+	
+	private Sprite currentSprite;
+	private RenderList renderList;
 	private File atlas;
 	
 	private Color backgroundColor = Color.BLACK;
@@ -333,27 +339,60 @@ public class Editor
 	private void displayAnimation(Animation p_animation)
 	{
 		animationRenderer = new Renderer(animationPreviewer);
-		animationPreviewer.add(animationRenderer.getComponent());
-	
-		int width = spriteSheet.getImage().getWidth();
-		int height = spriteSheet.getImage().getHeight();
+		animationPreviewer.add(animationRenderer.getComponent(), BorderLayout.CENTER);
 
+		animationPreviewer.validate(); //I have a feeling this is screwing things up
+		animationPreviewer.repaint();
+		
 		animationRenderer.setScale(3.0f);
+		//animationRenderer.getComponent().setBackground(backgroundColor);
+		
+		currentSprite = new Sprite(spriteSheet);
+		currentSprite.setAnimation(p_animation);
+
+		renderList = new RenderList();
+		renderList.addDrawable(currentSprite);
 		
 		animationThread = new Thread(new Runnable()
 				{
 					public void run()
 					{
-						playCurrentAnimation();
+						playCurrentAnimation(p_animation);
 					}
 				});
+		
 	}
 	
-	private void playCurrentAnimation()
+	private void playCurrentAnimation(Animation p_animation)
 	{
+		Clock animClock = new Clock();
+		float delta = 0;
+		
+		// TODO: some separate class of sorts for a loop
 		while(animationPlaying)
 		{
-			Debug.say("BOO!");
+			delta = animClock.getElapse();
+			animClock.restart();
+			
+			animationRenderer.clear();
+			
+			renderList.draw(animationRenderer);		
+			
+			animationRenderer.display();
+
+			try
+			{
+				long totalNanos = (int)(1e9/60) - (int)(animClock.getElapse()*1e9f);
+				if(totalNanos > 0)
+				{
+					int nanos = (int) (totalNanos % 1000000);
+					long milis = (totalNanos - nanos) / 1000000;
+					Thread.sleep(milis, (int)nanos);
+				}
+			} catch (InterruptedException e)
+			{
+				break;
+			}
 		}
 	}
 	
