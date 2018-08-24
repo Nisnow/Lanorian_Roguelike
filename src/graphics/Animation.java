@@ -54,7 +54,6 @@ public class Animation
 
 	/**
 	 * Get the amount of time in between frames in seconds
-	 * @return
 	 */
 	public float getInterval() 
 	{

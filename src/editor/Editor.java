@@ -75,7 +75,7 @@ public class Editor
 	private File saveFile;
 	
 	private Renderer textureRenderer, animationRenderer;
-	private Thread animationThread;
+	private AnimationThread animationThread;
 	private boolean animationPlaying = false;
 
 	public Editor()
@@ -170,7 +170,7 @@ public class Editor
 				{
 					animationPlaying = true;
 					displayAnimation(currentAnimation);
-					animationThread.start();
+					animationThread.run();
 				}
 			}
 		});
@@ -267,7 +267,7 @@ public class Editor
 				l00pBox.setSelected(currentAnimation.isLoop());
 			
 				//put this in play button later
-				
+
 				animationPlaying = false;
 				
 			}
@@ -347,7 +347,6 @@ public class Editor
 		animationPreviewer.repaint();
 		
 		animationRenderer.setScale(3.0f);
-		//animationRenderer.getComponent().setBackground(backgroundColor);
 		
 		currentSprite = new Sprite(spriteSheet);
 		currentSprite.setAnimation(p_animation);
@@ -355,16 +354,10 @@ public class Editor
 		renderList = new RenderList();
 		renderList.addDrawable(currentSprite);
 		
-		animationThread = new Thread(new Runnable()
-				{
-					public void run()
-					{
-						playCurrentAnimation(p_animation);
-					}
-				});
-		
+		animationThread = new AnimationThread(animationRenderer, renderList);
 	}
 	
+	/*
 	private void playCurrentAnimation(Animation p_animation)
 	{
 		Clock animClock = new Clock();
@@ -396,7 +389,7 @@ public class Editor
 				break;
 			}
 		}
-	}
+	}*/
 	
 	private void clearAnimation()
 	{

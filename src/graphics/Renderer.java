@@ -47,6 +47,10 @@ public class Renderer
 		initialize();
 	}
 	
+	/*
+	 * Creates a renderer that can be attached to any size JPanel.
+	 * Used in the atlas editor
+	 */
 	public Renderer(JPanel p_panel)
 	{
 		width = p_panel.getWidth();
