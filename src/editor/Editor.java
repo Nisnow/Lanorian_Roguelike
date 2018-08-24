@@ -190,15 +190,17 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				if(animationPreviewer.isPaused())
+				if(currentAnimation != null)
 				{
-					animationPreviewer.resumeAnimation();
+					if(animationPreviewer.isPaused())
+					{
+						animationPreviewer.resumeAnimation();
+					}
+					else
+					{
+						animationPreviewer.playAnimation();
+					}
 				}
-				else
-				{
-					animationPreviewer.playAnimation();
-				}
-					
 			}
 		});
 		playPanel.add(btnPlay);
@@ -209,7 +211,8 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				animationPreviewer.pauseAnimation();
+				if(currentAnimation != null)
+					animationPreviewer.pauseAnimation();
 			}
 		});
 		playPanel.add(btnStop);

@@ -56,6 +56,7 @@ public class Renderer
 	 */
 	public Renderer(JPanel p_panel)
 	{
+		// Get dimensions of the panel
 		width = p_panel.getWidth();
 		height = p_panel.getHeight();
 		
