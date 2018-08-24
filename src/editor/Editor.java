@@ -54,7 +54,9 @@ public class Editor
 	private JTextField intervalField;
 	private JTextField frameField;
 	
-	private JButton btnNewButton, saveButton, btnPlay, btnStop, newButton, renameButton, deleteButton;
+	private JButton btnNewButton, saveButton, newButton, renameButton, deleteButton;
+	private JButton btnPlay, btnStop, btnRestart;
+	
 	private JPanel imagePreviewer;
 	private AnimationPreviewer animationPreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
@@ -167,6 +169,7 @@ public class Editor
 		
 		// Top-right panel that previews a selected animation
 		animationPreviewer = new AnimationPreviewer();
+		animationPreviewer.setBackground(backgroundColor);
 		dataContainer.add(animationPreviewer);
 		
 		// ------------------------------------------------
@@ -306,20 +309,23 @@ public class Editor
 			{
 				currentAnimation = (Animation) animations.getSelectedValue();
 			
-				xField.setText(currentAnimation.getFrame().x+""); // lol
-				yField.setText(currentAnimation.getFrame().y+"");
-				wField.setText(currentAnimation.getFrame().w+"");
-				hField.setText(currentAnimation.getFrame().h+"");
-			
-				frameField.setText(currentAnimation.getFrameCount()+"");
-				intervalField.setText(currentAnimation.getInterval()+"");
-			
-				l00pBox.setSelected(currentAnimation.isLoop());
+				if(currentAnimation != null)
+				{
+					xField.setText(currentAnimation.getFrame().x+""); // lol
+					yField.setText(currentAnimation.getFrame().y+"");
+					wField.setText(currentAnimation.getFrame().w+"");
+					hField.setText(currentAnimation.getFrame().h+"");
 				
-				if(!animationPreviewer.isPaused() && animationPreviewer.isRunning())
-					animationPreviewer.pauseAnimation();
+					frameField.setText(currentAnimation.getFrameCount()+"");
+					intervalField.setText(currentAnimation.getInterval()+"");
 				
-				animationPreviewer.displayAnimation(spriteSheet, currentAnimation);
+					l00pBox.setSelected(currentAnimation.isLoop());
+					
+					if(!animationPreviewer.isPaused() && animationPreviewer.isRunning())
+						animationPreviewer.pauseAnimation();
+					
+					animationPreviewer.displayAnimation(spriteSheet, currentAnimation);
+				}
 			}
 		};
 		animations.addMouseListener(LISTener);

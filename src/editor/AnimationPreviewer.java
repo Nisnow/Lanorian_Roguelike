@@ -31,7 +31,6 @@ public class AnimationPreviewer extends JPanel implements Runnable
 	{
 		setLayout(new BorderLayout(0, 0));
 		setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-		setBackground(Color.BLACK);
 	}
 	
 	/*
@@ -62,6 +61,8 @@ public class AnimationPreviewer extends JPanel implements Runnable
 		
 		currentSprite.draw(renderer);
 		renderer.display();
+		
+		renderer.addScreenOverlay(Color.BLACK, 1.0f);
 	}
 	
 	/*
