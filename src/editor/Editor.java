@@ -169,6 +169,7 @@ public class Editor
 				if(!animationPlaying)
 				{
 					animationPlaying = true;
+					displayAnimation(currentAnimation);
 					animationThread.start();
 				}
 			}
@@ -266,8 +267,9 @@ public class Editor
 				l00pBox.setSelected(currentAnimation.isLoop());
 			
 				//put this in play button later
+				
 				animationPlaying = false;
-				displayAnimation(currentAnimation);
+				
 			}
 		};
 		animations.addMouseListener(LISTener);
@@ -394,6 +396,11 @@ public class Editor
 				break;
 			}
 		}
+	}
+	
+	private void clearAnimation()
+	{
+		
 	}
 	
 	private void displayAtlasData()

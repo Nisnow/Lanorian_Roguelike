@@ -49,9 +49,12 @@ public class Renderer
 	
 	public Renderer(JPanel p_panel)
 	{
+		width = p_panel.getWidth();
+		height = p_panel.getHeight();
+		
 		// Create the buffers to draw stuff on
-		frontBuffer = new BufferedImage(p_panel.getWidth(), p_panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		backBuffer = new BufferedImage(p_panel.getWidth(), p_panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		frontBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		graphics = backBuffer.createGraphics();
 		
 		initialize();
