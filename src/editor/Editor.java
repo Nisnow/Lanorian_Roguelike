@@ -187,16 +187,28 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				if(!animationPlaying)
+				if(animationPreviewer.isPaused())
 				{
-					animationPlaying = true;
+					animationPreviewer.resumeAnimation();
+				}
+				else
+				{
 					animationPreviewer.playAnimation();
 				}
+					
 			}
 		});
 		playPanel.add(btnPlay);
 		
 		btnStop = new JButton("Stop");
+		btnStop.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				animationPreviewer.pauseAnimation();
+			}
+		});
 		playPanel.add(btnStop);
 		
 		// ------------------------------------------------
@@ -303,9 +315,10 @@ public class Editor
 				intervalField.setText(currentAnimation.getInterval()+"");
 			
 				l00pBox.setSelected(currentAnimation.isLoop());
-			
-				//put this in play button later
-				animationPlaying = false;
+				
+				if(!animationPreviewer.isPaused() && animationPreviewer.isRunning())
+					animationPreviewer.pauseAnimation();
+				
 				animationPreviewer.displayAnimation(spriteSheet, currentAnimation);
 			}
 		};

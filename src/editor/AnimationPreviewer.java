@@ -17,11 +17,9 @@ public class AnimationPreviewer extends JPanel implements Runnable
 {
 	private Renderer renderer;
 	private Sprite currentSprite;
-
-	private final Object pauseLock = new Object();
 	
 	// Pause-checkers for the animation thread
-	private volatile boolean running = true;
+	private volatile boolean running = false;
 	private volatile boolean paused = false;
 	
 	private Thread animationThread = new Thread(this);
@@ -54,6 +52,9 @@ public class AnimationPreviewer extends JPanel implements Runnable
 		renderer.setScale(3.0f);
 	}
 	
+	/*
+	 * Displays the first frame of the animation
+	 */
 	public void displayAnimation(SpriteSheet p_sheet, Animation p_animation)
 	{
 		currentSprite = new Sprite(p_sheet);
@@ -63,13 +64,18 @@ public class AnimationPreviewer extends JPanel implements Runnable
 		renderer.display();
 	}
 	
+	/*
+	 * Call this method to play the animation.
+	 * This method then calls Runnable's run() method.
+	 */
 	public void playAnimation()
 	{
+		running = true;
 		animationThread.start();
 	}
 
-	/**
-	 * Plays the animation.
+	/*
+	 * Not this one!! #BadThings happen.
 	 */
 	@Override
 	public void run() 
@@ -103,36 +109,35 @@ public class AnimationPreviewer extends JPanel implements Runnable
 				{
 					break;
 				}
-				Log.p("Cheese and rice");
 			}
 		}
 	}
 	
+	/*
+	 * Stops the animation thread completely
+	 */
 	public void stopAnimation()
 	{
 		running = false;
-		Log.p("stopped");
 	}
 	
 	public void pauseAnimation()
 	{
-		Log.p("paused");
 		paused = true;
 	}
 	
 	public void resumeAnimation()
 	{
 		paused = false;
-		/*
-		synchronized (pauseLock)
-		{
-			paused = false;
-			pauseLock.notifyAll();
-		}*/
 	}
 	
 	public boolean isPaused()
 	{
 		return paused;
+	}
+	
+	public boolean isRunning()
+	{
+		return running;
 	}
 }
