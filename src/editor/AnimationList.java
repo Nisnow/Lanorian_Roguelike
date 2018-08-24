@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractListModel;
 
 import graphics.Animation;
-import util.Debug;
+import util.Log;
 
 public class AnimationList extends AbstractListModel
 {

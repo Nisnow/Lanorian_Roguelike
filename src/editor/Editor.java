@@ -33,7 +33,7 @@ import graphics.Renderer;
 import graphics.Sprite;
 import graphics.SpriteSheet;
 import util.Clock;
-import util.Debug;
+import util.Log;
 import util.IntRect;
 
 import javax.swing.JList;
@@ -55,7 +55,8 @@ public class Editor
 	private JTextField frameField;
 	
 	private JButton btnNewButton, saveButton, btnPlay, btnStop, newButton, renameButton, deleteButton;
-	private JPanel imagePreviewer, animationPreviewer;
+	private JPanel imagePreviewer;
+	private AnimationPreviewer animationPreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
 	private JList animations;
 	
@@ -75,7 +76,6 @@ public class Editor
 	private File saveFile;
 	
 	private Renderer textureRenderer, animationRenderer;
-	private AnimationThread animationThread;
 	private boolean animationPlaying = false;
 
 	public Editor()
@@ -85,14 +85,22 @@ public class Editor
 
 	private void initialize() 
 	{
+		// Initialize the editor window. Resizable = false for simplicity
 		frame = new JFrame("Atlas Editor");
 		frame.setSize(1250, 1000);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// ------------------------------------------------
+		
+		// Initialize the container that holds everything in the editor
 		JPanel container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 		frame.getContentPane().add(container);
+		
+		// ------------------------------------------------
+		// Initialize the panel to display the entire sprite sheet
+		// TODO: make separate class and add zoom and move methods
 		
 		imagePreviewer = new JPanel();
 		imagePreviewer.setBackground(Color.BLACK);
@@ -101,11 +109,15 @@ public class Editor
 		container.add(imagePreviewer);
 		imagePreviewer.setLayout(new BorderLayout());
 		
+		// ------------------------------------------------
+		// Initialize the panel to hold 'load' and 'save' buttons on top
+		
 		JPanel panel_1 = new JPanel();
 		imagePreviewer.add(panel_1, BorderLayout.NORTH);
 		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));	
 		panel_1.setBackground(Color.BLACK);
 		
+		// Load image button opens PNG files only
 		btnNewButton = new JButton("Load Image");
 		btnNewButton.addActionListener(new ActionListener()
 		{
@@ -133,6 +145,8 @@ public class Editor
 		        	animationList = new AnimationList(a); 
 		        	
 		        	displayImage();
+		        	
+		        	// Set animation list to the animations in the JSON atlas file
 		    		animations.setModel(animationList);
 		        }
 			}
@@ -142,16 +156,20 @@ public class Editor
 		saveButton = new JButton("Save File");
 		panel_1.add(saveButton);
 		
+		// ------------------------------------------------
+		// Initialize the panel to hold editable info on the image's atlas
+		
 		JPanel dataContainer = new JPanel();
 		//frame.getContentPane().add(panel, BorderLayout.CENTER);
 		dataContainer.setLayout(new BoxLayout(dataContainer, BoxLayout.Y_AXIS));
 		dataContainer.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		
-		animationPreviewer = new JPanel();
-		animationPreviewer.setBackground(Color.BLACK);
+		// Top-right panel that previews a selected animation
+		animationPreviewer = new AnimationPreviewer();
 		dataContainer.add(animationPreviewer);
-		animationPreviewer.setLayout(new BorderLayout(0, 0));
-		animationPreviewer.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+		
+		// ------------------------------------------------
+		// Panel that holds the 'play' button
 		
 		JPanel playPanel = new JPanel();
 		FlowLayout fl_playPanel = (FlowLayout) playPanel.getLayout();
@@ -159,6 +177,8 @@ public class Editor
 		playPanel.setBackground(Color.BLACK);
 		playPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 		dataContainer.add(playPanel);
+		
+		// Start or resume the thread playing the animation loop
 		
 		btnPlay = new JButton("Play");
 		btnPlay.addActionListener(new ActionListener()
@@ -169,8 +189,6 @@ public class Editor
 				if(!animationPlaying)
 				{
 					animationPlaying = true;
-					displayAnimation(currentAnimation);
-					animationThread.run();
 				}
 			}
 		});
@@ -178,6 +196,9 @@ public class Editor
 		
 		btnStop = new JButton("Stop");
 		playPanel.add(btnStop);
+		
+		// ------------------------------------------------
+		// Panel that holds the text field to specify number of frames if animation has
 		
 		JPanel framePanel = new JPanel();
 		FlowLayout fl_framePanel = (FlowLayout) framePanel.getLayout();
@@ -194,8 +215,13 @@ public class Editor
 		lblFrames.setForeground(Color.WHITE);
 		framePanel.add(lblFrames);
 		
+		// ------------------------------------------------
+		
 		l00pBox = new JCheckBox("Loop");
 		framePanel.add(l00pBox);
+		
+		// ------------------------------------------------
+		// Panel that holds the text field to specify the interval of this animation if it has
 		
 		JPanel intervalPanel = new JPanel();
 		dataContainer.add(intervalPanel);
@@ -210,6 +236,8 @@ public class Editor
 		lblInterval.setForeground(Color.WHITE);
 		intervalPanel.add(lblInterval);
 		
+		// ------------------------------------------------
+		
 		sameDimensionBox = new JCheckBox("= dims");
 		intervalPanel.add(sameDimensionBox);
 		
@@ -218,6 +246,9 @@ public class Editor
 		dataContainer.add(dimensionPanel);
 		dimensionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		dimensionPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+		
+		// ------------------------------------------------
+		// x, y, width, and height of the animation
 		
 		xField = new JTextField("x");
 		dimensionPanel.add(xField);
@@ -235,6 +266,8 @@ public class Editor
 		dimensionPanel.add(hField);
 		hField.setColumns(3);
 		
+		// ------------------------------------------------
+		
 		JPanel animationPanel = new JPanel();
 		animationPanel.setBackground(Color.RED);
 		dataContainer.add(animationPanel);
@@ -243,6 +276,9 @@ public class Editor
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		animationPanel.add(scrollPane, BorderLayout.CENTER);
+		
+		// ------------------------------------------------
+		// Lists all the animations from the JSON atlas file
 		
 		animations = new JList();
 		animations.setForeground(Color.WHITE);
@@ -267,14 +303,17 @@ public class Editor
 				l00pBox.setSelected(currentAnimation.isLoop());
 			
 				//put this in play button later
-
 				animationPlaying = false;
-				
+				displayAnimation(currentAnimation);
 			}
 		};
 		animations.addMouseListener(LISTener);
 		
+		// ------------------------------------------------
+		
 		container.add(dataContainer);
+		
+		// ------------------------------------------------
 		
 		JPanel filePanel = new JPanel();
 		dataContainer.add(filePanel);
@@ -288,6 +327,8 @@ public class Editor
 		
 		deleteButton = new JButton("Delete");
 		filePanel.add(deleteButton);
+		
+		// ------------------------------------------------
 	}
 	
 	public void openFile(File p_file) throws IOException
@@ -353,9 +394,7 @@ public class Editor
 
 		renderList = new RenderList();
 		renderList.addDrawable(currentSprite);
-		
-		animationThread = new AnimationThread(animationRenderer, renderList);
-	}
+}
 	
 	/*
 	private void playCurrentAnimation(Animation p_animation)
@@ -398,7 +437,7 @@ public class Editor
 	
 	private void displayAtlasData()
 	{
-		Debug.say("Cheese and rice");
+		Log.p("Cheese and rice");
 	}
 	
 	public JFrame getFrame()
