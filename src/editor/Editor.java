@@ -145,6 +145,7 @@ public class Editor
 		        	animationList = new AnimationList(a); 
 		        	
 		        	displayImage();
+		        	animationPreviewer.initRenderer();
 		        	
 		        	// Set animation list to the animations in the JSON atlas file
 		    		animations.setModel(animationList);
@@ -189,6 +190,7 @@ public class Editor
 				if(!animationPlaying)
 				{
 					animationPlaying = true;
+					animationPreviewer.playAnimation();
 				}
 			}
 		});
@@ -304,7 +306,7 @@ public class Editor
 			
 				//put this in play button later
 				animationPlaying = false;
-				displayAnimation(currentAnimation);
+				animationPreviewer.displayAnimation(spriteSheet, currentAnimation);
 			}
 		};
 		animations.addMouseListener(LISTener);
@@ -394,41 +396,7 @@ public class Editor
 
 		renderList = new RenderList();
 		renderList.addDrawable(currentSprite);
-}
-	
-	/*
-	private void playCurrentAnimation(Animation p_animation)
-	{
-		Clock animClock = new Clock();
-		float delta = 0;
-		
-		// TODO: some separate class of sorts for a loop
-		while(animationPlaying)
-		{
-			delta = animClock.getElapse();
-			animClock.restart();
-			
-			animationRenderer.clear();
-			
-			renderList.draw(animationRenderer);		
-			
-			animationRenderer.display();
-
-			try
-			{
-				long totalNanos = (int)(1e9/60) - (int)(animClock.getElapse()*1e9f);
-				if(totalNanos > 0)
-				{
-					int nanos = (int) (totalNanos % 1000000);
-					long milis = (totalNanos - nanos) / 1000000;
-					Thread.sleep(milis, (int)nanos);
-				}
-			} catch (InterruptedException e)
-			{
-				break;
-			}
-		}
-	}*/
+	}
 	
 	private void clearAnimation()
 	{

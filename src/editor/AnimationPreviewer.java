@@ -17,27 +17,40 @@ public class AnimationPreviewer extends JPanel implements Runnable
 {
 	private Renderer renderer;
 	private Sprite currentSprite;
-	
-	// Pause-checkers for the animation thread
+
 	private final Object pauseLock = new Object();
 	
+	// Pause-checkers for the animation thread
 	private volatile boolean running = true;
 	private volatile boolean paused = false;
 	
+	private Thread animationThread = new Thread(this);
+	
+	/*
+	 * Top-right panel that displays the selected animation
+	 */
 	public AnimationPreviewer()
 	{
 		setLayout(new BorderLayout(0, 0));
 		setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-		setBackground(Color.RED);
+		setBackground(Color.BLACK);
 	}
 	
+	/*
+	 * Initializes the renderer after width and height of this
+	 * panel has been determined during run-time.
+	 */
 	public void initRenderer()
 	{
 		renderer = new Renderer(this);
+		this.add(renderer.getComponent());
 		
 		this.validate();
 		this.repaint();
 		
+		// Validate resets the color to white, so change that
+		renderer.addScreenOverlay(Color.BLACK, 1.0f);
+		// TODO: zooming and moving
 		renderer.setScale(3.0f);
 	}
 	
@@ -48,6 +61,11 @@ public class AnimationPreviewer extends JPanel implements Runnable
 		
 		currentSprite.draw(renderer);
 		renderer.display();
+	}
+	
+	public void playAnimation()
+	{
+		animationThread.start();
 	}
 
 	/**
@@ -61,47 +79,32 @@ public class AnimationPreviewer extends JPanel implements Runnable
 		
 		while(running)
 		{
-			synchronized (pauseLock)
+			if(!paused)
 			{
-				if(!running)
+				delta = animClock.getElapse();
+				animClock.restart();
+				
+				renderer.clear();
+				
+				currentSprite.draw(renderer);
+				
+				renderer.display();
+				
+				try
+				{
+					long totalNanos = (int)(1e9/60) - (int)(animClock.getElapse()*1e9f);
+					if(totalNanos > 0)
+					{
+						int nanos = (int) (totalNanos % 1000000);
+						long milis = (totalNanos - nanos) / 1000000;
+						Thread.sleep(milis, (int)nanos);
+					}
+				} catch (InterruptedException e)
+				{
 					break;
-				if(paused)
-				{
-					try
-					{
-						pauseLock.wait();
-					}
-					catch (InterruptedException e)
-					{
-						break;
-					}
-					if (!running)
-						break;
 				}
+				Log.p("Cheese and rice");
 			}
-			delta = animClock.getElapse();
-			animClock.restart();
-			
-			renderer.clear();
-			
-			currentSprite.draw(renderer);
-			
-			renderer.display();
-			
-			try
-			{
-				long totalNanos = (int)(1e9/60) - (int)(animClock.getElapse()*1e9f);
-				if(totalNanos > 0)
-				{
-					int nanos = (int) (totalNanos % 1000000);
-					long milis = (totalNanos - nanos) / 1000000;
-					Thread.sleep(milis, (int)nanos);
-				}
-			} catch (InterruptedException e)
-			{
-				break;
-			}
-			Log.p("Cheese and rice");
 		}
 	}
 	
@@ -119,11 +122,13 @@ public class AnimationPreviewer extends JPanel implements Runnable
 	
 	public void resumeAnimation()
 	{
+		paused = false;
+		/*
 		synchronized (pauseLock)
 		{
 			paused = false;
 			pauseLock.notifyAll();
-		}
+		}*/
 	}
 	
 	public boolean isPaused()

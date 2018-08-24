@@ -9,6 +9,8 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -25,7 +27,8 @@ public class Renderer
 	private int width, height;
 	private float scale = 1.0f;
 	
-	//private Lock frameSwapLock = new ReentrantLock(); //later for Thread
+	// Causes stuff to not flicker
+	private Lock frameSwapLock = new ReentrantLock();
 	
 	/*
 	 * Creates a renderer for displaying all entities. Add to every GameState
@@ -74,9 +77,18 @@ public class Renderer
 			@Override
 			public void paintComponent(Graphics g)
 			{
-				super.paintComponent(g);
-				g.drawImage(frontBuffer, 0, 0, this);
-				repaint();
+				frameSwapLock.lock();
+				try
+				{
+					super.paintComponent(g);
+					g.drawImage(frontBuffer, 0, 0, this);
+					repaint();
+				}
+				finally
+				{
+					frameSwapLock.unlock();
+				}
+
 			}
 		};
 		
@@ -89,11 +101,19 @@ public class Renderer
 	 */
 	public void display()
 	{
-		BufferedImage temp = backBuffer;
-		backBuffer = frontBuffer;
-		frontBuffer = temp;
-		
-		graphics = backBuffer.createGraphics();
+		frameSwapLock.lock();
+		try
+		{
+			BufferedImage temp = backBuffer;
+			backBuffer = frontBuffer;
+			frontBuffer = temp;
+			
+			graphics = backBuffer.createGraphics();
+		}
+		finally
+		{
+			frameSwapLock.unlock();
+		}
 	}
 	
 	/**
