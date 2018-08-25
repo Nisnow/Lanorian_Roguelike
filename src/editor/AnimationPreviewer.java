@@ -13,7 +13,7 @@ import graphics.SpriteSheet;
 import util.Clock;
 import util.Log;
 
-public class AnimationPreviewer extends JPanel implements Runnable
+public class AnimationPreviewer extends JPanel implements Runnable, Previewable
 {
 	private Renderer renderer;
 	private Sprite currentSprite;
@@ -37,6 +37,7 @@ public class AnimationPreviewer extends JPanel implements Runnable
 	 * Initializes the renderer after width and height of this
 	 * panel has been determined during run-time.
 	 */
+	@Override
 	public void initRenderer()
 	{
 		renderer = new Renderer(this);

@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -54,11 +55,12 @@ public class Editor
 	private JTextField intervalField;
 	private JTextField frameField;
 	
-	private JButton btnNewButton, saveButton, newButton, renameButton, deleteButton;
+	private JButton btnNewButton, saveButton;
 	private JButton btnPlay, btnStop, btnRestart;
+	private JButton newButton, renameButton, deleteButton;
 	
-	private JPanel imagePreviewer;
 	private AnimationPreviewer animationPreviewer;
+	private SpriteSheetPreviewer imagePreviewer;
 	private JCheckBox l00pBox, sameDimensionBox; 
 	private JList animations;
 	
@@ -77,8 +79,9 @@ public class Editor
 	
 	private File saveFile;
 	
-	private Renderer textureRenderer, animationRenderer;
-	private boolean animationPlaying = false;
+	private Renderer textureRenderer;
+	
+	private ArrayList<Previewable> previewers = new ArrayList<Previewable>();
 
 	public Editor()
 	{
@@ -104,11 +107,12 @@ public class Editor
 		// Initialize the panel to display the entire sprite sheet
 		// TODO: make separate class and add zoom and move methods
 		
-		imagePreviewer = new JPanel();
+		imagePreviewer = new SpriteSheetPreviewer();
 		imagePreviewer.setBackground(Color.BLACK);
 		imagePreviewer.setAlignmentX(Component.LEFT_ALIGNMENT);
 		imagePreviewer.setPreferredSize(new Dimension((int)(width*0.8), height));
 		container.add(imagePreviewer);
+		previewers.add(imagePreviewer);
 		imagePreviewer.setLayout(new BorderLayout());
 		
 		// ------------------------------------------------
@@ -146,8 +150,10 @@ public class Editor
 		        	
 		        	animationList = new AnimationList(a); 
 		        	
-		        	displayImage();
-		        	animationPreviewer.initRenderer();
+		        	for(Previewable p : previewers)
+		        		p.initRenderer();
+		        	
+		        	imagePreviewer.displayImage(spriteSheet);
 		        	
 		        	// Set animation list to the animations in the JSON atlas file
 		    		animations.setModel(animationList);
@@ -171,6 +177,7 @@ public class Editor
 		animationPreviewer = new AnimationPreviewer();
 		animationPreviewer.setBackground(backgroundColor);
 		dataContainer.add(animationPreviewer);
+		previewers.add(animationPreviewer);
 		
 		// ------------------------------------------------
 		// Panel that holds the 'play' button
@@ -380,59 +387,8 @@ public class Editor
 		
 	}
 	
-	/**
-	 * Displays the chosen image to the imagePreviwer
-	 */
-	private void displayImage()
-	{
-		textureRenderer = new Renderer(imagePreviewer);
-		imagePreviewer.add(textureRenderer.getComponent(), BorderLayout.CENTER);	
-		
-		int width = spriteSheet.getImage().getWidth();
-		int height = spriteSheet.getImage().getHeight();
-
-		textureRenderer.setScale(3.0f);
-		textureRenderer.drawSprite(spriteSheet, new IntRect(0, 0, width, height));
-		textureRenderer.getComponent().setBackground(backgroundColor);
-		textureRenderer.display();
-		
-		imagePreviewer.validate();
-		imagePreviewer.repaint();}
-	
-	/**
-	 * Displays the current selected animation to animationPreviewer
-	 * @param the animation currently selected
-	 */
-	private void displayAnimation(Animation p_animation)
-	{
-		animationRenderer = new Renderer(animationPreviewer);
-		animationPreviewer.add(animationRenderer.getComponent(), BorderLayout.CENTER);
-
-		animationPreviewer.validate(); //I have a feeling this is screwing things up
-		animationPreviewer.repaint();
-		
-		animationRenderer.setScale(3.0f);
-		
-		currentSprite = new Sprite(spriteSheet);
-		currentSprite.setAnimation(p_animation);
-
-		renderList = new RenderList();
-		renderList.addDrawable(currentSprite);
-	}
-	
-	private void clearAnimation()
-	{
-		
-	}
-	
-	private void displayAtlasData()
-	{
-		Log.p("Cheese and rice");
-	}
-	
 	public JFrame getFrame()
 	{
 		return frame;
 	}
-
 }
