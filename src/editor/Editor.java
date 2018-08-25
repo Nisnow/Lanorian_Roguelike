@@ -1,12 +1,9 @@
 package editor;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.Color;
@@ -17,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,17 +21,10 @@ import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import graphics.Animation;
-import graphics.RenderList;
-import graphics.Renderer;
-import graphics.Sprite;
 import graphics.SpriteSheet;
-import util.Clock;
-import util.Log;
-import util.IntRect;
 
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -56,7 +45,7 @@ public class Editor
 	private JTextField frameField;
 	
 	private JButton btnNewButton, saveButton;
-	private JButton btnPlay, btnStop, btnRestart;
+	private JButton btnPlay, btnStop;
 	private JButton newButton, renameButton, deleteButton;
 	
 	private AnimationPreviewer animationPreviewer;
@@ -70,16 +59,11 @@ public class Editor
 	private SpriteSheet spriteSheet;
 	private AnimationList animationList;
 	private Animation currentAnimation;
-	
-	private Sprite currentSprite;
-	private RenderList renderList;
-	private File atlas;
+
 	
 	private Color backgroundColor = Color.BLACK;
 	
 	private File saveFile;
-	
-	private Renderer textureRenderer;
 	
 	private ArrayList<Previewable> previewers = new ArrayList<Previewable>();
 
