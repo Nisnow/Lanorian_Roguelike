@@ -149,8 +149,6 @@ public class Editor
 		        			spriteSheet = new SpriteSheet(image);
 		        			
 		        			animationList = new AnimationList();
-		        			
-		        			Log.p(spriteSheet.getAnimations());
 	        			}
 	        			catch (IOException ioe)
 	        			{
@@ -358,14 +356,41 @@ public class Editor
 		dataContainer.add(filePanel);
 		filePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
+		ConfirmWindow confirmWindow = new ConfirmWindow();
+		
 		newButton = new JButton("New");
+		newButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				confirmWindow.setVisible(true); // maybe make a new one
+			}
+		});
 		filePanel.add(newButton);
 		
 		renameButton = new JButton("Rename");
+		renameButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
 		filePanel.add(renameButton);
 		
 		deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
 		filePanel.add(deleteButton);
+		
 		
 		// ------------------------------------------------
 	}
