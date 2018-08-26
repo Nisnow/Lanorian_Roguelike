@@ -10,6 +10,7 @@ import util.IntRect;
 
 public class SpriteSheetPreviewer extends JPanel implements Previewable
 {
+	// TODO: zooming, scrolling, rectangle display of animation frames
 	private Renderer renderer;
 	// http://blog.sodhanalibrary.com/2015/04/zoom-in-and-zoom-out-image-using-mouse_9.html#.W4B4dM5Kj6o
 	public SpriteSheetPreviewer() {}

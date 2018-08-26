@@ -21,6 +21,11 @@ public class SpriteSheet
 	
 	public SpriteSheet() {}
 	
+	public SpriteSheet(BufferedImage p_image)
+	{
+		image = p_image;
+	}
+	
 	public SpriteSheet(String p_path)
 	{
 		openResource(p_path);
@@ -85,6 +90,11 @@ public class SpriteSheet
 	public BufferedImage getImage()
 	{
 		return image;
+	}
+	
+	public void setImage(BufferedImage p_image)
+	{
+		image = p_image;
 	}
 	
 	/**

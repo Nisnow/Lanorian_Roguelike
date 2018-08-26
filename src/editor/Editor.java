@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.Color;
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import graphics.Animation;
 import graphics.SpriteSheet;
+import util.Log;
 
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -123,17 +126,38 @@ public class Editor
 		        if(returnValue == JFileChooser.APPROVE_OPTION)
 		        {
 		        	String fileName = fileChooser.getSelectedFile().getName();
-		        	String atlasName = fileName.substring(0, fileName.indexOf("."));       		
-	        		// TODO: new atlas implementation; check if JSON file exists
+		        	String atlasName = fileName.substring(0, fileName.indexOf("."));   
+		        	String pathName = fileChooser.getSelectedFile().getPath();
 		        	
-		        	// Only works if atlas exists for now
-		        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
-		        	// why java why
-		        	Animation[] a = new Animation[spriteSheet.getAnimations().size()];
-		        	a = spriteSheet.getAnimations().toArray(a);
-		        	
-		        	animationList = new AnimationList(a); 
-		        	
+	        		File atlasFile = new File(pathName.substring(0, pathName.indexOf(".")) + ".json");
+
+	        		if(atlasFile.exists())
+	        		{
+			        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
+		        		
+			        	// why java why
+			        	Animation[] a = new Animation[spriteSheet.getAnimations().size()];
+			        	a = spriteSheet.getAnimations().toArray(a);
+			        	
+			        	animationList = new AnimationList(a);
+	        		}
+	        		else
+	        		{
+	        			try
+	        			{
+	        				BufferedImage image = ImageIO.read(new File(pathName));
+		        			spriteSheet = new SpriteSheet(image);
+		        			
+		        			animationList = new AnimationList();
+		        			
+		        			Log.p(spriteSheet.getAnimations());
+	        			}
+	        			catch (IOException ioe)
+	        			{
+	        				ioe.printStackTrace();
+	        			}
+	        		}
+	        		
 		        	for(Previewable p : previewers)
 		        		p.initRenderer();
 		        	

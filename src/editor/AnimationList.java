@@ -11,6 +11,11 @@ public class AnimationList extends AbstractListModel
 {
 	private Animation[] animations;
 	
+	public AnimationList()
+	{
+		animations = new Animation[0];
+	}
+	
 	public AnimationList(Animation[] items)
 	{
 		animations = items;
