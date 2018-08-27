@@ -19,6 +19,15 @@ public class Animation
 		frameCount = 0;
 		interval = 0;
 	}
+	
+	public Animation(String p_name)
+	{
+		name = p_name;
+		frame = new IntRect(0, 0, 0, 0);
+		loop = false;
+		frameCount = 0;
+		interval = 0;
+	}
 
 	/*
 	 * Get root frame

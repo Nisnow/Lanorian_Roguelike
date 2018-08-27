@@ -364,6 +364,8 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				confirmWindow.setButton(newButton);
+				confirmWindow.setAnimationList(animationList);
 				confirmWindow.setVisible(true); // maybe make a new one
 			}
 		});

@@ -24,7 +24,7 @@ public class AnimationList extends AbstractListModel
 	public void addAnimation(Animation p_animation)
 	{
 		animations = new Animation[getSize()+1];
-		animations[getSize()] = p_animation;
+		animations[getSize()-1] = p_animation;
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 
 import graphics.Animation;
+import util.Log;
 
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
@@ -20,7 +21,9 @@ import java.awt.event.ActionEvent;
 public class ConfirmWindow
 {
 	private JFrame frame;
+	private JButton currentButton;
 	private JTextField nameField;
+	private AnimationList animationList;
 	
 	public ConfirmWindow()
 	{
@@ -30,6 +33,11 @@ public class ConfirmWindow
 	public void setVisible(boolean p_visible)
 	{
 		frame.setVisible(p_visible);
+	}
+	
+	public void setButton(JButton p_button)
+	{
+		currentButton = p_button;
 	}
 
 	/**
@@ -78,10 +86,18 @@ public class ConfirmWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				confirm();
+				Animation animation = new Animation(nameField.getText());
+				animationList.addAnimation(animation);
+				animationList.update();
+				frame.setVisible(false);
 			}
 		});
 		buttonPanel.add(confirmButton);
+	}
+	
+	public void setAnimationList(AnimationList p_list)
+	{
+		animationList = p_list;
 	}
 	
 	private void confirm()
