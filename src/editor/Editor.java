@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import editor.ConfirmWindow.Action;
 import graphics.Animation;
 import graphics.SpriteSheet;
 import util.Log;
@@ -352,17 +353,14 @@ public class Editor
 		dataContainer.add(filePanel);
 		filePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		ConfirmWindow confirmWindow = new ConfirmWindow();
-		
 		newButton = new JButton("New");
 		newButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				confirmWindow.setButton(newButton);
+				ConfirmWindow confirmWindow = new ConfirmWindow(Action.NEW_ANIMATION);		
 				confirmWindow.setAnimationList(animationList);
-				confirmWindow.setVisible(true); // maybe make a new one
 			}
 		});
 		filePanel.add(newButton);
@@ -373,7 +371,13 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				
+				if(currentAnimation != null)
+				{
+					ConfirmWindow confirmWindow = new ConfirmWindow(Action.RENAME_ANIMATION);		
+					
+					confirmWindow.setAnimationList(animationList);
+					confirmWindow.setRenamableAnimation(currentAnimation);
+				}
 			}
 		});
 		filePanel.add(renameButton);

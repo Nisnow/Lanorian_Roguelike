@@ -21,23 +21,21 @@ import java.awt.event.ActionEvent;
 public class ConfirmWindow
 {
 	private JFrame frame;
-	private JButton currentButton;
 	private JTextField nameField;
 	private AnimationList animationList;
+	private Animation currentAnimation;
 	
-	public ConfirmWindow()
+	private Action action;
+	
+	public enum Action
 	{
+		NEW_ANIMATION, RENAME_ANIMATION;
+	}
+	
+	public ConfirmWindow(Action e_action)
+	{
+		action = e_action;
 		initialize();
-	}
-	
-	public void setVisible(boolean p_visible)
-	{
-		frame.setVisible(p_visible);
-	}
-	
-	public void setButton(JButton p_button)
-	{
-		currentButton = p_button;
 	}
 
 	/**
@@ -47,6 +45,7 @@ public class ConfirmWindow
 	{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 290, 203);
+		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel container = new JPanel();
@@ -76,7 +75,7 @@ public class ConfirmWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				cancel();
+				frame.dispose();
 			}
 		});
 		buttonPanel.add(cancelButton);
@@ -86,9 +85,18 @@ public class ConfirmWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Animation animation = new Animation(nameField.getText());
-				animationList.addAnimation(animation);
-				frame.setVisible(false);
+				switch(action)
+				{
+					case NEW_ANIMATION:
+						Animation animation = new Animation(nameField.getText());
+						animationList.addAnimation(animation);
+						break;
+					case RENAME_ANIMATION:
+						currentAnimation.setName(nameField.getText());
+						animationList.update();
+						break;
+				}
+				frame.dispose();
 			}
 		});
 		buttonPanel.add(confirmButton);
@@ -99,18 +107,9 @@ public class ConfirmWindow
 		animationList = p_list;
 	}
 	
-	private void confirm()
+	public void setRenamableAnimation(Animation p_animation)
 	{
-		
-	}
-	
-	private void cancel()
-	{
-		
-	}
-	
-	private Animation createAnimation()
-	{
-		return null;
+		currentAnimation = p_animation;
+		nameField.setText(p_animation.getName());
 	}
 }

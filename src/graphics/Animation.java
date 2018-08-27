@@ -88,6 +88,11 @@ public class Animation
 		return name;
 	}
 	
+	public void setName(String p_name)
+	{
+		name = p_name;
+	}
+	
 	/**
 	 * Parse animation information from a JSON Object
 	 * @param p_object the JSONObject to retrieve data from
