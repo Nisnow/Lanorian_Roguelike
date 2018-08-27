@@ -31,6 +31,7 @@ import graphics.SpriteSheet;
 import util.Log;
 
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
@@ -388,7 +389,8 @@ public class Editor
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				
+				if(currentAnimation != null)
+					animationList.removeAnimation(currentAnimation);
 			}
 		});
 		filePanel.add(deleteButton);

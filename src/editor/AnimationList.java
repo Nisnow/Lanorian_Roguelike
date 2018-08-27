@@ -28,6 +28,12 @@ public class AnimationList extends AbstractListModel
 		update();
 	}
 	
+	public void removeAnimation(Animation p_animation)
+	{
+		animations.remove(p_animation);
+		this.fireContentsChanged(this, 0, getSize()-1);
+	}
+	
 	@Override
 	public Animation getElementAt(int index)
 	{
