@@ -88,7 +88,6 @@ public class ConfirmWindow
 			{
 				Animation animation = new Animation(nameField.getText());
 				animationList.addAnimation(animation);
-				animationList.update();
 				frame.setVisible(false);
 			}
 		});

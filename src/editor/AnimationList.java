@@ -1,6 +1,7 @@
 package editor;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
 
@@ -9,38 +10,38 @@ import util.Log;
 
 public class AnimationList extends AbstractListModel
 {
-	private Animation[] animations;
+	private ArrayList<Animation> animations;
 	
 	public AnimationList()
 	{
-		animations = new Animation[0];
+		animations = new ArrayList<Animation>();
 	}
 	
-	public AnimationList(Animation[] items)
+	public AnimationList(ArrayList<Animation> items)
 	{
 		animations = items;
 	}
 	
 	public void addAnimation(Animation p_animation)
 	{
-		animations = new Animation[getSize()+1];
-		animations[getSize()-1] = p_animation;
+		animations.add(p_animation);
+		update();
 	}
 	
 	@Override
 	public Animation getElementAt(int index)
 	{
-		return animations[index];
+		return animations.get(index);
 	}
 
 	@Override
 	public int getSize()
 	{
-		return animations.length;
+		return animations.size();
 	}
 
 	public void update()
 	{
-		this.fireIntervalAdded(this,  0, getSize() - 1);;
+		this.fireContentsChanged(this,  0, getSize());
 	}
 }

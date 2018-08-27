@@ -134,12 +134,8 @@ public class Editor
 	        		if(atlasFile.exists())
 	        		{
 			        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
-		        		
-			        	// why java why
-			        	Animation[] a = new Animation[spriteSheet.getAnimations().size()];
-			        	a = spriteSheet.getAnimations().toArray(a);
 			        	
-			        	animationList = new AnimationList(a);
+			        	animationList = new AnimationList(spriteSheet.getAnimations());
 	        		}
 	        		else
 	        		{
