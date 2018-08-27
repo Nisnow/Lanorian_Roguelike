@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import editor.ConfirmWindow.Action;
 import graphics.Animation;
 import graphics.SpriteSheet;
+import util.IntRect;
 import util.Log;
 
 import javax.swing.JList;
@@ -64,11 +65,11 @@ public class Editor
 	private SpriteSheet spriteSheet;
 	private AnimationList animationList;
 	private Animation currentAnimation;
-
 	
 	private Color backgroundColor = Color.BLACK;
 	
-	private File saveFile;
+	private JSONFileGenerator fileSaver = new JSONFileGenerator();
+	private File jsonFile;
 	
 	private ArrayList<Previewable> previewers = new ArrayList<Previewable>();
 
@@ -138,7 +139,9 @@ public class Editor
 			        	spriteSheet = new SpriteSheet("resources/images/" + atlasName);
 			        	
 			        	animationList = new AnimationList(spriteSheet.getAnimations());
-	        		}
+
+			        	fileSaver.setFile(jsonFile);
+			        }
 	        		else
 	        		{
 	        			try
@@ -147,6 +150,7 @@ public class Editor
 		        			spriteSheet = new SpriteSheet(image);
 		        			
 		        			animationList = new AnimationList();
+		        			fileSaver.setName(atlasName);
 	        			}
 	        			catch (IOException ioe)
 	        			{
@@ -167,6 +171,29 @@ public class Editor
 		panel_1.add(btnNewButton);
 		
 		saveButton = new JButton("Save File");
+		saveButton.addActionListener(new ActionListener()
+		{		
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(animationList.getSize() > 0)
+				{
+					//set data for currently selected animation
+		
+					currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
+					/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
+														  Integer.parseInt(wField.getText()), 
+														  Integer.parseInt(hField.getText())));
+					currentAnimation.setFrameCount(Integer.parseInt(frameField.getText()));
+					currentAnimation.setInterval(Float.parseFloat(intervalField.getText()));
+					currentAnimation.setLoop(l00pBox.isSelected()); //wtf??
+					
+					fileSaver.setAnimationList(animationList);
+					fileSaver.generate();
+					//fileSaver.celebrate(); heh it rhymes
+				}
+			}
+		});
 		panel_1.add(saveButton);
 		
 		// ------------------------------------------------
@@ -403,17 +430,17 @@ public class Editor
 	{
 		if(!p_file.exists())
 			throw new FileNotFoundException("Could not find file \"" + p_file + "\"");
-		saveFile = p_file;
+		jsonFile = p_file;
 	}
 	
 	public void setSaveFile(File p_file)
 	{
-		saveFile = p_file;
+		jsonFile = p_file;
 	}
 	
 	public File getSaveFile()
 	{
-		return saveFile;
+		return jsonFile;
 	}
 	
 	/**

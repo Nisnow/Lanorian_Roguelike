@@ -37,6 +37,15 @@ public class Animation
 		return frame;
 	}
 	
+	/*
+	 * Sets the room frame.
+	 * Used in the editor.
+	 */
+	public void setFrame(IntRect p_frame)
+	{
+		frame = p_frame;
+	}
+	
 	/**
 	 * Get frame at an index. Calculates looping
 	 */
@@ -60,6 +69,15 @@ public class Animation
 	{
 		return frameCount;
 	}
+	
+	/*
+	 * Set number of frames in this animation.
+	 * Used in the editor.
+	 */
+	public void setFrameCount(int p_count)
+	{
+		frameCount = p_count;
+	}
 
 	/**
 	 * Get the amount of time in between frames in seconds
@@ -67,6 +85,15 @@ public class Animation
 	public float getInterval() 
 	{
 		return interval;
+	}
+	
+	/*
+	 * Set the amount of time between frames in seconds.
+	 * Used in the editor;
+	 */
+	public void setInterval(float p_interval)
+	{
+		interval = p_interval;
 	}
 	
 	/**
@@ -81,6 +108,11 @@ public class Animation
 	public boolean isLoop() 
 	{
 		return loop;
+	}
+	
+	public void setLoop(boolean p_loop)
+	{
+		loop = p_loop;
 	}
 
 	public String getName() 
