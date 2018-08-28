@@ -140,6 +140,7 @@ public class Editor
 			        	
 			        	animationList = new AnimationList(spriteSheet.getAnimations());
 
+			        	fileSaver.setName(atlasName);
 			        	fileSaver.setFile(jsonFile);
 			        }
 	        		else
@@ -179,7 +180,11 @@ public class Editor
 				if(animationList.getSize() > 0)
 				{
 					//set data for currently selected animation
-		
+					xField.getText().trim();
+					yField.getText().trim();
+					hField.getText().trim();
+					wField.getText().trim();
+					
 					currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
 					/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
 														  Integer.parseInt(wField.getText()), 

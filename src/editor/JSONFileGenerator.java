@@ -1,11 +1,14 @@
 package editor;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import graphics.Animation;
+import util.Log;
 
 public class JSONFileGenerator 
 {
@@ -58,10 +61,24 @@ public class JSONFileGenerator
 			
 			if(a.isLoop())
 				animObj.put("loop", "true");
+			
+			list.add(animObj);
+		}
+		obj.put("animations", list);
+		
+		// I know this is bad practice but ehhhhh
+		String path = "E:\\Lanorian Roguelike\\src\\resources\\images\\" + name + ".json";
+		
+		try(FileWriter file = new FileWriter(path))
+		{
+			file.write(obj.toJSONString());
+			file.flush();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
 		}
 		
-		obj.put("animations", list);
-		//if file exists, overwrite
-		//else, generate new file and set jsonFile to this
+		Log.p(obj.toJSONString());
 	}
 }
