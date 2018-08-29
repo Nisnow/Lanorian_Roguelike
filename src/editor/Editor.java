@@ -163,7 +163,7 @@ public class Editor
 		        		p.initRenderer();
 		        	
 		        	imagePreviewer.displayImage(spriteSheet);
-		        	
+		        	//imagePreviewer.displayAnimationIndicators(animationList);
 		        	// Set animation list to the animations in the JSON atlas file
 		    		animations.setModel(animationList);
 		        }

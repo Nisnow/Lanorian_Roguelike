@@ -4,9 +4,12 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import graphics.Animation;
 import graphics.Renderer;
 import graphics.SpriteSheet;
+import util.DoubleRect;
 import util.IntRect;
+import util.Log;
 
 public class SpriteSheetPreviewer extends JPanel implements Previewable
 {
@@ -40,5 +43,29 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		renderer.display();
 		
 		renderer.addScreenOverlay(Color.BLACK, 1.0f);
+	}
+	
+	/*
+	 * Indicates the current animations. Called whenever the
+	 * user types something into the x, y, w, and h fields in Editor
+	 */
+	public void displayAnimationIndicators(AnimationList p_list)
+	{
+		for(int i = 0; i < p_list.getSize(); i++)
+		{
+			Animation a = p_list.getElementAt(i);
+			
+			// Draw number of rectangles for each frame of the animation
+			for(int j = 0; j < a.getFrameCount(); i++)
+			{
+				DoubleRect rect = new DoubleRect(a.getFrame().x + (i * a.getFrame().w),
+												 a.getFrame().y,
+												 a.getFrame().w,
+												 a.getFrame().h);
+				renderer.drawRect(rect, Color.GREEN, 0.5f);
+				Log.p("HEYA!");
+			}
+
+		}
 	}
 }
