@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import graphics.Animation;
 import util.Log;
@@ -38,47 +40,46 @@ public class JSONFileGenerator
 	@SuppressWarnings("unchecked")
 	public void generate()
 	{
-		JSONObject obj = new JSONObject();
+		JsonObject obj = new JsonObject();
 		
 		// Store all animation data in a JSON Array
-		JSONArray list = new JSONArray();
+		JsonArray list = new JsonArray();
 		for(int i = 0; i < animationList.getSize(); i++)
 		{
-			JSONObject animObj = new JSONObject();
+			JsonObject animObj = new JsonObject();
 			Animation a = animationList.getElementAt(i);
 			
-			animObj.put("name", a.getName());
-			animObj.put("x", a.getFrame().x+""); //convert to string
-			animObj.put("y", a.getFrame().y+"");
-			animObj.put("w", a.getFrame().w+"");
-			animObj.put("h", a.getFrame().h+"");
+			animObj.addProperty("name", a.getName());
+			animObj.addProperty("x", a.getFrame().x); 
+			animObj.addProperty("y", a.getFrame().y);
+			animObj.addProperty("w", a.getFrame().w);
+			animObj.addProperty("h", a.getFrame().h);
 			
 			if(a.getFrameCount() != 0)
-				animObj.put("frames", a.getFrameCount()+"");
+				animObj.addProperty("frames", a.getFrameCount());
 			
 			if(a.getInterval() != 0)
-				animObj.put("interval", a.getInterval()+"");
+				animObj.addProperty("interval", a.getInterval());
 			
 			if(a.isLoop())
-				animObj.put("loop", "true");
+				animObj.addProperty("loop", "true");
 			
 			list.add(animObj);
 		}
-		obj.put("animations", list);
+		obj.add("animations", list);
 		
 		// I know this is bad practice but ehhhhh
 		String path = "E:\\Lanorian Roguelike\\src\\resources\\images\\" + name + ".json";
 		
 		try(FileWriter file = new FileWriter(path))
 		{
-			file.write(obj.toJSONString());
-			file.flush();
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			
+			gson.toJson(obj, file);
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
-		
-		Log.p(obj.toJSONString());
 	}
 }
