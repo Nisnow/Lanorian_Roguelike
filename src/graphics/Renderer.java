@@ -174,7 +174,7 @@ public class Renderer
 	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
 	 * @param p_thickness THICCness in pixels
 	 */
-	public void drawRect(DoubleRect p_rect, Color p_color, float p_opacity, float p_thickness)
+	public void drawRectBorder(DoubleRect p_rect, Color p_color, float p_opacity, float p_thickness)
 	{
 		graphics.setColor(p_color);
 		graphics.setStroke(new BasicStroke(p_thickness));

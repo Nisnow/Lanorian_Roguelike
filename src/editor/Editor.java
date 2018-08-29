@@ -162,8 +162,8 @@ public class Editor
 		        	for(Previewable p : previewers)
 		        		p.initRenderer();
 		        	
+		        	imagePreviewer.setAnimationList(animationList);
 		        	imagePreviewer.displayImage(spriteSheet);
-		        	//imagePreviewer.displayAnimationIndicators(animationList);
 		        	// Set animation list to the animations in the JSON atlas file
 		    		animations.setModel(animationList);
 		        }
