@@ -10,9 +10,9 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class SpriteSheet
 {
@@ -122,22 +122,22 @@ public class SpriteSheet
 	 */
 	private void openAtlas(InputStream p_stream) throws Exception
 	{
-		JSONParser parser = new JSONParser();
+		JsonParser parser = new JsonParser();
 		
 		try
 		{
 			// Parse the document
 			Object obj = parser.parse(new InputStreamReader(p_stream));
-			JSONObject jsonObject = (JSONObject) obj;
+			JsonObject jsonObject = (JsonObject) obj;
 
 			// Get the array of animation data
-			JSONArray atlas = (JSONArray) jsonObject.get("animations");
+			JsonArray atlas = (JsonArray) jsonObject.get("animations");
 			Iterator i = atlas.iterator();
 			
 			// Create an Animation object for each animation JSON object
 			while(i.hasNext())
 			{
-				JSONObject data = (JSONObject) i.next();
+				JsonObject data = (JsonObject) i.next();
 				Animation animation = new Animation();
 				animation.parse(data);
 				animationList.add(animation);

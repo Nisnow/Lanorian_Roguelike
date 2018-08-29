@@ -1,6 +1,6 @@
 package graphics;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 import util.IntRect;
 
@@ -129,34 +129,33 @@ public class Animation
 	 * Parse animation information from a JSON Object
 	 * @param p_object the JSONObject to retrieve data from
 	 */
-	public void parse(JSONObject p_object)
+	public void parse(JsonObject p_object)
 	{
-		// TODO: refactor so there aren't so many casts?
-		name = (String) p_object.get("name");
+		name = p_object.get("name").getAsString();
 		
-		frame.x = Integer.parseInt((String) p_object.get("x"));
-		frame.y = Integer.parseInt((String) p_object.get("y"));
-		frame.w = Integer.parseInt((String) p_object.get("w"));
-		frame.h = Integer.parseInt((String) p_object.get("h"));
+		frame.x = p_object.get("x").getAsInt();
+		frame.y = p_object.get("y").getAsInt();
+		frame.w = p_object.get("w").getAsInt();
+		frame.h = p_object.get("h").getAsInt();
 		
 		if(hasObject(p_object, "frames"))
-			frameCount = Integer.parseInt((String) p_object.get("frames"));
+			frameCount = p_object.get("frames").getAsInt();
 		else
 			frameCount = 1;
 		
 		if(hasObject(p_object, "interval"))
-			interval =  Float.parseFloat((String) p_object.get("interval")) /1000f; // convert from milliseconds to seconds
+			interval =  p_object.get("interval").getAsFloat() /1000f; // convert from milliseconds to seconds
 		
 		if(hasObject(p_object, "loop"))
-			loop =  Boolean.parseBoolean((String) p_object.get("loop"));
+			loop =  p_object.get("loop").getAsBoolean();;
 	}
 	
 	/**
 	 * Checks if an animation has a certain value from a JSON key
 	 */
-	private boolean hasObject(JSONObject p_object, String p_key)
+	private boolean hasObject(JsonObject p_object, String p_key)
 	{
-		return ((String) p_object.get(p_key)) != null;
+		return p_object.get(p_key) != null;
 	}
 	
 	public String toString()
