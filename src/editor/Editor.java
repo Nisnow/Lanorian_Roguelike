@@ -181,19 +181,7 @@ public class Editor
 			{
 				if(animationList.getSize() > 0)
 				{
-					//set data for currently selected animation
-					xField.getText().trim();
-					yField.getText().trim();
-					hField.getText().trim();
-					wField.getText().trim();
-					
-					currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
-					/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
-														  Integer.parseInt(wField.getText()), 
-														  Integer.parseInt(hField.getText())));
-					currentAnimation.setFrameCount(Integer.parseInt(frameField.getText()));
-					currentAnimation.setInterval(Float.parseFloat(intervalField.getText()));
-					currentAnimation.setLoop(l00pBox.isSelected()); //wtf??
+					setData();
 					
 					fileSaver.setAnimationList(animationList);
 					fileSaver.generate();
@@ -444,22 +432,41 @@ public class Editor
 			@Override
 			public void changedUpdate(DocumentEvent de) 
 			{
-				imagePreviewer.setAnimationList(animationList);
-				imagePreviewer.displayImage(spriteSheet);
+				updatePreviewer();
 			}
 			@Override
 			public void insertUpdate(DocumentEvent de)
 			{
-				imagePreviewer.setAnimationList(animationList);
-				imagePreviewer.displayImage(spriteSheet);
+				updatePreviewer();
 			}
 			@Override
 			public void removeUpdate(DocumentEvent de)
+			{
+				updatePreviewer();
+			}
+			
+			public void updatePreviewer()
 			{
 				imagePreviewer.setAnimationList(animationList);
 				imagePreviewer.displayImage(spriteSheet);
 			}
 		};
+	}
+	
+	public void setData()
+	{
+		xField.getText().trim();
+		yField.getText().trim();
+		hField.getText().trim();
+		wField.getText().trim();
+		
+		currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
+		/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
+											  Integer.parseInt(wField.getText()), 
+											  Integer.parseInt(hField.getText())));
+		currentAnimation.setFrameCount(Integer.parseInt(frameField.getText()));
+		currentAnimation.setInterval(Float.parseFloat(intervalField.getText()));
+		currentAnimation.setLoop(l00pBox.isSelected());
 	}
 	
 	public void openFile(File p_file) throws IOException
