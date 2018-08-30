@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import editor.ConfirmWindow.Action;
@@ -314,18 +316,22 @@ public class Editor
 		// x, y, width, and height of the animation
 		
 		xField = new JTextField("x");
+		xField.getDocument().addDocumentListener(addFieldListener());
 		dimensionPanel.add(xField);
 		xField.setColumns(3);
 		
 		yField = new JTextField("y");
+		yField.getDocument().addDocumentListener(addFieldListener());
 		dimensionPanel.add(yField);
 		yField.setColumns(3);
 		
 		wField = new JTextField("w");
+		wField.getDocument().addDocumentListener(addFieldListener());
 		dimensionPanel.add(wField);
 		wField.setColumns(3);
 		
 		hField = new JTextField("h");
+		hField.getDocument().addDocumentListener(addFieldListener());
 		dimensionPanel.add(hField);
 		hField.setColumns(3);
 		
@@ -429,6 +435,31 @@ public class Editor
 		
 		
 		// ------------------------------------------------
+	}
+	
+	public DocumentListener addFieldListener()
+	{
+		return new DocumentListener()
+		{
+			@Override
+			public void changedUpdate(DocumentEvent de) 
+			{
+				imagePreviewer.setAnimationList(animationList);
+				imagePreviewer.displayImage(spriteSheet);
+			}
+			@Override
+			public void insertUpdate(DocumentEvent de)
+			{
+				imagePreviewer.setAnimationList(animationList);
+				imagePreviewer.displayImage(spriteSheet);
+			}
+			@Override
+			public void removeUpdate(DocumentEvent de)
+			{
+				imagePreviewer.setAnimationList(animationList);
+				imagePreviewer.displayImage(spriteSheet);
+			}
+		};
 	}
 	
 	public void openFile(File p_file) throws IOException
