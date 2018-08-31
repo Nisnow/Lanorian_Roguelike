@@ -1,6 +1,9 @@
 package editor;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
@@ -60,6 +63,22 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 				displayImage(spriteSheet);
 			}
 		});
+		renderer.getComponent().addMouseMotionListener(new MouseMotionListener()
+		{
+			@Override
+			public void mouseDragged(MouseEvent arg0) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent arg0) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	public void setAnimationList(AnimationList p_list)
@@ -104,5 +123,16 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 				renderer.drawRect(rect, Color.GREEN, 0.5f);
 			}
 		}
+	}
+
+	public SpriteSheet getSpriteSheet() 
+	{
+		return spriteSheet;
+	}
+
+	@Override
+	public Renderer getRenderer()
+	{
+		return renderer;
 	}
 }

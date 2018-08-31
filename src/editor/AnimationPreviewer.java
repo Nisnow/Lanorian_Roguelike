@@ -142,4 +142,15 @@ public class AnimationPreviewer extends JPanel implements Runnable, Previewable
 	{
 		return running;
 	}
+
+	public Sprite getSprite()
+	{
+		return currentSprite;
+	}
+
+	@Override
+	public Renderer getRenderer()
+	{
+		return renderer;
+	}
 }
