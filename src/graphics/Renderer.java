@@ -133,6 +133,11 @@ public class Renderer
 		scale = p_scale;
 	}
 	
+	public float getScale()
+	{
+		return scale;
+	}
+	
 	/**
 	 * Draws a sprite
 	 * @param p_sheet the sprite sheet of the image

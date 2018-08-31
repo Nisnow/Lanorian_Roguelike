@@ -1,6 +1,8 @@
 package editor;
 
 import java.awt.Color;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
 
@@ -16,6 +18,9 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 	// TODO: zooming, scrolling, rectangle display of animation frames
 	private Renderer renderer;
 	private AnimationList list;
+	private SpriteSheet spriteSheet;
+	
+	private final float SCALE_FACTOR = 0.5f;
 	// http://blog.sodhanalibrary.com/2015/04/zoom-in-and-zoom-out-image-using-mouse_9.html#.W4B4dM5Kj6o
 	public SpriteSheetPreviewer() {}
 	
@@ -30,6 +35,31 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		
 		renderer.addScreenOverlay(Color.BLACK, 1.0f);
 		renderer.setScale(3.0f);
+		
+		renderer.getComponent().addMouseWheelListener(new MouseWheelListener()
+		{
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent mwe)
+			{
+				int notches = mwe.getWheelRotation();
+				if(notches < 0) //scroll down; zoom out
+				{
+					renderer.setScale(renderer.getScale() - SCALE_FACTOR);
+					updateImage();
+				}
+				else //scroll up; zoom in
+				{
+					renderer.setScale(renderer.getScale() + SCALE_FACTOR);
+					updateImage();
+				}
+			}
+			
+			public void updateImage()
+			{
+				renderer.clear();
+				displayImage(spriteSheet);
+			}
+		});
 	}
 	
 	public void setAnimationList(AnimationList p_list)
@@ -42,6 +72,8 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 	 */
 	public void displayImage(SpriteSheet p_sheet)
 	{
+		spriteSheet = p_sheet;
+		
 		int width = p_sheet.getImage().getWidth();
 		int height = p_sheet.getImage().getHeight();
 		
