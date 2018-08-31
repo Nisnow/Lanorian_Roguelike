@@ -66,17 +66,15 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		renderer.getComponent().addMouseMotionListener(new MouseMotionListener()
 		{
 			@Override
-			public void mouseDragged(MouseEvent arg0) 
+			public void mouseDragged(MouseEvent me) 
 			{
-				// TODO Auto-generated method stub
-				
+				Log.p("mouse dragged");
 			}
 
 			@Override
-			public void mouseMoved(MouseEvent arg0) 
+			public void mouseMoved(MouseEvent me) 
 			{
-				// TODO Auto-generated method stub
-				
+				//do nothing...
 			}
 		});
 	}
