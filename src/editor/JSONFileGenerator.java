@@ -14,14 +14,8 @@ import util.Log;
 
 public class JSONFileGenerator 
 {
-	private File jsonFile;
 	private AnimationList animationList;
 	private String name;
-	
-	public void setFile(File p_file)
-	{
-		jsonFile = p_file;
-	}
 	
 	public void setAnimationList(AnimationList p_list)
 	{
@@ -59,7 +53,7 @@ public class JSONFileGenerator
 				animObj.addProperty("frames", a.getFrameCount());
 			
 			if(a.getInterval() != 0)
-				animObj.addProperty("interval", a.getInterval());
+				animObj.addProperty("interval", a.getInterval()*1000f);
 			
 			if(a.isLoop())
 				animObj.addProperty("loop", "true");
@@ -81,5 +75,6 @@ public class JSONFileGenerator
 		{
 			e.printStackTrace();
 		}
+		System.out.println("Saved file " + path);
 	}
 }

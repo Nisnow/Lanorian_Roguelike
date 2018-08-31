@@ -1,12 +1,10 @@
 package editor;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
 
 import graphics.Animation;
-import util.Log;
 
 public class AnimationList extends AbstractListModel
 {

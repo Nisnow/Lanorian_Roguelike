@@ -143,7 +143,6 @@ public class Editor
 			        	animationList = new AnimationList(spriteSheet.getAnimations());
 
 			        	fileSaver.setName(atlasName);
-			        	fileSaver.setFile(jsonFile);
 			        }
 	        		else
 	        		{
@@ -261,6 +260,7 @@ public class Editor
 		dataContainer.add(framePanel);
 		
 		frameField = new JTextField();
+		frameField.getDocument().addDocumentListener(addFieldListener());
 		framePanel.add(frameField);
 		frameField.setColumns(10);
 		
@@ -282,6 +282,7 @@ public class Editor
 		intervalPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		
 		intervalField = new JTextField();
+		intervalField.getDocument().addDocumentListener(addFieldListener());
 		intervalPanel.add(intervalField);
 		intervalField.setColumns(10);
 		
@@ -455,18 +456,21 @@ public class Editor
 	
 	public void setData()
 	{
-		xField.getText().trim();
-		yField.getText().trim();
-		hField.getText().trim();
-		wField.getText().trim();
-		
-		currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
-		/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
-											  Integer.parseInt(wField.getText()), 
-											  Integer.parseInt(hField.getText())));
-		currentAnimation.setFrameCount(Integer.parseInt(frameField.getText()));
-		currentAnimation.setInterval(Float.parseFloat(intervalField.getText()));
-		currentAnimation.setLoop(l00pBox.isSelected());
+		if(currentAnimation != null)
+		{
+			xField.getText().trim();
+			yField.getText().trim();
+			hField.getText().trim();
+			wField.getText().trim();
+			
+			currentAnimation.setFrame(new IntRect(Integer.parseInt(xField.getText()),
+			/*WHY JAVA WHY*/					  Integer.parseInt(yField.getText()),
+												  Integer.parseInt(wField.getText()), 
+												  Integer.parseInt(hField.getText())));
+			currentAnimation.setFrameCount(Integer.parseInt(frameField.getText()));
+			currentAnimation.setInterval(Float.parseFloat(intervalField.getText()));
+			currentAnimation.setLoop(l00pBox.isSelected());
+		}
 	}
 	
 	public void openFile(File p_file) throws IOException

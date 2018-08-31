@@ -1,21 +1,33 @@
-{ "animations":
-	[
-		{
-			"name": "default",
-			"x": "0",
-			"y": "0",
-			"w": "32",
-			"h": "32",
-			"frames": "4",
-			"interval": "100",
-			"loop": "true"
-		},
-		{
-			"name": "idle",
-			"x": "0",
-			"y": "0",
-			"w": "32",
-			"h": "32"
-		}
-	]
+{
+  "animations": [
+    {
+      "name": "default",
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "frames": 4,
+      "interval": 100.0,
+      "loop": "true"
+    },
+    {
+      "name": "idle",
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "frames": 3,
+      "interval": 100.0
+    },
+    {
+      "name": "sdfsdf",
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32,
+      "frames": 5,
+      "interval": 200.0,
+      "loop": "true"
+    }
+  ]
 }
