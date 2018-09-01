@@ -1,6 +1,8 @@
 package editor;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -103,6 +105,44 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		
 		renderer.getComponent().addMouseListener(adapter);
 		renderer.getComponent().addMouseMotionListener(adapter);
+	
+		renderer.getComponent().addKeyListener(new KeyListener()
+		{
+			private final float CHANGE = 10.0f;
+			
+			@Override
+			public void keyPressed(KeyEvent e) 
+			{
+				int keyCode = e.getKeyCode();
+				
+				switch(keyCode)
+				{
+					case KeyEvent.VK_UP:
+						offset.y += CHANGE;
+						break;
+					case KeyEvent.VK_DOWN:
+						offset.y -= CHANGE;
+						break;
+					case KeyEvent.VK_LEFT:
+						offset.x += CHANGE;
+						break;
+					case KeyEvent.VK_RIGHT:
+						offset.x -= CHANGE;
+						break;
+				}
+				renderer.clear();
+				displayImage(spriteSheet);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+		});
+		
+		renderer.getComponent().setFocusable(true);
+		renderer.getComponent().requestFocusInWindow();
 	}
 	
 	public void setAnimationList(AnimationList p_list)
