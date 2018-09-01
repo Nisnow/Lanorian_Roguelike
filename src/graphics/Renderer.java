@@ -133,6 +133,11 @@ public class Renderer
 		scale = p_scale;
 	}
 	
+	public float getScale()
+	{
+		return scale;
+	}
+	
 	/**
 	 * Draws a sprite
 	 * @param p_sheet the sprite sheet of the image
@@ -151,6 +156,23 @@ public class Renderer
 		graphics.setTransform(scaleTransform);
 		
 		graphics.drawImage(p_sheet.getImage(), 0, 0, p_frame.w, p_frame.h,
+				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
+	}
+	
+	public void drawSprite(SpriteSheet p_sheet, IntRect p_frame, IntRect p_destination)
+	{
+		//reset opacity
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+		
+		//scale image according to the current scale
+		AffineTransform scaleTransform = new AffineTransform();
+		scaleTransform.scale(scale, scale);
+		
+		//temporary
+		graphics.setTransform(scaleTransform);
+		
+		graphics.drawImage(p_sheet.getImage(), p_destination.x, p_destination.y, 
+				p_destination.x + p_frame.w, p_destination.y +p_frame.h,
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
 	}
 	
