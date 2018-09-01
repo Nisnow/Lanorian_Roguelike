@@ -159,6 +159,23 @@ public class Renderer
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
 	}
 	
+	public void drawSprite(SpriteSheet p_sheet, IntRect p_frame, IntRect p_destination)
+	{
+		//reset opacity
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+		
+		//scale image according to the current scale
+		AffineTransform scaleTransform = new AffineTransform();
+		scaleTransform.scale(scale, scale);
+		
+		//temporary
+		graphics.setTransform(scaleTransform);
+		
+		graphics.drawImage(p_sheet.getImage(), p_destination.x, p_destination.y, 
+				p_destination.x + p_frame.w, p_destination.y +p_frame.h,
+				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
+	}
+	
 	/**
 	 * Draws a solid rectangle
 	 * @param p_rect the dimensions of the rectangle

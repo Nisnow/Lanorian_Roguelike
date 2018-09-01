@@ -120,7 +120,9 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		int width = p_sheet.getImage().getWidth();
 		int height = p_sheet.getImage().getHeight();
 		
-		renderer.drawSprite(p_sheet, new IntRect((int) -offset.x, (int) -offset.y, width, height));
+		renderer.drawSprite(p_sheet, 
+							new IntRect(0, 0, width, height), 
+							new IntRect((int) -offset.x, (int) -offset.y, width, height));
 		displayFrameIndicators();
 		renderer.display();
 		
@@ -140,8 +142,8 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 			// Draw number of rectangles for each frame of the animation
 			for(int j = 0; j < a.getFrameCount(); j++)
 			{
-				DoubleRect rect = new DoubleRect((int)(offset.x) + a.getFrame().x + (j * a.getFrame().w),
-												 (int)(offset.y) + a.getFrame().y,
+				DoubleRect rect = new DoubleRect((int)(-offset.x) + a.getFrame().x + (j * a.getFrame().w),
+												 (int)(-offset.y) + a.getFrame().y,
 												 a.getFrame().w,
 												 a.getFrame().h);
 				renderer.drawRect(rect, Color.GREEN, 0.5f);
