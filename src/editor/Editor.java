@@ -31,10 +31,8 @@ import editor.ConfirmWindow.Action;
 import graphics.Animation;
 import graphics.SpriteSheet;
 import util.IntRect;
-import util.Log;
 
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;

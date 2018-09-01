@@ -11,7 +11,6 @@ import graphics.Renderer;
 import graphics.Sprite;
 import graphics.SpriteSheet;
 import util.Clock;
-import util.Log;
 
 public class AnimationPreviewer extends JPanel implements Runnable, Previewable
 {

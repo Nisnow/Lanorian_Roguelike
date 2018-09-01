@@ -1,6 +1,5 @@
 package editor;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -10,7 +9,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import graphics.Animation;
-import util.Log;
 
 public class JSONFileGenerator 
 {

@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 
 import graphics.Animation;
-import util.Log;
 
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
