@@ -121,6 +121,8 @@ public class Editor
 			public void actionPerformed(ActionEvent e)
 			{
 				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setCurrentDirectory(new File("."));
+				
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(".png Files", "png");
 		        fileChooser.setFileFilter(filter);
 		        

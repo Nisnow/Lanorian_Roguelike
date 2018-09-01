@@ -26,6 +26,8 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 	
 	private final float DEFAULT_SCALE = 3.0f;
 	private final float SCALE_FACTOR = 0.5f;
+	private final float SCALE_MIN = 0.5f;
+	private final float SCALE_MAX = 10.0f;
 	
 	private Vector offset = new Vector(0, 0);
 	
@@ -52,13 +54,19 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 				int notches = mwe.getWheelRotation();
 				if(notches < 0) //scroll down; zoom out
 				{
-					renderer.setScale(renderer.getScale() - SCALE_FACTOR);
-					updateImage();
+					if(renderer.getScale() > SCALE_MIN)
+					{
+						renderer.setScale(renderer.getScale() - SCALE_FACTOR);
+						updateImage();
+					}
 				}
 				else //scroll up; zoom in
 				{
-					renderer.setScale(renderer.getScale() + SCALE_FACTOR);
-					updateImage();
+					if (renderer.getScale() < SCALE_MAX)
+					{
+						renderer.setScale(renderer.getScale() + SCALE_FACTOR);
+						updateImage();
+					}
 				}
 			}
 			
