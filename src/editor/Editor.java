@@ -471,31 +471,6 @@ public class Editor
 		}
 	}
 	
-	public void openFile(File p_file) throws IOException
-	{
-		if(!p_file.exists())
-			throw new FileNotFoundException("Could not find file \"" + p_file + "\"");
-		jsonFile = p_file;
-	}
-	
-	public void setSaveFile(File p_file)
-	{
-		jsonFile = p_file;
-	}
-	
-	public File getSaveFile()
-	{
-		return jsonFile;
-	}
-	
-	/**
-	 * Save the atlas to a file
-	 */
-	public void save()
-	{
-		
-	}
-	
 	public JFrame getFrame()
 	{
 		return frame;
