@@ -1,6 +1,7 @@
 package editor;
 
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -15,6 +16,7 @@ import graphics.SpriteSheet;
 import util.DoubleRect;
 import util.IntRect;
 import util.Log;
+import util.Vector;
 
 public class SpriteSheetPreviewer extends JPanel implements Previewable
 {
@@ -23,7 +25,11 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 	private AnimationList list;
 	private SpriteSheet spriteSheet;
 	
+	private final float DEFAULT_SCALE = 3.0f;
 	private final float SCALE_FACTOR = 0.5f;
+	
+	private Vector offset = new Vector(0, 0);
+	
 	// http://blog.sodhanalibrary.com/2015/04/zoom-in-and-zoom-out-image-using-mouse_9.html#.W4B4dM5Kj6o
 	public SpriteSheetPreviewer() {}
 	
@@ -37,7 +43,7 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		this.repaint();
 		
 		renderer.addScreenOverlay(Color.BLACK, 1.0f);
-		renderer.setScale(3.0f);
+		renderer.setScale(DEFAULT_SCALE);
 		
 		renderer.getComponent().addMouseWheelListener(new MouseWheelListener()
 		{
@@ -63,20 +69,40 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 				displayImage(spriteSheet);
 			}
 		});
-		renderer.getComponent().addMouseMotionListener(new MouseMotionListener()
-		{
+		
+		MouseAdapter adapter = new MouseAdapter()
+		{	
+			private Vector initVec;
+			
 			@Override
-			public void mouseDragged(MouseEvent me) 
+			public void mousePressed(MouseEvent e)
 			{
-				Log.p("mouse dragged");
+				initVec = new Vector(e.getX(), e.getY());
+				initVec.x -= offset.x;
+				initVec.y -= offset.y;
 			}
-
+			
 			@Override
-			public void mouseMoved(MouseEvent me) 
+			public void mouseReleased(MouseEvent e)
 			{
-				//do nothing...
+				initVec = null;
 			}
-		});
+			
+			@Override
+			public void mouseDragged(MouseEvent e)
+			{
+				Vector v = new Vector(e.getX(), e.getY());
+				int x = (int) -(v.x - initVec.x);
+				int y = (int) -(v.y - initVec.y);
+				offset = new Vector(x, y);
+				
+				renderer.clear();
+				displayImage(spriteSheet);
+			}
+		};
+		
+		renderer.getComponent().addMouseListener(adapter);
+		renderer.getComponent().addMouseMotionListener(adapter);
 	}
 	
 	public void setAnimationList(AnimationList p_list)
@@ -94,7 +120,7 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 		int width = p_sheet.getImage().getWidth();
 		int height = p_sheet.getImage().getHeight();
 		
-		renderer.drawSprite(p_sheet, new IntRect(0, 0, width, height));
+		renderer.drawSprite(p_sheet, new IntRect((int) -offset.x, (int) -offset.y, width, height));
 		displayFrameIndicators();
 		renderer.display();
 		
@@ -114,8 +140,8 @@ public class SpriteSheetPreviewer extends JPanel implements Previewable
 			// Draw number of rectangles for each frame of the animation
 			for(int j = 0; j < a.getFrameCount(); j++)
 			{
-				DoubleRect rect = new DoubleRect(a.getFrame().x + (j * a.getFrame().w),
-												 a.getFrame().y,
+				DoubleRect rect = new DoubleRect((int)(offset.x) + a.getFrame().x + (j * a.getFrame().w),
+												 (int)(offset.y) + a.getFrame().y,
 												 a.getFrame().w,
 												 a.getFrame().h);
 				renderer.drawRect(rect, Color.GREEN, 0.5f);
