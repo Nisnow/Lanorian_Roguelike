@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,6 +30,8 @@ public class Renderer
 	
 	// Causes stuff to not flicker
 	private Lock frameSwapLock = new ReentrantLock();
+	
+	private Stack<AffineTransform> transformationStack = new Stack<AffineTransform>();
 	
 	/*
 	 * Creates a renderer for displaying all entities. Add to every GameState
@@ -94,6 +97,9 @@ public class Renderer
 		};
 		
 		panel.setFocusable(true);
+		
+		// Initialize the transformation stack with the identity matrix
+		transformationStack.push(new AffineTransform());
 	}
 	
 	/**
@@ -125,6 +131,39 @@ public class Renderer
 		addScreenOverlay(Color.BLACK, 1.0f);
 	}
 	
+	/**
+	 * Adds a new matrix transformation to the transformation stack
+	 * @param p_transform the transform to be multiplied by the previous one
+	 */
+	public void pushTransform(AffineTransform p_transform)
+	{
+		if(transformationStack.isEmpty())
+		{
+			transformationStack.push(new AffineTransform(p_transform));
+		}
+		else
+		{
+			// Multiply the previous transformation by the newest one
+			AffineTransform prevTransform = new AffineTransform(transformationStack.peek());
+			prevTransform.concatenate(p_transform);
+			transformationStack.push(prevTransform);
+		}
+		
+		graphics.setTransform(transformationStack.peek());
+	}
+	
+	/**
+	 * Reverts back to a previous coordinate system (matrix). 
+	 * Must be called sometime after every pushTransform() call
+	 */
+	public void popTransform()
+	{
+		if(transformationStack.size() > 1)
+			transformationStack.pop();
+		
+		graphics.setTransform(transformationStack.peek());
+	}
+	
 	/*
 	 * Set scale that only the size of images are affected by
 	 */
@@ -152,11 +191,12 @@ public class Renderer
 		AffineTransform scaleTransform = new AffineTransform();
 		scaleTransform.scale(scale, scale);
 		
-		//temporary
-		graphics.setTransform(scaleTransform);
+		pushTransform(scaleTransform);
 		
 		graphics.drawImage(p_sheet.getImage(), 0, 0, p_frame.w, p_frame.h,
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
+		
+		popTransform();
 	}
 	
 	public void drawSprite(SpriteSheet p_sheet, IntRect p_frame, IntRect p_destination)
@@ -168,12 +208,13 @@ public class Renderer
 		AffineTransform scaleTransform = new AffineTransform();
 		scaleTransform.scale(scale, scale);
 		
-		//temporary
-		graphics.setTransform(scaleTransform);
+		pushTransform(scaleTransform);
 		
 		graphics.drawImage(p_sheet.getImage(), p_destination.x, p_destination.y, 
 				p_destination.x + p_frame.w, p_destination.y +p_frame.h,
 				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
+	
+		popTransform();
 	}
 	
 	/**
