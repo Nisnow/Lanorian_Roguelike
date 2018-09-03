@@ -1,5 +1,7 @@
 package graphics;
 
+import java.awt.geom.AffineTransform;
+
 import util.Clock;
 import util.IntRect;
 import util.Vector;
@@ -8,8 +10,9 @@ public class Sprite implements Drawable
 {
 	private SpriteSheet spriteSheet;
 	private Animation animation;
-	private Vector position = new Vector(0,0 );
+	private Vector position = new Vector(0, 0);
 	private Vector scale = new Vector(1, 1);
+	private double rotation; // in radians
 	private Clock clock = new Clock();
 	
 	public Sprite() {} 
@@ -29,6 +32,7 @@ public class Sprite implements Drawable
 	public void draw(Renderer p_renderer) 
 	{
 		IntRect frame;
+		
 		if(animation.getFrameCount() > 1 
 				&& animation.getInterval() > 0)
 		{
@@ -42,7 +46,15 @@ public class Sprite implements Drawable
 			frame = animation.getFrame();
 		}
 		
+		AffineTransform spriteTransform = new AffineTransform();
+		
+		spriteTransform.translate(position.x, position.y);
+		spriteTransform.rotate(rotation);
+		spriteTransform.scale(scale.x, scale.y);
+		
+		p_renderer.pushTransform(spriteTransform);
 		p_renderer.drawSprite(spriteSheet, frame);
+		p_renderer.popTransform();
 	}
 	
 	public SpriteSheet getSpriteSheet()
@@ -126,5 +138,15 @@ public class Sprite implements Drawable
 	public void setScale(Vector p_scale) 
 	{
 		p_scale.set(p_scale);
+	}
+	
+	public double getRotation()
+	{
+		return rotation;
+	}
+	
+	public void setRotation(double p_radians)
+	{
+		rotation = p_radians;
 	}
 }
