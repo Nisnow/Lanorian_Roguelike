@@ -13,9 +13,9 @@ public class Application
 	
 	private static AffineTransform tempMat = new AffineTransform();
 	
+	/*
 	public static void main(String[] args)
 	{
-		/* T E M P O R A R Y */
 		GUI gui = new GUI();
 		
 		Renderer renderer = gui.renderer;
@@ -92,5 +92,5 @@ public class Application
 				break;
 			}
 		}
-	}
+	}*/
 }
