@@ -23,14 +23,20 @@ public class Application
 		
 		SpriteSheet sheet1 = new SpriteSheet("resources/images/narry");
 		Sprite mountainDew = new Sprite(sheet1, "default");
-		mountainDew.setPosition(100, 0);
+		mountainDew.setPosition(100, 64);
 		mountainDew.playAnimation();
 		
 		renderList.addDrawable(mountainDew);
 		
+		SpriteSheet floorSheet = new SpriteSheet("resources/images/tilemap");
+		Sprite floor = new Sprite(floorSheet, "base");
+		floor.setPosition(100, 115);
+		
+		renderList.addDrawable(floor);
+		
 		SpriteSheet sheet2 = new SpriteSheet("resources/images/birboi");
 		Sprite pixie = new Sprite(sheet2, "fly");
-		pixie.setPosition(200, 100);
+		pixie.setPosition(300, 100);
 		pixie.playAnimation();
 		
 		renderList.addDrawable(pixie);
@@ -42,11 +48,25 @@ public class Application
 		Clock gameClock = new Clock();
 		float delta = 0;
 		
+		int i = 0;
 		// Temporary game loop
 		while(running)
 		{
 			delta = gameClock.getElapse();
 			gameClock.restart();
+			
+			// temp thingy to test shader movement for later
+			if(mountainDew.getScale().x == 1) //facing left
+				i++;
+			else
+				i--;
+			
+			if(i == 200)
+				mountainDew.setScale(-1, 1);
+			if(i == 0)
+				mountainDew.setScale(1, 1);
+			
+			mountainDew.setPosition(100 + i, 64);
 			
 			// Clear the buffer
 			renderer.clear();

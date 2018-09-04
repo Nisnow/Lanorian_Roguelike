@@ -8,10 +8,12 @@ import util.Vector;
 
 public class Sprite implements Drawable
 {
+	private final Vector DEFAULT_SCALE = new Vector(1, 1);
+	
 	private SpriteSheet spriteSheet;
 	private Animation animation;
 	private Vector position = new Vector(0, 0);
-	private Vector scale = new Vector(1, 1);
+	private Vector scale = DEFAULT_SCALE;
 	private double rotation; // in radians
 	private Clock clock = new Clock();
 	
@@ -132,12 +134,17 @@ public class Sprite implements Drawable
 	
 	public void setScale(double p_x, double p_y)
 	{
-		position.set(p_x, p_y);
+		scale.set(p_x, p_y);
 	}
 	
 	public void setScale(Vector p_scale) 
 	{
-		p_scale.set(p_scale);
+		scale.set(p_scale);
+	}
+	
+	public void resetScale()
+	{
+		scale.set(DEFAULT_SCALE);
 	}
 	
 	public double getRotation()
