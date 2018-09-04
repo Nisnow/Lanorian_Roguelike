@@ -1,0 +1,23 @@
+{
+  "atlas": [
+    {
+      "name": "idle",
+      "x": 0,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "interval": 100.0,
+      "loop": "true"
+    },
+    {
+      "name": "fly",
+      "x": 0,
+      "y": 192,
+      "w": 64,
+      "h": 64,
+      "frames": 5,
+      "interval": 100.0,
+      "loop": "true"
+    }
+  ]
+}

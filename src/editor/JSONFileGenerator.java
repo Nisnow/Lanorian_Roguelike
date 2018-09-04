@@ -61,18 +61,19 @@ public class JSONFileGenerator
 		obj.add("atlas", list);
 		
 		// I know this is bad practice but ehhhhh
-		String path = "E:\\Lanorian Roguelike\\src\\resources\\images\\" + name + ".json";
+		String path = "E:\\Lanorian Roguelite\\src\\resources\\images\\" + name + ".json";
 		
 		try(FileWriter file = new FileWriter(path))
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			
 			gson.toJson(obj, file);
+			System.out.println("Successfully saved file " + path);
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
-		System.out.println("Saved file " + path);
+
 	}
 }

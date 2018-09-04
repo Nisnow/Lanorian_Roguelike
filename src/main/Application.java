@@ -23,11 +23,19 @@ public class Application
 		
 		SpriteSheet sheet1 = new SpriteSheet("resources/images/narry");
 		Sprite mountainDew = new Sprite(sheet1, "default");
+		mountainDew.setPosition(100, 0);
 		mountainDew.playAnimation();
 		
 		renderList.addDrawable(mountainDew);
 		
-		tempMat.translate(100, 0);
+		SpriteSheet sheet2 = new SpriteSheet("resources/images/birboi");
+		Sprite pixie = new Sprite(sheet2, "fly");
+		pixie.setPosition(200, 100);
+		pixie.playAnimation();
+		
+		renderList.addDrawable(pixie);
+		
+		//tempMat.translate(100, 0);
 		
 		System.out.println("AAAAAAAAAAAA");
 		
@@ -43,10 +51,8 @@ public class Application
 			// Clear the buffer
 			renderer.clear();
 			
-			renderer.pushTransform(tempMat);
 			// Draw stuff
 			renderList.draw(renderer);
-			renderer.popTransform();
 			
 			// Ensure the current frame is being displayed
 			renderer.display();

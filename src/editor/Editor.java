@@ -161,7 +161,10 @@ public class Editor
 	        		}
 	        		
 		        	for(Previewable p : previewers)
-		        		p.initRenderer();
+		        	{
+		        		if(p.getRenderer() == null)
+			        		p.initRenderer();
+		        	}
 		        	
 		        	imagePreviewer.setAnimationList(animationList);
 		        	imagePreviewer.displayImage(spriteSheet);
