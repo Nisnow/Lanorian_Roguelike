@@ -131,7 +131,7 @@ public class SpriteSheet
 			JsonObject jsonObject = (JsonObject) obj;
 
 			// Get the array of animation data
-			JsonArray atlas = (JsonArray) jsonObject.get("animations");
+			JsonArray atlas = (JsonArray) jsonObject.get("atlas");
 			Iterator i = atlas.iterator();
 			
 			// Create an Animation object for each animation JSON object

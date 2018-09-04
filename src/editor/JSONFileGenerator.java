@@ -58,7 +58,7 @@ public class JSONFileGenerator
 			
 			list.add(animObj);
 		}
-		obj.add("animations", list);
+		obj.add("atlas", list);
 		
 		// I know this is bad practice but ehhhhh
 		String path = "E:\\Lanorian Roguelike\\src\\resources\\images\\" + name + ".json";

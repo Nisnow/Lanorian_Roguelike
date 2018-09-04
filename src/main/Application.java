@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.geom.AffineTransform;
+
 import graphics.*;
 import util.Clock;
 
@@ -7,6 +9,9 @@ public class Application
 {
 	// temporary stuff til I implement GameState
 	private static boolean running = true;
+	private static final int FPS = 60;
+	
+	private static AffineTransform tempMat = new AffineTransform();
 	
 	public static void main(String[] args)
 	{
@@ -22,6 +27,8 @@ public class Application
 		
 		renderList.addDrawable(mountainDew);
 		
+		tempMat.translate(100, 0);
+		
 		System.out.println("AAAAAAAAAAAA");
 		
 		Clock gameClock = new Clock();
@@ -36,8 +43,10 @@ public class Application
 			// Clear the buffer
 			renderer.clear();
 			
+			renderer.pushTransform(tempMat);
 			// Draw stuff
 			renderList.draw(renderer);
+			renderer.popTransform();
 			
 			// Ensure the current frame is being displayed
 			renderer.display();
@@ -45,7 +54,7 @@ public class Application
 			// Delay
 			try
 			{
-				long totalNanos = (int)(1e9/60) - (int)(gameClock.getElapse()*1e9f);
+				long totalNanos = (int)(1e9/FPS) - (int)(gameClock.getElapse()*1e9f);
 				if(totalNanos > 0)
 				{
 					int nanos = (int) (totalNanos % 1000000);
