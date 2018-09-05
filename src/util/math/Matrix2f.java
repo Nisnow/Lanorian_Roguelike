@@ -21,6 +21,16 @@ public class Matrix2f
 	}
 	
 	/**
+	 * Copy constructor
+	 * @param p_mat matrix to copy
+	 */
+	public Matrix2f(Matrix2f p_mat)
+	{
+		m00 = p_mat.m00; m01 = p_mat.m01;
+		m10 = p_mat.m10; m11 = p_mat.m11;
+	}
+	
+	/**
 	 * Creates a 2x2 matrix with specified columns
 	 * @param col1 Vector for column 1
 	 * @param col2 Vector for column 2
