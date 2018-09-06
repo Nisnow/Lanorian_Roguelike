@@ -1,4 +1,4 @@
-package graphics;
+package editor;
 
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;

@@ -10,9 +10,6 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
 
-import graphics.Animation;
-import graphics.Renderer;
-import graphics.SpriteSheet;
 import util.DoubleRect;
 import util.IntRect;
 import util.Vector;

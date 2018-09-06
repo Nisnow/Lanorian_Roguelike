@@ -6,10 +6,6 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import graphics.Animation;
-import graphics.Renderer;
-import graphics.Sprite;
-import graphics.SpriteSheet;
 import util.Clock;
 
 public class AnimationPreviewer extends JPanel implements Runnable, Previewable

@@ -3,6 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="3rdparty/gson-2.8.5.jar"/>
+	<classpathentry kind="lib" path="3rdparty/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="3rdparty/joml-1.9.11.jar"/>
 	<classpathentry kind="lib" path="library/lwjgl-glfw-natives-windows.jar"/>
 	<classpathentry kind="lib" path="library/lwjgl-glfw.jar"/>
 	<classpathentry kind="lib" path="library/lwjgl-opengl-natives-windows.jar"/>

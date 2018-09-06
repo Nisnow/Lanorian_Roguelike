@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
 
-import graphics.Animation;
-
 public class AnimationList extends AbstractListModel
 {
 	private ArrayList<Animation> animations;

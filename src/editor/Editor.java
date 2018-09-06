@@ -28,8 +28,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import editor.ConfirmWindow.Action;
-import graphics.Animation;
-import graphics.SpriteSheet;
 import util.IntRect;
 
 import javax.swing.JList;

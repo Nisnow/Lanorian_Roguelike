@@ -1,7 +1,5 @@
 package editor;
 
-import graphics.Renderer;
-
 public interface Previewable 
 {
 	public void initRenderer();

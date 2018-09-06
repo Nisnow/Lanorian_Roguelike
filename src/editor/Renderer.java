@@ -1,4 +1,4 @@
-package graphics;
+package editor;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;

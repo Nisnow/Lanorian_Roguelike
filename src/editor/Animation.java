@@ -1,4 +1,4 @@
-package graphics;
+package editor;
 
 import com.google.gson.JsonObject;
 
