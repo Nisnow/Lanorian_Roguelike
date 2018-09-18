@@ -104,47 +104,8 @@ public class Main {
     	window = glfwCreateWindow(800, 600, "Lanorian Roguelite", NULL, NULL);
     	
     	// Get the resolution of the primary monitor
-<<<<<<< HEAD
-=======
-import graphics.Renderer;
-import graphics.Texture;
-import graphics.Window;
-import util.Clock;
-import util.IntRect;
-
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-
-import org.joml.Matrix4f;
-
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-
-import org.lwjgl.glfw.*;
->>>>>>> 1620456... Buncha rendering things + start to shaders
-
-<<<<<<< HEAD
-		// Center the window
-        
-		//glfwSetKeyCallback(window, keyCallback);
-=======
-public class Main
-{
-	private static final int WIDTH = 800;
-	private static final int HEIGHT = 600;
-	private static final int FPS = 60;
-	
-	public static void main(String[] args)
-	{
-		// Print errors to the console
-		GLFWErrorCallback.createPrint(System.err).set();
-=======
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
->>>>>>> cfb0628... Cleanup
 		
-		glfwInit();
->>>>>>> 35258d4... stuff
-		
-<<<<<<< HEAD
 		// Use this window for rendering
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
@@ -344,69 +305,6 @@ public class Main
 		int status = glGetShaderi(shaderID, GL_COMPILE_STATUS);
 		if (status != GL_TRUE) {
 		    throw new RuntimeException(glGetShaderInfoLog(shaderID));
-<<<<<<< HEAD
-=======
-		Window window = new Window();
-		window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
-		glfwSwapInterval(1);
-		
-		Renderer renderer = new Renderer();
-		renderer.setWindow(window);
-		
-		Texture tex1 = new Texture("resources/images/narry");
-		
-		Clock gameClock = new Clock();
-		float delta = 0;
-		
-		// temporary game loop
-		while(!window.closing())
-		{
-			delta = gameClock.getElapse();
-			gameClock.restart();
-			
-			// Clear screen
-			window.clear();
-			
-			//draw stuff
-			//Matrix4f view = renderer.getViewMatrix();
-			//view.identity();
-			
-			renderer.updateUniforms();
-			
-			// TODO: render list for convenient drawing, of course
-			renderer.beginDrawing();
-				renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));		
-			renderer.end();
-			
-			// Swap buffers
-			window.display();
-<<<<<<< HEAD
->>>>>>> 1620456... Buncha rendering things + start to shaders
-=======
-			
-			//temporary til I do something different
-			glfwPollEvents();
-<<<<<<< HEAD
->>>>>>> 962d71b... more changes that do nothing
-=======
-			
-			// Delay
-			try
-			{
-				long totalNanos = (int)(1e9/FPS) - (int)(gameClock.getElapse()*1e9f);
-				if(totalNanos > 0)
-				{
-					int nanos = (int) (totalNanos % 1000000);
-					long milis = (totalNanos - nanos) / 1000000;
-					Thread.sleep(milis, (int)nanos);
-				}
-			} catch (InterruptedException e)
-			{
-				break;
-			}
->>>>>>> 35258d4... stuff
-=======
->>>>>>> cfb0628... Cleanup
 		}
          
         this.exitOnGLError("loadShader");
