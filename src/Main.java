@@ -1,3 +1,32 @@
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -5,43 +34,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
- 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.system.MemoryUtil.NULL;
-
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
- 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import graphics.Window;
  
 public class Main {
     // Entry point for the application
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         new Main();
     }
      
@@ -62,17 +72,20 @@ public class Main {
     private int[] texIds = new int[] {0, 0};
     private int textureSelector = 0;
     
-    private long window;
+    private Window window;
      
-    public Main() {
+    public Main() 
+    {
         // Initialize OpenGL (Display)
-        this.setupOpenGL();
+    	window = new Window();
+        window.init(800, 600, "Lanorian Roguelite");
          
         this.setupQuad();
         this.setupShaders();
         this.setupTextures();
          
-        while (!glfwWindowShouldClose(window)) {
+        while (!window.closing()) 
+        {
             // Do a single loop (logic/render)
             this.loopCycle();
              
@@ -83,43 +96,12 @@ public class Main {
         this.destroyOpenGL();
     }
  
-    private void setupTextures() {
+    private void setupTextures()
+    {
         texIds[0] = this.loadPNGTexture("src/resources/images/narry.png", GL13.GL_TEXTURE0);
         texIds[1] = this.loadPNGTexture("src/resources/images/birboi.png", GL13.GL_TEXTURE0);
          
         this.exitOnGLError("setupTexture");
-    }
- 
-    private void setupOpenGL() {
-        // Setup an OpenGL context with API version 3.2
-    	glfwInit();
-    	
-    	glfwDefaultWindowHints();
-    	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    	
-    	window = glfwCreateWindow(800, 600, "Lanorian Roguelite", NULL, NULL);
-    	
-    	// Get the resolution of the primary monitor
-		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		
-		// Use this window for rendering
-        glfwMakeContextCurrent(window);
-        GL.createCapabilities();
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        // Setup an XNA like background color
-        GL11.glClearColor(0.4f, 0.6f, 0.9f, 0f);
-         
-        // Map the internal OpenGL coordinate system to the entire screen
-        GL11.glViewport(0, 0, WIDTH, HEIGHT);
-         
-        this.exitOnGLError("setupOpenGL");
     }
      
     private void setupQuad() {
@@ -233,7 +215,7 @@ public class Main {
         // Draw the vertices
         GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
          
-        glfwSwapBuffers(window);
+        window.display();
         // Put everything back to default (deselect)
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         GL20.glDisableVertexAttribArray(0);
