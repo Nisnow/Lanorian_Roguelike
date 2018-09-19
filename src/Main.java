@@ -84,9 +84,10 @@ public class Main {
     	window = new Window();
         window.init(800, 600, "Lanorian Roguelite");
          
+        this.setupTextures();
         this.setupQuad();
         this.setupShaders();
-        this.setupTextures();
+
          
         // Game loop
         while (!window.closing()) 
@@ -112,25 +113,28 @@ public class Main {
      
     private void setupQuad() 
     {
-        // We'll define our quad using 4 vertices of the custom 'TexturedVertex' class
         VertexArray v0 = new VertexArray(); 
-        v0.setPosition(-0.5f, 0.5f, 0); v0.setColor(1, 0, 0); v0.setST(0, 0);
+        v0.setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0);
         VertexArray v1 = new VertexArray(); 
-        v1.setPosition(-0.5f, -0.5f, 0); v1.setColor(0, 1, 0); v1.setST(0, 1);
+        v1.setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1);
         VertexArray v2 = new VertexArray(); 
-        v2.setPosition(0.5f, -0.5f, 0); v2.setColor(0, 0, 1); v2.setST(1, 1);
+        v2.setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1);
         VertexArray v3 = new VertexArray(); 
-        v3.setPosition(0.5f, 0.5f, 0); v3.setColor(1, 1, 1); v3.setST(1, 0);
+        v3.setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0);
          
         VertexArray[] vertices = new VertexArray[] {v0, v1, v2, v3};
+        
         // Put each 'Vertex' in one FloatBuffer
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length *
                 VertexArray.ELEMENT_COUNT);
-        for (int i = 0; i < vertices.length; i++) {
+        
+        for (int i = 0; i < vertices.length; i++) 
+        {
             // Add position, color and texture floats to the buffer
             verticesBuffer.put(vertices[i].getElements());
         }
         verticesBuffer.flip();  
+        
         // OpenGL expects to draw vertices in counter clockwise order by default
         byte[] indices = {
                 0, 1, 2,
@@ -153,9 +157,11 @@ public class Main {
         // Put the position coordinates in attribute list 0
         GL20.glVertexAttribPointer(0, VertexArray.POSITION_ELEMENT_COUNT, GL11.GL_FLOAT, 
                 false, VertexArray.STRIDE, VertexArray.POSITION_OFFSET);
+        
         // Put the color components in attribute list 1
         GL20.glVertexAttribPointer(1, VertexArray.COLOR_ELEMENT_COUNT, GL11.GL_FLOAT, 
                 false, VertexArray.STRIDE, VertexArray.COLOR_OFFSET);
+        
         // Put the texture coordinates in attribute list 2
         GL20.glVertexAttribPointer(2, VertexArray.ST_ELEMENT_COUNT, GL11.GL_FLOAT, 
                 false, VertexArray.STRIDE, VertexArray.ST_OFFSET);

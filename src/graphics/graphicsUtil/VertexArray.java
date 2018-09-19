@@ -28,33 +28,41 @@ public class VertexArray
     // The amount of elements that a vertex has
     public static final int ELEMENT_COUNT = POSITION_ELEMENT_COUNT + 
             COLOR_ELEMENT_COUNT + ST_ELEMENT_COUNT;    
-    // The size of a vertex in bytes, like in C/C++: sizeof(Vertex)
+    
+    // The size of a vertex in bytes
     public static final int STRIDE = POSITION_BYTES + COLOR_BYTES + 
             ST_BYTES;
      
-    public void setPosition(float x, float y, float z)
+    // TODO: Vertex class of sorts?
+    
+    public VertexArray setPosition(float x, float y, float z)
     {
         this.setPosition(x, y, z, 1f);
+        return this;
     }
      
-    public void setColor(float r, float g, float b)
+    public VertexArray setColor(float r, float g, float b)
     {
         this.setColor(r, g, b, 1f);
+        return this;
     }
      
-    public void setST(float s, float t)
+    public VertexArray setST(float s, float t)
     {
         this.st = new float[] {s, t};
+        return this;
     }
      
-    public void setPosition(float x, float y, float z, float w)
+    public VertexArray setPosition(float x, float y, float z, float w)
     {
         this.position = new float[] {x, y, z, w};
+        return this;
     }
      
-    public void setColor(float r, float g, float b, float a)
+    public VertexArray setColor(float r, float g, float b, float a)
     {
         this.color = new float[] {r, g, b, 1f};
+        return this;
     }
      
     public float[] getElements()
