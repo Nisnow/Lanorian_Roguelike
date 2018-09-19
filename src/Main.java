@@ -47,10 +47,11 @@ import org.lwjgl.opengl.GL30;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import graphics.Window;
+import graphics.graphicsUtil.VertexArray;
  
 public class Main {
-    // Entry point for the application
-    public static void main(String[] args) 
+
+	public static void main(String[] args) 
     {
         new Main();
     }
@@ -59,15 +60,18 @@ public class Main {
     private final String WINDOW_TITLE = "The Quad: Textured";
     private final int WIDTH = 320;
     private final int HEIGHT = 320;
+    
     // Quad variables
     private int vaoId = 0;
     private int vboId = 0;
     private int vboiId = 0;
     private int indicesCount = 0;
+    
     // Shader variables
     private int vsId = 0;
     private int fsId = 0;
     private int pId = 0;
+    
     // Texture variables
     private int[] texIds = new int[] {0, 0};
     private int textureSelector = 0;
@@ -76,7 +80,7 @@ public class Main {
      
     public Main() 
     {
-        // Initialize OpenGL (Display)
+        // Initialize OpenGL and GLFW
     	window = new Window();
         window.init(800, 600, "Lanorian Roguelite");
          
@@ -84,6 +88,7 @@ public class Main {
         this.setupShaders();
         this.setupTextures();
          
+        // Game loop
         while (!window.closing()) 
         {
             // Do a single loop (logic/render)
@@ -92,33 +97,35 @@ public class Main {
             glfwPollEvents();
         }
          
-        // Destroy OpenGL (Display)
+        // Destroy OpenGL
         this.destroyOpenGL();
     }
  
     private void setupTextures()
     {
+    	// TODO: texture class with bind() methods to 
         texIds[0] = this.loadPNGTexture("src/resources/images/narry.png", GL13.GL_TEXTURE0);
         texIds[1] = this.loadPNGTexture("src/resources/images/birboi.png", GL13.GL_TEXTURE0);
          
         this.exitOnGLError("setupTexture");
     }
      
-    private void setupQuad() {
+    private void setupQuad() 
+    {
         // We'll define our quad using 4 vertices of the custom 'TexturedVertex' class
-        TexturedVertex v0 = new TexturedVertex(); 
-        v0.setXYZ(-0.5f, 0.5f, 0); v0.setRGB(1, 0, 0); v0.setST(0, 0);
-        TexturedVertex v1 = new TexturedVertex(); 
-        v1.setXYZ(-0.5f, -0.5f, 0); v1.setRGB(0, 1, 0); v1.setST(0, 1);
-        TexturedVertex v2 = new TexturedVertex(); 
-        v2.setXYZ(0.5f, -0.5f, 0); v2.setRGB(0, 0, 1); v2.setST(1, 1);
-        TexturedVertex v3 = new TexturedVertex(); 
-        v3.setXYZ(0.5f, 0.5f, 0); v3.setRGB(1, 1, 1); v3.setST(1, 0);
+        VertexArray v0 = new VertexArray(); 
+        v0.setPosition(-0.5f, 0.5f, 0); v0.setColor(1, 0, 0); v0.setST(0, 0);
+        VertexArray v1 = new VertexArray(); 
+        v1.setPosition(-0.5f, -0.5f, 0); v1.setColor(0, 1, 0); v1.setST(0, 1);
+        VertexArray v2 = new VertexArray(); 
+        v2.setPosition(0.5f, -0.5f, 0); v2.setColor(0, 0, 1); v2.setST(1, 1);
+        VertexArray v3 = new VertexArray(); 
+        v3.setPosition(0.5f, 0.5f, 0); v3.setColor(1, 1, 1); v3.setST(1, 0);
          
-        TexturedVertex[] vertices = new TexturedVertex[] {v0, v1, v2, v3};
+        VertexArray[] vertices = new VertexArray[] {v0, v1, v2, v3};
         // Put each 'Vertex' in one FloatBuffer
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length *
-                TexturedVertex.elementCount);
+                VertexArray.ELEMENT_COUNT);
         for (int i = 0; i < vertices.length; i++) {
             // Add position, color and texture floats to the buffer
             verticesBuffer.put(vertices[i].getElements());
@@ -144,14 +151,14 @@ public class Main {
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
          
         // Put the position coordinates in attribute list 0
-        GL20.glVertexAttribPointer(0, TexturedVertex.positionElementCount, GL11.GL_FLOAT, 
-                false, TexturedVertex.stride, TexturedVertex.positionByteOffset);
+        GL20.glVertexAttribPointer(0, VertexArray.POSITION_ELEMENT_COUNT, GL11.GL_FLOAT, 
+                false, VertexArray.STRIDE, VertexArray.POSITION_OFFSET);
         // Put the color components in attribute list 1
-        GL20.glVertexAttribPointer(1, TexturedVertex.colorElementCount, GL11.GL_FLOAT, 
-                false, TexturedVertex.stride, TexturedVertex.colorByteOffset);
+        GL20.glVertexAttribPointer(1, VertexArray.COLOR_ELEMENT_COUNT, GL11.GL_FLOAT, 
+                false, VertexArray.STRIDE, VertexArray.COLOR_OFFSET);
         // Put the texture coordinates in attribute list 2
-        GL20.glVertexAttribPointer(2, TexturedVertex.textureElementCount, GL11.GL_FLOAT, 
-                false, TexturedVertex.stride, TexturedVertex.textureByteOffset);
+        GL20.glVertexAttribPointer(2, VertexArray.ST_ELEMENT_COUNT, GL11.GL_FLOAT, 
+                false, VertexArray.STRIDE, VertexArray.ST_OFFSET);
          
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
          
