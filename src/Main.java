@@ -1,31 +1,9 @@
-import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -36,8 +14,6 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
@@ -47,6 +23,7 @@ import org.lwjgl.opengl.GL30;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import graphics.Window;
+import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
  
 public class Main {
@@ -56,10 +33,8 @@ public class Main {
         new Main();
     }
      
-    // Setup variables
-    private final String WINDOW_TITLE = "The Quad: Textured";
-    private final int WIDTH = 320;
-    private final int HEIGHT = 320;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
     
     // Quad variables
     private int vaoId = 0;
@@ -82,8 +57,10 @@ public class Main {
     {
         // Initialize OpenGL and GLFW
     	window = new Window();
-        window.init(800, 600, "Lanorian Roguelite");
+        window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
          
+        // Initialize renderer 
+        
         this.setupTextures();
         this.setupQuad();
         this.setupShaders();
@@ -113,25 +90,22 @@ public class Main {
      
     private void setupQuad() 
     {
-        VertexArray v0 = new VertexArray(); 
-        v0.setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0);
-        VertexArray v1 = new VertexArray(); 
-        v1.setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1);
-        VertexArray v2 = new VertexArray(); 
-        v2.setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1);
-        VertexArray v3 = new VertexArray(); 
-        v3.setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0);
-         
-        VertexArray[] vertices = new VertexArray[] {v0, v1, v2, v3};
+        VertexArray vertices = new VertexArray();
+        vertices.add(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
+        vertices.add(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
+        vertices.add(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
+        vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
         
         // Put each 'Vertex' in one FloatBuffer
-        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length *
+        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length() *
                 VertexArray.ELEMENT_COUNT);
         
-        for (int i = 0; i < vertices.length; i++) 
+        for (int i = 0; i < vertices.length(); i++) 
         {
             // Add position, color and texture floats to the buffer
-            verticesBuffer.put(vertices[i].getElements());
+            verticesBuffer.put(vertices.get(i).getPosition());
+            verticesBuffer.put(vertices.get(i).getColor());
+            verticesBuffer.put(vertices.get(i).getST());
         }
         verticesBuffer.flip();  
         
@@ -180,7 +154,8 @@ public class Main {
         this.exitOnGLError("setupQuad");
     }
      
-    private void setupShaders() {       
+    private void setupShaders()
+    {       
         // Load the vertex shader
         vsId = this.loadShader("src/resources/shaders/TestVert.glsl", GL20.GL_VERTEX_SHADER);
         // Load the fragment shader
@@ -193,9 +168,7 @@ public class Main {
  
         // Position information will be attribute 0
         GL20.glBindAttribLocation(pId, 0, "in_Position");
-        // Color information will be attribute 1
         GL20.glBindAttribLocation(pId, 1, "in_Color");
-        // Textute information will be attribute 2
         GL20.glBindAttribLocation(pId, 2, "in_TextureCoord");
          
         GL20.glLinkProgram(pId);

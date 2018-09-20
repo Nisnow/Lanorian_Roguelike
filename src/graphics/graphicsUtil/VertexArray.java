@@ -1,12 +1,20 @@
 package graphics.graphicsUtil;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 public class VertexArray
 {
-    // Vertex data
+    // delete later
     private float[] position = new float[] {0f, 0f, 0f, 1f};
     private float[] color 	 = new float[] {1f, 1f, 1f, 1f};
     private float[] st 		 = new float[] {0f, 0f};
      
+    private ArrayList<Vertex> vertices = new ArrayList<Vertex>();;
+    
+    private FloatBuffer buffer;
+    private int bufferSize;
+    
     // Bytes per float
     public static final int BPF = 4;
      
@@ -25,82 +33,49 @@ public class VertexArray
     public static final int COLOR_OFFSET 	= POSITION_OFFSET + POSITION_BYTES;
     public static final int ST_OFFSET 		= COLOR_OFFSET + COLOR_BYTES;
      
-    // The amount of elements that a vertex has
+    // The number of elements that a vertex has
     public static final int ELEMENT_COUNT = POSITION_ELEMENT_COUNT + 
             COLOR_ELEMENT_COUNT + ST_ELEMENT_COUNT;    
     
     // The size of a vertex in bytes
     public static final int STRIDE = POSITION_BYTES + COLOR_BYTES + 
             ST_BYTES;
-     
-    // TODO: Vertex class of sorts?
     
-    public VertexArray setPosition(float x, float y, float z)
+    /*
+     * Default constructor
+     */
+    public VertexArray() {}
+    
+    public VertexArray(int size)
     {
-        this.setPosition(x, y, z, 1f);
-        return this;
+    	bufferSize = size;
     }
-     
-    public VertexArray setColor(float r, float g, float b)
+    
+    public VertexArray add(Vertex vert)
     {
-        this.setColor(r, g, b, 1f);
-        return this;
+    	vertices.add(vert);
+    	return this;
     }
-     
-    public VertexArray setST(float s, float t)
+    
+    public void bind()
     {
-        this.st = new float[] {s, t};
-        return this;
+    	// TODO: buffer creation and binding
     }
-     
-    public VertexArray setPosition(float x, float y, float z, float w)
+    
+    public void unbind()
     {
-        this.position = new float[] {x, y, z, w};
-        return this;
+    	// TODO: buffer.clear();
     }
-     
-    public VertexArray setColor(float r, float g, float b, float a)
+    
+    public int length()
     {
-        this.color = new float[] {r, g, b, 1f};
-        return this;
+    	return vertices.size();
     }
-     
-    public float[] getElements()
+    
+    public Vertex get(int index)
     {
-        float[] out = new float[VertexArray.ELEMENT_COUNT];
-        int i = 0;
-         
-        // Insert XYZW elements
-        out[i++] = this.position[0];
-        out[i++] = this.position[1];
-        out[i++] = this.position[2];
-        out[i++] = this.position[3];
-        
-        // Insert RGBA elements
-        out[i++] = this.color[0];
-        out[i++] = this.color[1];
-        out[i++] = this.color[2];
-        out[i++] = this.color[3];
-        
-        // Insert ST elements
-        out[i++] = this.st[0];
-        out[i++] = this.st[1];
-         
-        return out;
+    	return vertices.get(index);
     }
-     
-    public float[] getPosition() 
-    {
-        return new float[] {this.position[0], this.position[1], this.position[2], this.position[3]};
-    }
-     
-    public float[] getColor() 
-    {
-        return new float[] {this.color[0], this.color[1], this.color[2], this.color[3]};
-    }
-     
-    public float[] getST() 
-    {
-        return new float[] {this.st[0], this.st[1]};
-    }
+
+      // TODO: vertex buffer
 }

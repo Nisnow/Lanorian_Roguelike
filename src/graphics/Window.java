@@ -47,6 +47,7 @@ public class Window
 		// TODO: center window and have constant aspect ratio
 		// (see Code Fight for aspec ratio thingies)
 
+		// Use this window for rendering
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 
