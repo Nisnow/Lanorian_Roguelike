@@ -16,6 +16,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -68,6 +69,22 @@ public class Window
 
 		System.out.println("Done");
 	}
+	
+	double lastTime = glfwGetTime();
+	int frameCount = 0;
+	
+    public void printFPS()
+    {
+		double currentTime = glfwGetTime();
+		frameCount++;
+		
+		if(currentTime - lastTime >= 1.0)
+		{
+			System.out.println(frameCount + " FPS");
+			frameCount = 0;
+			lastTime += 1.0;
+		}
+    }
 
 	/*
 	 * Sets the visibility of the window

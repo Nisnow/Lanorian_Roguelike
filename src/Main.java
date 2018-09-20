@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.glfw.*;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
@@ -72,6 +73,7 @@ public class Main {
             // Do a single loop (logic/render)
             this.loopCycle();
              
+            window.printFPS();
             glfwPollEvents();
         }
          
