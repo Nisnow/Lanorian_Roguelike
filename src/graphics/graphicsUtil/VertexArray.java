@@ -1,9 +1,11 @@
 package graphics.graphicsUtil;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL15;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -12,12 +14,13 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class VertexArray
 {
-    private ArrayList<Vertex> vertices = new ArrayList<Vertex>();;
+    private ArrayList<Vertex> vertices = new ArrayList<Vertex>();
     
     private FloatBuffer buffer;
     
     private int vaoID;
     private int vboID;
+    private int vboiID;
     
     // Bytes per float
     public static final int BPF = 4;
@@ -79,6 +82,18 @@ public class VertexArray
     	}
     	buffer.flip();
     	
+        // OpenGL expects to draw vertices in counter clockwise order by default
+        // TODO: put in renderer
+    	byte[] indices = {
+                0, 1, 2,
+                2, 3, 0
+        };
+        
+        int indicesCount = indices.length;
+        ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
+        indicesBuffer.put(indices);
+        indicesBuffer.flip();
+    	
     	// Create a new vertex array object in memory and bind it
     	vaoID = glGenVertexArrays();
     	glBindVertexArray(vaoID);
@@ -99,6 +114,12 @@ public class VertexArray
     	// Unbind VAO and VBO now that they're registered
     	glBindBuffer(GL_ARRAY_BUFFER, 0);
     	glBindVertexArray(0);
+    	
+        // Create a new VBO for the indices and select it (bind) - INDICES
+        vboiID = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
     public void unbind()
@@ -109,6 +130,16 @@ public class VertexArray
     public FloatBuffer getBuffer()
     {
     	return buffer;
+    }
+    
+    public int getVAO()
+    {
+    	return vaoID;
+    }
+    
+    public int getVBO()
+    {
+    	return vboID;
     }
     
     public int length()

@@ -19,10 +19,10 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.glfw.*;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import graphics.Shader;
 import graphics.Window;
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
@@ -53,6 +53,8 @@ public class Main {
     private int textureSelector = 0;
     
     private Window window;
+    private Shader shader;
+    private VertexArray vertices;
      
     public Main() 
     {
@@ -61,8 +63,17 @@ public class Main {
         window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
          
         // Initialize renderer 
+        vertices = new VertexArray();
+        vertices.add(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
+        vertices.add(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
+        vertices.add(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
+        vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
+        
         
         this.setupTextures();
+        //vertices.bind();
+        //shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
+        
         this.setupQuad();
         this.setupShaders();
 
@@ -70,11 +81,12 @@ public class Main {
         // Game loop
         while (!window.closing()) 
         {
+            glfwPollEvents();
+            
             // Do a single loop (logic/render)
             this.loopCycle();
              
             window.printFPS();
-            glfwPollEvents();
         }
          
         // Destroy OpenGL
@@ -90,6 +102,7 @@ public class Main {
         this.exitOnGLError("setupTexture");
     }
      
+    // DE1337 (haxx0r) LATER
     private void setupQuad() 
     {
         VertexArray vertices = new VertexArray();
@@ -147,12 +160,11 @@ public class Main {
         // Deselect (bind to 0) the VAO
         GL30.glBindVertexArray(0);
          
-        // Create a new VBO for the indices and select it (bind) - INDICES
         vboiId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-         
+       
         this.exitOnGLError("setupQuad");
     }
      
