@@ -53,6 +53,8 @@ public class VertexArray
     public static final int COLOR_ATTRB = 1;
     public static final int ST_ATTRB = 2;
     
+    private ByteBuffer indicesBuffer ;
+    private int indicesCount;
     /*
      * Default constructor
      */
@@ -89,8 +91,8 @@ public class VertexArray
                 2, 3, 0
         };
         
-        int indicesCount = indices.length;
-        ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
+        indicesCount = indices.length;
+        indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
         indicesBuffer.put(indices);
         indicesBuffer.flip();
     	
@@ -140,6 +142,16 @@ public class VertexArray
     public int getVBO()
     {
     	return vboID;
+    }
+    
+    public int getVBOi()
+    {
+    	return vboiID;
+    }
+    
+    public int getIndicesCount()
+    {
+    	return indicesCount;
     }
     
     public int length()

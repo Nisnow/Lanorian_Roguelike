@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL30;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import graphics.Shader;
+import graphics.Texture;
 import graphics.Window;
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
@@ -55,6 +56,7 @@ public class Main {
     private Window window;
     private Shader shader;
     private VertexArray vertices;
+    private Texture tex1;
      
     public Main() 
     {
@@ -70,14 +72,14 @@ public class Main {
         vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
         
         
-        this.setupTextures();
+        //this.setupTextures();
+        this.setupQuad();
+        this.setupShaders();
+        
+        tex1 = new Texture("resources/images/narry");
         //vertices.bind();
         //shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
         
-        this.setupQuad();
-        this.setupShaders();
-
-         
         // Game loop
         while (!window.closing()) 
         {
@@ -201,7 +203,8 @@ public class Main {
          
         // Bind the texture
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texIds[textureSelector]);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex1.getTextureID());
+        //GL11.glBindTexture(GL11.GL_TEXTURE_2D, texIds[textureSelector]);
          
         // Bind to the VAO that has all the information about the vertices
         GL30.glBindVertexArray(vaoId);

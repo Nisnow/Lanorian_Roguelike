@@ -18,6 +18,12 @@ public class Shader
 	 */
 	public Shader() {}
 	
+	/**
+	 * Constructor that compiles the shader file path arguments
+	 * 
+	 * @param vertPath the file name of the vertex shader
+	 * @param fragPath the file name of the fragment shader
+	 */
 	public Shader(String vertPath, String fragPath)
 	{
 		String vert = FileLoader.loadFile(vertPath);
@@ -26,6 +32,12 @@ public class Shader
 		loadShader(vert, frag);
 	}
 	
+	/**
+	 * Load a shader from a file
+	 * 
+	 * @param vert the vertex shader converted into a string
+	 * @param frag the fragment shader converted into a string
+	 */
 	private void loadShader(String vert, String frag)
 	{
 		// Compile the shaders
@@ -46,20 +58,31 @@ public class Shader
 		glValidateProgram(shaderProgram);
 	}
 	
+	/**
+	 * Compile this shader
+	 * 
+	 * @param shaderSource the shader file converted into a string
+	 * @param shaderType GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
+	 * @return the ID for this vertex or fragment shader
+	 */
 	private int compileShader(String shaderSource, int shaderType)
 	{
-		int shaderObj = glCreateShader(shaderType);
-		glShaderSource(shaderObj, shaderSource);
-		glCompileShader(shaderObj);
+		int shaderID = glCreateShader(shaderType);
+		glShaderSource(shaderID, shaderSource);
+		glCompileShader(shaderID);
 		
-		int status = glGetShaderi(shaderObj, GL_COMPILE_STATUS);
+		int status = glGetShaderi(shaderID, GL_COMPILE_STATUS);
 		if (status != GL_TRUE) {
-		    throw new RuntimeException(glGetShaderInfoLog(shaderObj));
+		    throw new RuntimeException(glGetShaderInfoLog(shaderID));
 		}
 		
-		return shaderObj;
+		return shaderID;
 	}
 	
+	/*
+	 * Use this shader for rendering.
+	 * Called in the rendering loop before any drawing
+	 */
 	public void useProgram()
 	{
 		glUseProgram(shaderProgram);
