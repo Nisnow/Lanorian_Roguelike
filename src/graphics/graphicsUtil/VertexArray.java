@@ -55,6 +55,13 @@ public class VertexArray
     
     private ByteBuffer indicesBuffer ;
     private int indicesCount;
+    
+    // OpenGL expects to draw vertices in counter clockwise order by default
+    // TODO: put in renderer
+    private byte[] indices = {
+            0, 1, 2,
+            2, 3, 0
+    };
     /*
      * Default constructor
      */
@@ -83,13 +90,6 @@ public class VertexArray
     		buffer.put(v.getST());
     	}
     	buffer.flip();
-    	
-        // OpenGL expects to draw vertices in counter clockwise order by default
-        // TODO: put in renderer
-    	byte[] indices = {
-                0, 1, 2,
-                2, 3, 0
-        };
         
         indicesCount = indices.length;
         indicesBuffer = BufferUtils.createByteBuffer(indicesCount);

@@ -1,0 +1,4 @@
+REFACTOR CHECK
+- [x] Texture class
+- [ ] Vertex Array
+- [ ] Shader

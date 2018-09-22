@@ -74,11 +74,11 @@ public class Main {
         
         //this.setupTextures();
         this.setupQuad();
-        this.setupShaders();
+        //this.setupShaders();
         
         tex1 = new Texture("resources/images/narry");
-        //vertices.bind();
-        //shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
+       // vertices.bind();
+        shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
         
         // Game loop
         while (!window.closing()) 
@@ -93,15 +93,6 @@ public class Main {
          
         // Destroy OpenGL
         this.destroyOpenGL();
-    }
- 
-    private void setupTextures()
-    {
-    	// TODO: texture class with bind() methods to 
-        texIds[0] = this.loadPNGTexture("src/resources/images/narry.png", GL13.GL_TEXTURE0);
-        texIds[1] = this.loadPNGTexture("src/resources/images/birboi.png", GL13.GL_TEXTURE0);
-         
-        this.exitOnGLError("setupTexture");
     }
      
     // DE1337 (haxx0r) LATER
@@ -170,50 +161,28 @@ public class Main {
         this.exitOnGLError("setupQuad");
     }
      
-    private void setupShaders()
-    {       
-        // Load the vertex shader
-        vsId = this.loadShader("src/resources/shaders/TestVert.glsl", GL20.GL_VERTEX_SHADER);
-        // Load the fragment shader
-        fsId = this.loadShader("src/resources/shaders/TestFrag.glsl", GL20.GL_FRAGMENT_SHADER);
-         
-        // Create a new shader program that links both shaders
-        pId = GL20.glCreateProgram();
-        GL20.glAttachShader(pId, vsId);
-        GL20.glAttachShader(pId, fsId);
- 
-        // Position information will be attribute 0
-        GL20.glBindAttribLocation(pId, 0, "in_Position");
-        GL20.glBindAttribLocation(pId, 1, "in_Color");
-        GL20.glBindAttribLocation(pId, 2, "in_TextureCoord");
-         
-        GL20.glLinkProgram(pId);
-        GL20.glValidateProgram(pId);
-         
-        this.exitOnGLError("setupShaders");
-    }
-     
-    private void loopCycle() {
-
-         
+    private void loopCycle() 
+    {
         // Render
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
          
-        GL20.glUseProgram(pId);
-         
+       // GL20.glUseProgram(pId);
+        shader.useProgram();
+        
         // Bind the texture
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex1.getTextureID());
-        //GL11.glBindTexture(GL11.GL_TEXTURE_2D, texIds[textureSelector]);
          
         // Bind to the VAO that has all the information about the vertices
         GL30.glBindVertexArray(vaoId);
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
+        //GL30.glBindVertexArray(vertices.getVAO());
+        GL20.glEnableVertexAttribArray(VertexArray.POSITION_ATTRB);
+        GL20.glEnableVertexAttribArray(VertexArray.COLOR_ATTRB);
+        GL20.glEnableVertexAttribArray(VertexArray.ST_ATTRB);
          
         // Bind to the index VBO that has all the information about the order of the vertices
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
+        //GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vertices.getVBOi());
          
         // Draw the vertices
         GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
@@ -267,93 +236,6 @@ public class Main {
         this.exitOnGLError("destroyOpenGL");
          
         glfwTerminate();
-    }
-     
-    private int loadShader(String filename, int type) {
-        StringBuilder shaderSource = new StringBuilder();
-        int shaderID = 0;
-         
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                shaderSource.append(line).append("\n");
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.err.println("Could not read file.");
-            e.printStackTrace();
-            System.exit(-1);
-        }
-         
-        shaderID = GL20.glCreateShader(type);
-        GL20.glShaderSource(shaderID, shaderSource);
-        GL20.glCompileShader(shaderID);
-         
-		int status = glGetShaderi(shaderID, GL_COMPILE_STATUS);
-		if (status != GL_TRUE) {
-		    throw new RuntimeException(glGetShaderInfoLog(shaderID));
-		}
-         
-        this.exitOnGLError("loadShader");
-         
-        return shaderID;
-    }
-     
-    private int loadPNGTexture(String filename, int textureUnit) {
-        ByteBuffer buf = null;
-        int tWidth = 0;
-        int tHeight = 0;
-         
-        try {
-            // Open the PNG file as an InputStream
-            InputStream in = new FileInputStream(filename);
-            // Link the PNG decoder to this stream
-            PNGDecoder decoder = new PNGDecoder(in);
-             
-            // Get the width and height of the texture
-            tWidth = decoder.getWidth();
-            tHeight = decoder.getHeight();
-             
-             
-            // Decode the PNG file in a ByteBuffer
-            buf = ByteBuffer.allocateDirect(
-                    4 * decoder.getWidth() * decoder.getHeight());
-            decoder.decode(buf, decoder.getWidth() * 4, Format.RGBA);
-            buf.flip();
-             
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-         
-        // Create a new texture object in memory and bind it
-        int texId = GL11.glGenTextures();
-        GL13.glActiveTexture(textureUnit);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texId);
-         
-        // All RGB bytes are aligned to each other and each component is 1 byte
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-         
-        // Upload the texture data and generate mip maps (for scaling)
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, tWidth, tHeight, 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-         
-        // Setup the ST coordinate system
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-         
-        // Setup what to do when the texture has to be scaled
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, 
-                GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, 
-                GL11.GL_LINEAR_MIPMAP_LINEAR);
-         
-        this.exitOnGLError("loadPNGTexture");
-         
-        return texId;
     }
      
     private void exitOnGLError(String errorMessage) {
