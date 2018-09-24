@@ -162,7 +162,7 @@ public class Texture
 			{
 				JsonObject data = (JsonObject) i.next();
 				Animation animation = new Animation();
-				//animation.parse(data);
+				animation.parse(data);
 				animationList.add(animation);
 			}
 			
@@ -214,5 +214,18 @@ public class Texture
 	public int getTextureUnit()
 	{
 		return textureUnit;
+	}
+	
+	/**
+	 * Get animation by name
+	 * @param name Name of the animation
+	 * @return Animation object. Null if not found.
+	 */
+	public Animation getAnimation(String p_name)
+	{
+		for(Animation a : animationList)
+			if(a.getName().equals(p_name))
+				return a;
+		return null;
 	}
 }
