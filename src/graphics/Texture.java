@@ -177,6 +177,11 @@ public class Texture
 		return textureID;
 	}
 	
+	public void deleteTexture()
+	{
+		glDeleteTextures(0);
+	}
+	
 	/**
 	 * @return the texture unit of this texture
 	 * Used in setting sampler2D uniform-1i and 

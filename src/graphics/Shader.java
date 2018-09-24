@@ -87,4 +87,18 @@ public class Shader
 	{
 		glUseProgram(shaderProgram);
 	}
+	
+	/*
+	 * Clean up memory and delete this shader program
+	 * and its shaders.
+	 */
+	public void delete()
+	{
+		glUseProgram(0);
+		glDetachShader(shaderProgram, vertexShader);
+		glDetachShader(shaderProgram, fragmentShader);
+		
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+	}
 }

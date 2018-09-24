@@ -129,6 +129,28 @@ public class VertexArray
     	// TODO: buffer.clear();
     }
     
+    public void delete()
+    {
+    	// Prepare VAO for deletion
+    	glBindVertexArray(vaoID);
+    	
+    	// Disable VBO index from VAO attribute list
+    	glDisableVertexAttribArray(POSITION_ATTRB);
+    	glDisableVertexAttribArray(COLOR_ATTRB);
+    	
+    	// Delete vertex VBO
+    	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    	glDeleteBuffers(vboID);
+    	
+    	// Delete index VBO
+    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    	glDeleteBuffers(vboiID);
+    	
+    	// Fnally, delete the VAO
+    	glBindVertexArray(0);
+    	glDeleteVertexArrays(vaoID);
+    }
+    
     public FloatBuffer getBuffer()
     {
     	return buffer;
