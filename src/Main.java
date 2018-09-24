@@ -71,13 +71,8 @@ public class Main {
         vertices.add(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
         vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
         
-        
-        //this.setupTextures();
-        this.setupQuad();
-        //this.setupShaders();
-        
         tex1 = new Texture("resources/images/narry");
-       // vertices.bind();
+        vertices.bind();
         shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
         
         // Game loop
@@ -98,12 +93,6 @@ public class Main {
     // DE1337 (haxx0r) LATER
     private void setupQuad() 
     {
-        VertexArray vertices = new VertexArray();
-        vertices.add(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
-        vertices.add(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
-        vertices.add(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
-        vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
-        
         // Put each 'Vertex' in one FloatBuffer
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length() *
                 VertexArray.ELEMENT_COUNT);
@@ -165,8 +154,7 @@ public class Main {
     {
         // Render
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-         
-       // GL20.glUseProgram(pId);
+        
         shader.useProgram();
         
         // Bind the texture
@@ -174,18 +162,16 @@ public class Main {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex1.getTextureID());
          
         // Bind to the VAO that has all the information about the vertices
-        GL30.glBindVertexArray(vaoId);
-        //GL30.glBindVertexArray(vertices.getVAO());
+        GL30.glBindVertexArray(vertices.getVAO());
         GL20.glEnableVertexAttribArray(VertexArray.POSITION_ATTRB);
         GL20.glEnableVertexAttribArray(VertexArray.COLOR_ATTRB);
         GL20.glEnableVertexAttribArray(VertexArray.ST_ATTRB);
          
         // Bind to the index VBO that has all the information about the order of the vertices
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
-        //GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vertices.getVBOi());
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vertices.getVBOi());
          
         // Draw the vertices
-        GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, vertices.getIndicesCount(), GL11.GL_UNSIGNED_BYTE, 0);
          
         window.display();
         // Put everything back to default (deselect)
