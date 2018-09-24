@@ -89,12 +89,21 @@ public class Shader
 	}
 	
 	/*
+	 * Reset the shader to the default. 
+	 * Called at the end of the rendering loop.
+	 */
+	public void reset()
+	{
+		glUseProgram(0);
+	}
+	
+	/*
 	 * Clean up memory and delete this shader program
 	 * and its shaders.
 	 */
 	public void delete()
 	{
-		glUseProgram(0);
+		this.reset();
 		glDetachShader(shaderProgram, vertexShader);
 		glDetachShader(shaderProgram, fragmentShader);
 		

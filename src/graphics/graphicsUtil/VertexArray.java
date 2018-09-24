@@ -78,7 +78,7 @@ public class VertexArray
     	return this;
     }
     
-    public void bind()
+    public void createQuad()
     {
     	buffer = BufferUtils.createFloatBuffer(vertices.size() * ELEMENT_COUNT);
     	
@@ -124,6 +124,36 @@ public class VertexArray
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
+    public void bind()
+    {
+    	// Bind to the VAO that has all the information about the vertices
+    	glBindVertexArray(vaoID);
+    	glEnableVertexAttribArray(POSITION_ATTRB);
+    	glEnableVertexAttribArray(COLOR_ATTRB);
+    	glEnableVertexAttribArray(ST_ATTRB);
+    	
+    	// Bind to the index VBO that has all the information about the order of the vertices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
+    }
+    
+    public void draw()
+    {
+    	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_BYTE, 0);
+    }
+    
+    /*
+     * Puts everything back to default. 
+     * Called at the end of the rendering loop.
+     */
+    public void reset()
+    {
+    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    	glDisableVertexAttribArray(POSITION_ATTRB);
+    	glDisableVertexAttribArray(COLOR_ATTRB);
+    	glDisableVertexAttribArray(ST_ATTRB);
+    	glBindVertexArray(0);
+    }
+    
     public void unbind()
     {
     	// TODO: buffer.clear();
@@ -151,38 +181,8 @@ public class VertexArray
     	glDeleteVertexArrays(vaoID);
     }
     
-    public FloatBuffer getBuffer()
-    {
-    	return buffer;
-    }
-    
-    public int getVAO()
-    {
-    	return vaoID;
-    }
-    
-    public int getVBO()
-    {
-    	return vboID;
-    }
-    
-    public int getVBOi()
-    {
-    	return vboiID;
-    }
-    
-    public int getIndicesCount()
-    {
-    	return indicesCount;
-    }
-    
     public int length()
     {
     	return vertices.size();
     }
-    
-    public Vertex get(int index)
-    {
-    	return vertices.get(index);
-    }    
 }

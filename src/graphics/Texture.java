@@ -30,7 +30,6 @@ public class Texture
 	private int textureID;
 	private int textureUnit;
 	
-	
 	/*
 	 * Default constructor
 	 */
@@ -90,6 +89,9 @@ public class Texture
 		}
 	}
 	
+	/**
+	 * Open an image from the resources folder
+	 */
 	private void openImage(InputStream stream)
 	{
 		ByteBuffer buffer;
@@ -137,7 +139,7 @@ public class Texture
 	}
 	
 	/**
-	 * Open an image
+	 * Open an image's JSON atlas file
 	 * @param stream Stream to JSON file atlas
 	 * @throws IOException if parsing fails
 	 */
@@ -172,20 +174,42 @@ public class Texture
 		}
 	}
 	
+	/*
+	 * Render this current texture.
+	 * Must be called in the rendering loop after
+	 * choosing a shader to use
+	 */
+	public void bind()
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+	}
+	
+	/**
+	 * Use this when binding a texture with glBindTexture()
+	 * or for setting a uniform-1i for use with shaders
+	 * 
+	 * @return ID for this texture to use in OpenGL
+	 */
 	public int getTextureID()
 	{
 		return textureID;
 	}
 	
+	/*
+	 * Delete this texture upon closing the window with
+	 * OpenGL context
+	 */
 	public void deleteTexture()
 	{
 		glDeleteTextures(0);
 	}
 	
 	/**
-	 * @return the texture unit of this texture
 	 * Used in setting sampler2D uniform-1i and 
 	 * texture binding in the rendering loop
+	 *
+	 * @return the texture unit of this texture
 	 */
 	public int getTextureUnit()
 	{
