@@ -1,11 +1,15 @@
 package graphics;
 
-import util.FileLoader;
-
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.*;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
+
 import graphics.graphicsUtil.VertexArray;
+import util.FileLoader;
 
 public class Shader 
 {
@@ -109,5 +113,68 @@ public class Shader
 		
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+	
+	/**
+	 * Set a Vector2f uniform for this shader to use
+	 * 
+	 * @param name the name of the uniform (must match in shader)
+	 * @param value the Vector2f to pass through the shader
+	 */
+	public void setUniformVec2f(String name, Vector2f value)
+	{
+		int location = glGetUniformLocation(shaderProgram, name);
+		
+		if (location < 0)
+		{
+			System.out.println("Failed to get uniform vector 2f");
+			return;
+		}
+		
+		this.useProgram();
+		glUniform2fv(location, value.get(BufferUtils.createFloatBuffer(2)));
+		this.reset();
+	}
+	
+	/**
+	 * Set a matrix4f uniform for this shader to use
+	 * 
+	 * @param name the name of the uniform (must match in the shader)
+	 * @param value the Matrix4f to pass through the shader
+	 */
+	public void setUniformMat4f(String name, Matrix4f value)
+	{
+		int location = glGetUniformLocation(shaderProgram, name);
+		
+		if (location < 0)
+		{
+			System.out.println("Failed to get uniform Matrix4f");
+			return;
+		}
+		
+		this.useProgram();
+		glUniformMatrix4fv(location, false, value.get(BufferUtils.createFloatBuffer(4*4)));
+		this.reset();
+	}
+	
+	/**
+	 * Set a vector4f uniform for this shader to use
+	 * 
+	 * @param name the name of the uniform (must match in the shader)
+	 * @param value the vector4f to pass through the shader
+	 */
+	public void setUniformVec4f(String name, Vector4f value)
+	{
+		int location = glGetUniformLocation(shaderProgram, name);
+		
+		if (location < 0)
+		{
+			System.out.println("Failed to get uniform Vec4f");
+			return;
+		}
+		
+		this.useProgram();
+		glUniform4fv(location, value.get(BufferUtils.createFloatBuffer(4)));
+		this.reset();
 	}
 }

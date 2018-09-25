@@ -30,6 +30,9 @@ public class Texture
 	private int textureID;
 	private int textureUnit;
 	
+	private int width;
+	private int height;
+	
 	/*
 	 * Default constructor
 	 */
@@ -95,8 +98,6 @@ public class Texture
 	private void openImage(InputStream stream)
 	{
 		ByteBuffer buffer;
-		int width;
-		int height;
 		
 		try
 		{
@@ -112,8 +113,7 @@ public class Texture
 			
 			// Create a new texture object in memory and bind it
 			textureID = glGenTextures();
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textureID);
+			this.bind();
 			
 			// Tell OpenGL that each RGB byte component is one byte
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -183,17 +183,6 @@ public class Texture
 	{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-	}
-	
-	/**
-	 * Use this when binding a texture with glBindTexture()
-	 * or for setting a uniform-1i for use with shaders
-	 * 
-	 * @return ID for this texture to use in OpenGL
-	 */
-	public int getTextureID()
-	{
-		return textureID;
 	}
 	
 	/*

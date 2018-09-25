@@ -78,6 +78,7 @@ public class VertexArray
     	return this;
     }
     
+    // TODO: put in renderer
     public void createQuad()
     {
     	buffer = BufferUtils.createFloatBuffer(vertices.size() * ELEMENT_COUNT);

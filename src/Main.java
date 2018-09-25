@@ -67,7 +67,6 @@ public class Main {
             
             // Reset everything to default
             vertices.reset();
-            
             shader.reset();
                          
             window.printFPS();
