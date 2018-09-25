@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Vertex 
 {
     // Vertex data
-    private float[] position = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    private float[] position = new float[] {0.0f, 0.0f, 0.0f};
     private float[] color 	 = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
     private float[] st 		 = new float[] {0.0f, 0.0f};
     /*

@@ -133,7 +133,6 @@ public class Shader
 		
 		this.useProgram();
 		glUniform2fv(location, value.get(BufferUtils.createFloatBuffer(2)));
-		this.reset();
 	}
 	
 	/**
@@ -145,7 +144,7 @@ public class Shader
 	public void setUniformMat4f(String name, Matrix4f value)
 	{
 		int location = glGetUniformLocation(shaderProgram, name);
-		
+
 		if (location < 0)
 		{
 			System.out.println("Failed to get uniform Matrix4f");
@@ -154,7 +153,6 @@ public class Shader
 		
 		this.useProgram();
 		glUniformMatrix4fv(location, false, value.get(BufferUtils.createFloatBuffer(4*4)));
-		this.reset();
 	}
 	
 	/**
@@ -175,6 +173,5 @@ public class Shader
 		
 		this.useProgram();
 		glUniform4fv(location, value.get(BufferUtils.createFloatBuffer(4)));
-		this.reset();
 	}
 }

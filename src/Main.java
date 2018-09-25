@@ -1,6 +1,9 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
+import org.joml.Matrix4f;
+import org.lwjgl.glfw.GLFW;
+
 import graphics.Shader;
 import graphics.Texture;
 import graphics.Window;
@@ -41,6 +44,7 @@ public class Main {
         
         shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
         
+
         // Game loop
         while (!window.closing()) 
         {
@@ -51,10 +55,12 @@ public class Main {
             window.clear();
             
             // TODO: put these in renderer !!!!
-            
+            Matrix4f transform = new Matrix4f();
+            transform.rotate((float)Math.toRadians(60*GLFW.glfwGetTime()), 0.0f, 0.0f, 1.0f);
             // Use the selected shader
             shader.useProgram();
-
+            shader.setUniformMat4f("transform", transform);
+            
             // Use this texture and its vertices for rendering
             tex1.bind();
             vertices.bind();

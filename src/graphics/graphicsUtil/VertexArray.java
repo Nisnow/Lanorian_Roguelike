@@ -26,7 +26,7 @@ public class VertexArray
     public static final int BPF = 4;
      
     // Elements per parameter
-    public static final int POSITION_ELEMENT_COUNT 	= 4;
+    public static final int POSITION_ELEMENT_COUNT 	= 3;
     public static final int COLOR_ELEMENT_COUNT 	= 4;
     public static final int ST_ELEMENT_COUNT 		= 2;
      
