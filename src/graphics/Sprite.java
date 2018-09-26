@@ -1,6 +1,6 @@
 package graphics;
 
-import java.awt.geom.AffineTransform;
+import org.joml.Matrix4f;
 
 import util.Clock;
 import util.IntRect;
@@ -19,19 +19,19 @@ public class Sprite implements Drawable
 	
 	public Sprite() {} 
 	
-	public Sprite(Texture p_sheet)
+	public Sprite(Texture sheet)
 	{
-		setTexture(p_sheet);
+		setTexture(sheet);
 	}
 	
-	public Sprite(Texture p_sheet, String p_animation)
+	public Sprite(Texture sheet, String animation)
 	{
-		setTexture(p_sheet);
-		setAnimation(p_animation);
+		setTexture(sheet);
+		setAnimation(animation);
 	}
 
 	@Override
-	public void draw(Renderer p_renderer) 
+	public void draw(Renderer renderer) 
 	{
 		IntRect frame;
 		
@@ -48,13 +48,12 @@ public class Sprite implements Drawable
 			frame = animation.getFrame();
 		}
 		
+		Matrix4f spriteTransform = new Matrix4f();
+		
+		spriteTransform.translate((float) position.x, (float) position.y, 0.0f);
+		spriteTransform.rotate((float) rotation, 0.0f, 0.0f, 1.0f);
+		spriteTransform.scale((float) scale.x, (float) scale.y, 0.0f);
 		/*
-		AffineTransform spriteTransform = new AffineTransform();
-		
-		spriteTransform.translate(position.x, position.y);
-		spriteTransform.rotate(rotation);
-		spriteTransform.scale(scale.x, scale.y);
-		
 		p_renderer.pushTransform(spriteTransform);
 		p_renderer.drawSprite(Texture, frame);
 		p_renderer.popTransform();*/
@@ -65,9 +64,9 @@ public class Sprite implements Drawable
 		return Texture;
 	}
 	
-	public void setTexture(Texture p_Texture)
+	public void setTexture(Texture texture)
 	{
-		Texture = p_Texture;
+		Texture = texture;
 	}
 
 	public Animation getAnimation() 
@@ -75,11 +74,11 @@ public class Sprite implements Drawable
 		return animation;
 	}
 
-	public void setAnimation(String p_animationName)
+	public void setAnimation(String animationName)
 	{
-		if(animation == null || !p_animationName.equals(animation.getName()))
+		if(animation == null || !animationName.equals(animation.getName()))
 		{
-			animation = Texture.getAnimation(p_animationName);
+			animation = Texture.getAnimation(animationName);
 			clock.restart();
 		}
 	}
@@ -118,14 +117,14 @@ public class Sprite implements Drawable
 		return position;
 	}
 	
-	public void setPosition(double p_x, double p_y)
+	public void setPosition(double x, double y)
 	{
-		position.set(p_x, p_y);
+		position.set(x, y);
 	}
 	
-	public void setPosition(Vector p_position) 
+	public void setPosition(Vector position) 
 	{
-		position.set(p_position);
+		this.position.set(position);
 	}
 
 	public Vector getScale() 
@@ -133,14 +132,14 @@ public class Sprite implements Drawable
 		return scale;
 	}
 	
-	public void setScale(double p_x, double p_y)
+	public void setScale(double x, double y)
 	{
-		scale.set(p_x, p_y);
+		scale.set(x, y);
 	}
 	
-	public void setScale(Vector p_scale) 
+	public void setScale(Vector scale) 
 	{
-		scale.set(p_scale);
+		this.scale.set(scale);
 	}
 	
 	public void resetScale()
@@ -153,8 +152,8 @@ public class Sprite implements Drawable
 		return rotation;
 	}
 	
-	public void setRotation(double p_radians)
+	public void setRotation(double radians)
 	{
-		rotation = p_radians;
+		rotation = radians;
 	}
 }

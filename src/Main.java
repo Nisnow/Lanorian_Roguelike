@@ -4,13 +4,16 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
+import graphics.Renderer;
 import graphics.Shader;
+import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
  
-public class Main {
+public class Main 
+{
 
 	public static void main(String[] args) 
     {
@@ -39,11 +42,13 @@ public class Main {
         vertices.add(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
         
         tex1 = new Texture("resources/images/narry");
+        Sprite soda = new Sprite(tex1);
+        
+        Renderer renderer = new Renderer();
         
         vertices.createQuad();
         
         shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
-        
 
         // Game loop
         while (!window.closing()) 
@@ -56,17 +61,30 @@ public class Main {
             
             // TODO: put these in renderer !!!!
             Matrix4f transform = new Matrix4f();
-            transform.rotate((float)Math.toRadians(60*GLFW.glfwGetTime()), 0.0f, 0.0f, 1.0f);
-            // Use the selected shader
-            shader.useProgram();
-            shader.setUniformMat4f("transform", transform);
             
+            // DEFAULT: radians, 0.0, 0.0, 1.0);
+            float time = ((float) GLFW.glfwGetTime());
+            //transform.translate((float) Math.cos(time), 0, 0);
+            //transform.rotate((float)Math.toRadians(60*time), 0.0f, 1.0f, 1.0f);
+            
+            // Renderer.begin() to use shader and set uniforms
+            // Use the selected shader
+            renderer.begin();
+            	renderer.updateUniforms();
+            	// renderList.draw(renderer);
+            	
+            // where all Drawable objects call draw() method
+            // add vertices to some vertex array for a buffer
             // Use this texture and its vertices for rendering
             tex1.bind();
+            
+            // Renderer.end() to bind VAO and actually draw stuff
             vertices.bind();
             
             // Draw the vertices
             vertices.draw(); 
+            
+            renderer.end();
             
             // Swap buffers
             window.display();
