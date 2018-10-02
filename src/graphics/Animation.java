@@ -19,15 +19,6 @@ public class Animation
 		frameCount = 0;
 		interval = 0;
 	}
-	
-	public Animation(String p_name)
-	{
-		name = p_name;
-		frame = new IntRect(0, 0, 0, 0);
-		loop = false;
-		frameCount = 0;
-		interval = 0;
-	}
 
 	/*
 	 * Get root frame
@@ -35,15 +26,6 @@ public class Animation
 	public IntRect getFrame() 
 	{
 		return frame;
-	}
-	
-	/*
-	 * Sets the room frame.
-	 * Used in the editor.
-	 */
-	public void setFrame(IntRect p_frame)
-	{
-		frame = p_frame;
 	}
 	
 	/**
@@ -69,15 +51,6 @@ public class Animation
 	{
 		return frameCount;
 	}
-	
-	/*
-	 * Set number of frames in this animation.
-	 * Used in the editor.
-	 */
-	public void setFrameCount(int p_count)
-	{
-		frameCount = p_count;
-	}
 
 	/**
 	 * Get the amount of time in between frames in seconds
@@ -85,15 +58,6 @@ public class Animation
 	public float getInterval() 
 	{
 		return interval;
-	}
-	
-	/*
-	 * Set the amount of time between frames in seconds.
-	 * Used in the editor;
-	 */
-	public void setInterval(float p_interval)
-	{
-		interval = p_interval;
 	}
 	
 	/**
@@ -110,19 +74,9 @@ public class Animation
 		return loop;
 	}
 	
-	public void setLoop(boolean p_loop)
-	{
-		loop = p_loop;
-	}
-
 	public String getName() 
 	{
 		return name;
-	}
-	
-	public void setName(String p_name)
-	{
-		name = p_name;
 	}
 	
 	/**
@@ -156,10 +110,5 @@ public class Animation
 	private boolean hasObject(JsonObject p_object, String p_key)
 	{
 		return p_object.get(p_key) != null;
-	}
-	
-	public String toString()
-	{
-		return name;
 	}
 }

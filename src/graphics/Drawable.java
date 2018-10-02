@@ -2,5 +2,5 @@ package graphics;
 
 public interface Drawable
 {
-	public void draw(Renderer p_renderer);
+	public void draw(Renderer renderer);
 }

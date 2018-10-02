@@ -1,37 +1,37 @@
 package graphics;
 
-import java.awt.geom.AffineTransform;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
 import util.Clock;
 import util.IntRect;
-import util.Vector;
 
 public class Sprite implements Drawable
 {
-	private final Vector DEFAULT_SCALE = new Vector(1, 1);
+	private final Vector2f DEFAULT_SCALE = new Vector2f(1.0f, 1.0f);
 	
-	private SpriteSheet spriteSheet;
+	private Texture texture;
 	private Animation animation;
-	private Vector position = new Vector(0, 0);
-	private Vector scale = DEFAULT_SCALE;
+	private Vector2f position = new Vector2f(0.0f, 0.0f);
+	private Vector2f scale = DEFAULT_SCALE;
 	private double rotation; // in radians
 	private Clock clock = new Clock();
 	
 	public Sprite() {} 
 	
-	public Sprite(SpriteSheet p_sheet)
+	public Sprite(Texture sheet)
 	{
-		setSpriteSheet(p_sheet);
+		setTexture(sheet);
 	}
 	
-	public Sprite(SpriteSheet p_sheet, String p_animation)
+	public Sprite(Texture sheet, String animation)
 	{
-		setSpriteSheet(p_sheet);
-		setAnimation(p_animation);
+		setTexture(sheet);
+		setAnimation(animation);
 	}
 
 	@Override
-	public void draw(Renderer p_renderer) 
+	public void draw(Renderer renderer) 
 	{
 		IntRect frame;
 		
@@ -48,25 +48,27 @@ public class Sprite implements Drawable
 			frame = animation.getFrame();
 		}
 		
-		AffineTransform spriteTransform = new AffineTransform();
+		Matrix4f spriteTransform = new Matrix4f();
 		
-		spriteTransform.translate(position.x, position.y);
-		spriteTransform.rotate(rotation);
-		spriteTransform.scale(scale.x, scale.y);
+		spriteTransform.translate((float) position.x, (float) position.y, 0.0f);
+		spriteTransform.rotate((float) rotation, 0.0f, 0.0f, 1.0f);
+		spriteTransform.scale((float) scale.x, (float) scale.y, 0.0f);
 		
+		renderer.drawTexture(texture, frame);
+		/*
 		p_renderer.pushTransform(spriteTransform);
-		p_renderer.drawSprite(spriteSheet, frame);
-		p_renderer.popTransform();
+		p_renderer.drawSprite(Texture, frame);
+		p_renderer.popTransform();*/
 	}
 	
-	public SpriteSheet getSpriteSheet()
+	public Texture getTexture()
 	{
-		return spriteSheet;
+		return texture;
 	}
 	
-	public void setSpriteSheet(SpriteSheet p_spriteSheet)
+	public void setTexture(Texture texture)
 	{
-		spriteSheet = p_spriteSheet;
+		this.texture = texture;
 	}
 
 	public Animation getAnimation() 
@@ -74,11 +76,11 @@ public class Sprite implements Drawable
 		return animation;
 	}
 
-	public void setAnimation(String p_animationName)
+	public void setAnimation(String animationName)
 	{
-		if(animation == null || !p_animationName.equals(animation.getName()))
+		if(animation == null || !animationName.equals(animation.getName()))
 		{
-			animation = spriteSheet.getAnimation(p_animationName);
+			animation = texture.getAnimation(animationName);
 			clock.restart();
 		}
 	}
@@ -112,34 +114,34 @@ public class Sprite implements Drawable
 		clock.restart();
 	}
 
-	public Vector getPosition() 
+	public Vector2f getPosition() 
 	{
 		return position;
 	}
 	
-	public void setPosition(double p_x, double p_y)
+	public void setPosition(float x, float y)
 	{
-		position.set(p_x, p_y);
+		position.set(x, y);
 	}
 	
-	public void setPosition(Vector p_position) 
+	public void setPosition(Vector2f position) 
 	{
-		position.set(p_position);
+		this.position.set(position);
 	}
 
-	public Vector getScale() 
+	public Vector2f getScale() 
 	{
 		return scale;
 	}
 	
-	public void setScale(double p_x, double p_y)
+	public void setScale(float x, float y)
 	{
-		scale.set(p_x, p_y);
+		scale.set(x, y);
 	}
 	
-	public void setScale(Vector p_scale) 
+	public void setScale(Vector2f scale) 
 	{
-		scale.set(p_scale);
+		this.scale.set(scale);
 	}
 	
 	public void resetScale()
@@ -152,8 +154,8 @@ public class Sprite implements Drawable
 		return rotation;
 	}
 	
-	public void setRotation(double p_radians)
+	public void setRotation(double radians)
 	{
-		rotation = p_radians;
+		rotation = radians;
 	}
 }

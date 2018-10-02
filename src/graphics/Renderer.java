@@ -1,275 +1,103 @@
 package graphics;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.Stack;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import org.joml.Matrix4f;
 
-import util.DoubleRect;
+import graphics.graphicsUtil.VertexArray;
 import util.IntRect;
 
-public class Renderer
+public class Renderer 
 {
-	private BufferedImage frontBuffer, backBuffer;
-	private Graphics2D graphics;
-	public JPanel panel;
+	private final String DEFAULT_VERTEX = "src/resources/shaders/TestVert.glsl";
+	private final String DEFAULT_FRAG	= "src/resources/shaders/TestFrag.glsl";
 	
-	private int width, height;
-	private float scale = 1.0f;
+	private VertexArray data = new VertexArray();
+	private Shader shader;
+	private Texture currentTexture;
 	
-	// Causes stuff to not flicker
-	private Lock frameSwapLock = new ReentrantLock();
+	private Matrix4f viewMatrix = new Matrix4f();
+	private Matrix4f currentTransform = new Matrix4f();
+
+	private boolean drawing = false;
 	
-	private Stack<AffineTransform> transformationStack = new Stack<AffineTransform>();
+	private Stack<Matrix4f> transformStack = new Stack<Matrix4f>();
 	
 	/*
-	 * Creates a renderer for displaying all entities. Add to every GameState
+	 * Initialize the renderer with the default shader
 	 */
 	public Renderer()
 	{
-		// Get the dimensions of the screen
-		width = Toolkit.getDefaultToolkit().getScreenSize().width;
-		height = Toolkit.getDefaultToolkit().getScreenSize().height;
-		
-		// Calculate the scale according to the screen size
-		scale = (width * scale) / 800;
-		
-		// Create the buffers to draw stuff on
-		frontBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		graphics = backBuffer.createGraphics();
-		
-		initialize();
-	}
-	
-	/*
-	 * Creates a renderer that can be attached to any size JPanel.
-	 * Used in the atlas editor
-	 */
-	public Renderer(JPanel p_panel)
-	{
-		// Get dimensions of the panel
-		width = p_panel.getWidth();
-		height = p_panel.getHeight();
-		
-		// Create the buffers to draw stuff on
-		frontBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		graphics = backBuffer.createGraphics();
-		
-		initialize();
+		shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
 	}
 	
 	/**
-	 * Creates the JPanel canvas. Called in constructor only.
+	 * Set up vertex arrays, VAO, and VBO
+	 * required for rendering
 	 */
-	private void initialize()
+	public void init()
 	{
-		// Create the JPanel to hold the canvas
-		panel = new JPanel() {
-			@Override
-			public void paintComponent(Graphics g)
-			{
-				frameSwapLock.lock();
-				try
-				{
-					super.paintComponent(g);
-					g.drawImage(frontBuffer, 0, 0, this);
-					repaint();
-				}
-				finally
-				{
-					frameSwapLock.unlock();
-				}
-
-			}
-		};
-		
-		panel.setFocusable(true);
-		
-		// Initialize the transformation stack with the identity matrix
-		transformationStack.push(new AffineTransform());
+		// TODO: fill in this stubby stub
 	}
 	
-	/**
-	 * Switches the buffers. 
-	 * Ensures the current frame is being displayed
-	 */
-	public void display()
+	public void pushMatrix(Matrix4f matrix)
 	{
-		frameSwapLock.lock();
-		try
-		{
-			BufferedImage temp = backBuffer;
-			backBuffer = frontBuffer;
-			frontBuffer = temp;
-			
-			graphics = backBuffer.createGraphics();
-		}
-		finally
-		{
-			frameSwapLock.unlock();
-		}
+		// TODO: fill in this stubby stub
 	}
 	
-	/**
-	 * Clears the screen before anything is drawn every frame
-	 */
-	public void clear()
+	public void popMatrix()
 	{
-		addScreenOverlay(Color.BLACK, 1.0f);
+		// TODO: fill in this stubby stub
 	}
 	
-	/**
-	 * Adds a new matrix transformation to the transformation stack
-	 * @param p_transform the transform to be multiplied by the previous one
-	 */
-	public void pushTransform(AffineTransform p_transform)
+	public void updateUniforms()
 	{
-		if(transformationStack.isEmpty())
-		{
-			transformationStack.push(new AffineTransform(p_transform));
-		}
-		else
-		{
-			// Multiply the previous transformation by the newest one
-			AffineTransform prevTransform = new AffineTransform(transformationStack.peek());
-			prevTransform.concatenate(p_transform);
-			transformationStack.push(prevTransform);
-		}
-		
-		graphics.setTransform(transformationStack.peek());
+		shader.setUniformMat4f("transform", currentTransform);
+		// TODO: fill in this stubby stub some more
 	}
 	
-	/**
-	 * Reverts back to a previous coordinate system (matrix). 
-	 * Must be called sometime after every pushTransform() call
-	 */
-	public void popTransform()
+	public Shader getShader()
 	{
-		if(transformationStack.size() > 1)
-			transformationStack.pop();
-		
-		graphics.setTransform(transformationStack.peek());
+		return shader;
 	}
 	
-	/*
-	 * Set scale that only the size of images are affected by
-	 */
-	public void setScale(float p_scale)
+	public void setShader(Shader shader, boolean needsUpdate)
 	{
-		scale = p_scale;
+		// TODO: fill in this stubby stub
 	}
 	
-	public float getScale()
+	public void begin()
 	{
-		return scale;
+		if(drawing)
+			throw new IllegalStateException("Must not be drawing before calling begin()!");	
+		drawing = true;
+		shader.useProgram();
+		currentTexture = null;
 	}
 	
-	/**
-	 * Draws a sprite
-	 * @param p_sheet the sprite sheet of the image
-	 * @param p_frame the current frame to draw
-	 */
-	public void drawSprite(SpriteSheet p_sheet, IntRect p_frame)
+	public void drawTexture(Texture texture, IntRect frame)
 	{
-		//reset opacity
-		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-		
-		//scale image according to the current scale
-		AffineTransform scaleTransform = new AffineTransform();
-		scaleTransform.scale(scale, scale);
-		
-		pushTransform(scaleTransform);
-		
-		graphics.drawImage(p_sheet.getImage(), 0, 0, p_frame.w, p_frame.h,
-				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
-		
-		popTransform();
+		// TODO: fill in this stubby stub
 	}
 	
-	public void drawSprite(SpriteSheet p_sheet, IntRect p_frame, IntRect p_destination)
+	public void flush()
 	{
-		//reset opacity
-		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-		
-		//scale image according to the current scale
-		AffineTransform scaleTransform = new AffineTransform();
-		scaleTransform.scale(scale, scale);
-		
-		pushTransform(scaleTransform);
-		
-		graphics.drawImage(p_sheet.getImage(), p_destination.x, p_destination.y, 
-				p_destination.x + p_frame.w, p_destination.y +p_frame.h,
-				p_frame.x, p_frame.y, p_frame.x + p_frame.w, p_frame.y + p_frame.h, panel);
-	
-		popTransform();
+		// TODO: fill in this stubby stub
 	}
 	
-	/**
-	 * Draws a solid rectangle
-	 * @param p_rect the dimensions of the rectangle
-	 * @param p_color the color of the rectangle (Color.RED, Color.BLUE, etc)
-	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
-	 */
-	public void drawRect(DoubleRect p_rect, Color p_color, float p_opacity)
+	public void end()
 	{
-		graphics.setColor(p_color);
-		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
-		graphics.draw(new Rectangle2D.Double(p_rect.x, p_rect.y, p_rect.w, p_rect.h));
+		drawing = false;
+		// TODO: fill in this stubby stub some more
 	}
 	
-	/**
-	 * Draws a rectangle border
-	 * @param p_rect the dimensions of the rectangle
-	 * @param p_color the color of the rectangle (Color.RED, Color.BLUE, etc.)
-	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
-	 * @param p_thickness THICCness in pixels
-	 */
-	public void drawRectBorder(DoubleRect p_rect, Color p_color, float p_opacity, float p_thickness)
+	private void checkStatus()
 	{
-		graphics.setColor(p_color);
-		graphics.setStroke(new BasicStroke(p_thickness));
-		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
-		graphics.draw(new Rectangle2D.Double(p_rect.x, p_rect.y, p_rect.w, p_rect.h));
+		// TODO: fill in this stubby stub
 	}
 	
-	/**
-	 * Cover the canvas with a color
-	 * @param p_color The color to overlay the screen
-	 * @param p_opacity 0.0f transparent to 1.0f (opaque)
-	 */
-	public void addScreenOverlay(Color p_color, float p_opacity)
+	private void render()
 	{
-		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p_opacity));
-		
-		graphics.setColor(p_color);
-		graphics.fillRect(0, 0, width, height);
-	}
-	
-	public int getWidth()
-	{
-		return width;
-	}
-	
-	public int getHeight()
-	{
-		return height;
-	}
-	
-	public JPanel getComponent()
-	{
-		return panel;
+		// TODO: fill in this stubby stub
 	}
 }
