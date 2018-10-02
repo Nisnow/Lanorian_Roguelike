@@ -1,19 +1,19 @@
 package graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
 import util.Clock;
 import util.IntRect;
-import util.Vector;
 
 public class Sprite implements Drawable
 {
-	private final Vector DEFAULT_SCALE = new Vector(1, 1);
+	private final Vector2f DEFAULT_SCALE = new Vector2f(1.0f, 1.0f);
 	
-	private Texture Texture;
+	private Texture texture;
 	private Animation animation;
-	private Vector position = new Vector(0, 0);
-	private Vector scale = DEFAULT_SCALE;
+	private Vector2f position = new Vector2f(0.0f, 0.0f);
+	private Vector2f scale = DEFAULT_SCALE;
 	private double rotation; // in radians
 	private Clock clock = new Clock();
 	
@@ -53,6 +53,8 @@ public class Sprite implements Drawable
 		spriteTransform.translate((float) position.x, (float) position.y, 0.0f);
 		spriteTransform.rotate((float) rotation, 0.0f, 0.0f, 1.0f);
 		spriteTransform.scale((float) scale.x, (float) scale.y, 0.0f);
+		
+		renderer.drawTexture(texture, frame);
 		/*
 		p_renderer.pushTransform(spriteTransform);
 		p_renderer.drawSprite(Texture, frame);
@@ -61,12 +63,12 @@ public class Sprite implements Drawable
 	
 	public Texture getTexture()
 	{
-		return Texture;
+		return texture;
 	}
 	
 	public void setTexture(Texture texture)
 	{
-		Texture = texture;
+		this.texture = texture;
 	}
 
 	public Animation getAnimation() 
@@ -78,7 +80,7 @@ public class Sprite implements Drawable
 	{
 		if(animation == null || !animationName.equals(animation.getName()))
 		{
-			animation = Texture.getAnimation(animationName);
+			animation = texture.getAnimation(animationName);
 			clock.restart();
 		}
 	}
@@ -112,32 +114,32 @@ public class Sprite implements Drawable
 		clock.restart();
 	}
 
-	public Vector getPosition() 
+	public Vector2f getPosition() 
 	{
 		return position;
 	}
 	
-	public void setPosition(double x, double y)
+	public void setPosition(float x, float y)
 	{
 		position.set(x, y);
 	}
 	
-	public void setPosition(Vector position) 
+	public void setPosition(Vector2f position) 
 	{
 		this.position.set(position);
 	}
 
-	public Vector getScale() 
+	public Vector2f getScale() 
 	{
 		return scale;
 	}
 	
-	public void setScale(double x, double y)
+	public void setScale(float x, float y)
 	{
 		scale.set(x, y);
 	}
 	
-	public void setScale(Vector scale) 
+	public void setScale(Vector2f scale) 
 	{
 		this.scale.set(scale);
 	}

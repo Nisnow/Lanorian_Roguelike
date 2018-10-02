@@ -53,7 +53,7 @@ public class VertexArray
     public static final int COLOR_ATTRB = 1;
     public static final int ST_ATTRB = 2;
     
-    private ByteBuffer indicesBuffer ;
+    private ByteBuffer indicesBuffer;
     private int indicesCount;
     
     // OpenGL expects to draw vertices in counter clockwise order by default
@@ -62,34 +62,41 @@ public class VertexArray
             0, 1, 2,
             2, 3, 0
     };
+    
     /*
      * Default constructor
      */
-    public VertexArray() {}
+    public VertexArray() 
+    {
+    	this(1000);
+    }
+    
+    /**
+     * 
+     * @param size the number of vertices (e.g. 3 for a triangle)
+     */
+    public VertexArray(int size)
+    {
+    	buffer = BufferUtils.createFloatBuffer(size * indices.length);
+    }
     
     /**
      * Add a vertex to vertex array
      * @param vert the vertex to add
      * @return this vertex array for further editing
      */
-    public VertexArray add(Vertex vert)
+    public VertexArray put(Vertex vert)
     {
-    	vertices.add(vert);
+    	buffer.put(vert.getPosition());
+		buffer.put(vert.getColor());
+		buffer.put(vert.getST());
+	
     	return this;
     }
     
     // TODO: put in renderer
     public void createQuad()
     {
-    	buffer = BufferUtils.createFloatBuffer(vertices.size() * ELEMENT_COUNT);
-    	
-    	// Put vertices in float buffer
-    	for(Vertex v : vertices)
-    	{
-    		buffer.put(v.getPosition());
-    		buffer.put(v.getColor());
-    		buffer.put(v.getST());
-    	}
     	buffer.flip();
         
         indicesCount = indices.length;
@@ -157,7 +164,7 @@ public class VertexArray
     
     public void unbind()
     {
-    	// TODO: buffer.clear();
+    	buffer.clear();
     }
     
     public void delete()
@@ -182,7 +189,7 @@ public class VertexArray
     	glDeleteVertexArrays(vaoID);
     }
     
-    public int length()
+    public int size()
     {
     	return vertices.size();
     }
