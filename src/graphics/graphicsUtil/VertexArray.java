@@ -78,6 +78,12 @@ public class VertexArray
     public VertexArray(int size)
     {
     	buffer = BufferUtils.createFloatBuffer(size * indices.length);
+    	
+    	// TODO: move this
+        indicesCount = indices.length;
+        indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
+        indicesBuffer.put(indices);
+        indicesBuffer.flip();
     }
     
     /**
@@ -94,26 +100,18 @@ public class VertexArray
     	return this;
     }
     
-    // TODO: put in renderer
-    public void createQuad()
+    public void init()
     {
-    	buffer.flip();
-        
-        indicesCount = indices.length;
-        indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
-        indicesBuffer.put(indices);
-        indicesBuffer.flip();
-    	
     	// Create a new vertex array object in memory and bind it
     	vaoID = glGenVertexArrays();
     	glBindVertexArray(vaoID);
     	
-    	// Create a new vertex buffer object in memory and bind it
+    	// Create the vertex buffer object ahead of time and bind it
     	vboID = glGenBuffers();
     	glBindBuffer(GL_ARRAY_BUFFER, vboID);
     	glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     
-    	// Bind vertex attributes
+    	// Create vertex attributes
     	glVertexAttribPointer(POSITION_ATTRB, POSITION_ELEMENT_COUNT, GL_FLOAT,
     			false, STRIDE, POSITION_OFFSET);
     	glVertexAttribPointer(COLOR_ATTRB, COLOR_ELEMENT_COUNT, GL_FLOAT,
@@ -121,21 +119,29 @@ public class VertexArray
     	glVertexAttribPointer(ST_ATTRB, ST_ELEMENT_COUNT, GL_FLOAT,
     			false, STRIDE, ST_OFFSET);
     	
-    	// Unbind VAO and VBO now that they're registered
-    	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    	glBindVertexArray(0);
-    	
-        // Create a new VBO for the indices and select it (bind) - INDICES
-        vboiID = glGenBuffers();
+    	// Create vertex buffer element array
+    	vboiID = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+    
+    // TODO: put in renderer
+    // TODO: put in a drawBatch() method of sorts to be called every frame
+    public void flip()
+    {
+    	// NTS: flip turns buffer from "put" mode to "get" mode
+    	// set to get, you can say
+    	buffer.flip();
     }
     
     public void bind()
     {
     	// Bind to the VAO that has all the information about the vertices
     	glBindVertexArray(vaoID);
+    	
+    	glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    	glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    	
     	glEnableVertexAttribArray(POSITION_ATTRB);
     	glEnableVertexAttribArray(COLOR_ATTRB);
     	glEnableVertexAttribArray(ST_ATTRB);
@@ -155,11 +161,15 @@ public class VertexArray
      */
     public void reset()
     {
+    	buffer.clear();
+    	
+    	glBindVertexArray(0);
+    	glBindBuffer(GL_ARRAY_BUFFER, 0);
     	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    	
     	glDisableVertexAttribArray(POSITION_ATTRB);
     	glDisableVertexAttribArray(COLOR_ATTRB);
     	glDisableVertexAttribArray(ST_ATTRB);
-    	glBindVertexArray(0);
     }
     
     public void unbind()

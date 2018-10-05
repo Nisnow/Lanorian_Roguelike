@@ -36,19 +36,17 @@ public class Main
          
         // Initialize renderer 
         vertices = new VertexArray();
-        vertices.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
-        vertices.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
-        vertices.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
-        vertices.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
+        vertices.init();
         
+     
         tex1 = new Texture("resources/images/narry");
         Sprite soda = new Sprite(tex1);
         
         Renderer renderer = new Renderer();
         
-        vertices.createQuad();
         
         shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
+
 
         // Game loop
         while (!window.closing()) 
@@ -59,6 +57,13 @@ public class Main
             // Clear the screen before calling anything
             window.clear();
             
+            vertices.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
+            vertices.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
+            vertices.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
+            vertices.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
+            vertices.flip();
+            
+
             // TODO: put these in renderer !!!!
             Matrix4f transform = new Matrix4f();
             
@@ -69,6 +74,7 @@ public class Main
             
             // Renderer.begin() to use shader and set uniforms
             // Use the selected shader
+           
             renderer.begin();
             	renderer.updateUniforms();
             	// renderList.draw(renderer);
@@ -76,9 +82,11 @@ public class Main
             // where all Drawable objects call draw() method
             // add vertices to some vertex array for a buffer
             // Use this texture and its vertices for rendering
+            	
             tex1.bind();
             
             // Renderer.end() to bind VAO and actually draw stuff
+            
             vertices.bind();
             
             // Draw the vertices
