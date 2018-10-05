@@ -129,8 +129,6 @@ public class VertexArray
     // TODO: put in a drawBatch() method of sorts to be called every frame
     public void flip()
     {
-    	// NTS: flip turns buffer from "put" mode to "get" mode
-    	// set to get, you can say
     	buffer.flip();
     }
     
@@ -170,11 +168,6 @@ public class VertexArray
     	glDisableVertexAttribArray(POSITION_ATTRB);
     	glDisableVertexAttribArray(COLOR_ATTRB);
     	glDisableVertexAttribArray(ST_ATTRB);
-    }
-    
-    public void unbind()
-    {
-    	buffer.clear();
     }
     
     public void delete()

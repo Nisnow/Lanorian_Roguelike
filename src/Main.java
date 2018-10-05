@@ -25,8 +25,8 @@ public class Main
     
     private Window window;
     private Shader shader;
-    private VertexArray vertices;
     private Texture tex1;
+    private Renderer renderer;
      
     public Main() 
     {
@@ -34,19 +34,12 @@ public class Main
     	window = new Window();
         window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
          
-        // Initialize renderer 
-        vertices = new VertexArray();
-        vertices.init();
-        
-     
         tex1 = new Texture("resources/images/narry");
         Sprite soda = new Sprite(tex1);
         
-        Renderer renderer = new Renderer();
-        
+        renderer = new Renderer();
         
         shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
-
 
         // Game loop
         while (!window.closing()) 
@@ -56,14 +49,7 @@ public class Main
             
             // Clear the screen before calling anything
             window.clear();
-            
-            vertices.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
-            vertices.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
-            vertices.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
-            vertices.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
-            vertices.flip();
-            
-
+           
             // TODO: put these in renderer !!!!
             Matrix4f transform = new Matrix4f();
             
@@ -71,39 +57,21 @@ public class Main
             float time = ((float) GLFW.glfwGetTime());
             //transform.translate((float) Math.cos(time), 0, 0);
             //transform.rotate((float)Math.toRadians(60*time), 0.0f, 1.0f, 1.0f);
-            
-            // Renderer.begin() to use shader and set uniforms
-            // Use the selected shader
            
             renderer.begin();
             	renderer.updateUniforms();
+            	renderer.drawTexture(tex1, null);
             	// renderList.draw(renderer);
-            	
-            // where all Drawable objects call draw() method
-            // add vertices to some vertex array for a buffer
-            // Use this texture and its vertices for rendering
-            	
-            tex1.bind();
-            
-            // Renderer.end() to bind VAO and actually draw stuff
-            
-            vertices.bind();
-            
-            // Draw the vertices
-            vertices.draw(); 
-            
             renderer.end();
             
             // Swap buffers
             window.display();
             
             // Reset everything to default
-            vertices.reset();
             shader.reset();
                          
             window.printFPS();
         }
-         
         this.destroyOpenGL();
     }
      
@@ -112,7 +80,7 @@ public class Main
     	// TODO: some texture array in renderer
         tex1.deleteTexture();
         shader.delete();
-        vertices.delete();
+        renderer.delete();
         
         glfwTerminate();
     }

@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import org.joml.Matrix4f;
 
+import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
 import util.IntRect;
 
@@ -14,7 +15,7 @@ public class Renderer
 	
 	private VertexArray data = new VertexArray();
 	private Shader shader;
-	private Texture currentTexture;
+	private Texture texture;
 	
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f currentTransform = new Matrix4f();
@@ -29,15 +30,7 @@ public class Renderer
 	public Renderer()
 	{
 		shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
-	}
-	
-	/**
-	 * Set up vertex arrays, VAO, and VBO
-	 * required for rendering
-	 */
-	public void init()
-	{
-		// TODO: fill in this stubby stub
+		data.init();
 	}
 	
 	public void pushMatrix(Matrix4f matrix)
@@ -72,23 +65,27 @@ public class Renderer
 			throw new IllegalStateException("Must not be drawing before calling begin()!");	
 		drawing = true;
 		shader.useProgram();
-		currentTexture = null;
+		texture = null;
 	}
 	
 	public void drawTexture(Texture texture, IntRect frame)
 	{
-		// TODO: fill in this stubby stub
-	}
-	
-	public void flush()
-	{
-		// TODO: fill in this stubby stub
+		this.texture = texture;
+		
+		// temp
+		data.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
+        data.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
+        data.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
+        data.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
 	}
 	
 	public void end()
 	{
+		if(!drawing)
+			throw new IllegalStateException("Must be drawing before calling end()!");
 		drawing = false;
-		// TODO: fill in this stubby stub some more
+		data.flip();
+		render();
 	}
 	
 	private void checkStatus()
@@ -98,6 +95,15 @@ public class Renderer
 	
 	private void render()
 	{
-		// TODO: fill in this stubby stub
+		if(texture != null)
+			texture.bind();
+		data.bind();
+		data.draw();
+		data.reset();
+	}
+	
+	public void delete()
+	{
+		data.delete();
 	}
 }
