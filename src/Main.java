@@ -37,7 +37,8 @@ public class Main
         Sprite soda = new Sprite(tex1, "default");
         
         renderer = new Renderer();
-
+        renderer.setWindow(window);
+    	renderer.updateUniforms();
         // Game loop
         while (!window.closing()) 
         {
@@ -56,9 +57,8 @@ public class Main
             //transform.rotate((float)Math.toRadians(60*time), 0.0f, 1.0f, 1.0f);
            
             renderer.begin();
-            	renderer.updateUniforms();
+
             	soda.draw(renderer);
-            	//renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));
             	// renderList.draw(renderer);
             renderer.end();
             

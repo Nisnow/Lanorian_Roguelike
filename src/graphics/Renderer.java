@@ -16,6 +16,8 @@ public class Renderer
 	private VertexArray data = new VertexArray();
 	private Shader shader;
 	private Texture texture;
+
+	private Window window;
 	
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f currentTransform = new Matrix4f();
@@ -33,6 +35,11 @@ public class Renderer
 		data.init();
 	}
 	
+	public void setWindow(Window window)
+	{
+		this.window = window;
+	}
+	
 	public void pushMatrix(Matrix4f matrix)
 	{
 		// TODO: fill in this stubby stub
@@ -45,6 +52,9 @@ public class Renderer
 	
 	public void updateUniforms()
 	{
+		viewMatrix.ortho2D(0, window.getWidth(), window.getHeight(), 0);
+		
+		shader.setUniformMat4f("view", viewMatrix);
 		shader.setUniformMat4f("transform", currentTransform);
 		// TODO: fill in this stubby stub some more
 	}
@@ -78,10 +88,10 @@ public class Renderer
 		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
 
 		// temp
-		data.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(s, t));
-        data.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(s, t1));
-        data.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(s1, t1));
-        data.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(s1, t));
+		data.put(new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0).setST(s, t));
+        data.put(new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1));
+        data.put(new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1));
+        data.put(new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t));
 	}
 	
 	public void end()
