@@ -9,8 +9,7 @@ import graphics.Shader;
 import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
-import graphics.graphicsUtil.Vertex;
-import graphics.graphicsUtil.VertexArray;
+import util.IntRect;
  
 public class Main 
 {
@@ -35,11 +34,9 @@ public class Main
         window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
          
         tex1 = new Texture("resources/images/narry");
-        Sprite soda = new Sprite(tex1);
+        Sprite soda = new Sprite(tex1, "default");
         
         renderer = new Renderer();
-        
-        shader = new Shader("src/resources/shaders/TestVert.glsl", "src/resources/shaders/TestFrag.glsl");
 
         // Game loop
         while (!window.closing()) 
@@ -60,15 +57,13 @@ public class Main
            
             renderer.begin();
             	renderer.updateUniforms();
-            	renderer.drawTexture(tex1, null);
+            	soda.draw(renderer);
+            	//renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));
             	// renderList.draw(renderer);
             renderer.end();
             
             // Swap buffers
             window.display();
-            
-            // Reset everything to default
-            shader.reset();
                          
             window.printFPS();
         }
@@ -79,7 +74,6 @@ public class Main
     {  
     	// TODO: some texture array in renderer
         tex1.deleteTexture();
-        shader.delete();
         renderer.delete();
         
         glfwTerminate();

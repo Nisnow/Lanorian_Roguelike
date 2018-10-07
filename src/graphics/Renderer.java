@@ -72,11 +72,16 @@ public class Renderer
 	{
 		this.texture = texture;
 		
+		float s = (float) frame.x / texture.getWidth();
+		float t = (float) frame.y / texture.getHeight();
+		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
+		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
+
 		// temp
-		data.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(0, 0));
-        data.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(0, 1));
-        data.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(1, 1));
-        data.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(1, 0));
+		data.put(new Vertex().setPosition(-0.5f, 0.5f, 0).setColor(1, 0, 0).setST(s, t));
+        data.put(new Vertex().setPosition(-0.5f, -0.5f, 0).setColor(0, 1, 0).setST(s, t1));
+        data.put(new Vertex().setPosition(0.5f, -0.5f, 0).setColor(0, 0, 1).setST(s1, t1));
+        data.put(new Vertex().setPosition(0.5f, 0.5f, 0).setColor(1, 1, 1).setST(s1, t));
 	}
 	
 	public void end()
@@ -100,6 +105,7 @@ public class Renderer
 		data.bind();
 		data.draw();
 		data.reset();
+		shader.reset();
 	}
 	
 	public void delete()
