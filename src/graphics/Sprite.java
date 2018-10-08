@@ -35,6 +35,9 @@ public class Sprite implements Drawable
 	{
 		IntRect frame;
 		
+		if(animation == null)
+			throw new NullPointerException("Please specify an animation!");
+		
 		if(animation.getFrameCount() > 1 
 				&& animation.getInterval() > 0)
 		{
@@ -54,11 +57,9 @@ public class Sprite implements Drawable
 		spriteTransform.rotate((float) rotation, 0.0f, 0.0f, 1.0f);
 		spriteTransform.scale((float) scale.x, (float) scale.y, 0.0f);
 		
+		renderer.pushMatrix(spriteTransform);
 		renderer.drawTexture(texture, frame);
-		/*
-		p_renderer.pushTransform(spriteTransform);
-		p_renderer.drawSprite(Texture, frame);
-		p_renderer.popTransform();*/
+		renderer.popMatrix();
 	}
 	
 	public Texture getTexture()

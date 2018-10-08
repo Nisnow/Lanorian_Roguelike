@@ -2,14 +2,14 @@ import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.lwjgl.glfw.GLFW;
 
 import graphics.Renderer;
-import graphics.Shader;
 import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
-import util.IntRect;
  
 public class Main 
 {
@@ -38,6 +38,7 @@ public class Main
         
         renderer = new Renderer();
         renderer.setWindow(window);
+
         // Game loop
         while (!window.closing()) 
         {
@@ -47,19 +48,10 @@ public class Main
             // Clear the screen before calling anything
             window.clear();
            
-            // TODO: put these in renderer !!!!
-            Matrix4f transform = new Matrix4f();
-            
-            // DEFAULT: radians, 0.0, 0.0, 1.0);
-            float time = ((float) GLFW.glfwGetTime());
-            //transform.translate((float) Math.cos(time), 0, 0);
-            //transform.rotate((float)Math.toRadians(60*time), 0.0f, 1.0f, 1.0f);
-            transform.scale(3.0f, 3.0f, 0.0f);
-            
             renderer.begin();
-            	renderer.pushMatrix(transform);
+            	soda.setScale(3.0f, 3.0f);
+            	soda.setPosition(200, 100);
             	soda.draw(renderer);
-            	renderer.popMatrix();
             	// renderList.draw(renderer);
             renderer.end();
             

@@ -17,8 +17,6 @@ public class Renderer
 	private Shader shader;
 	private Texture texture;
 
-	private Window window;
-	
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f currentTransform = new Matrix4f();
 
@@ -38,9 +36,12 @@ public class Renderer
 		transformStack.push(new Matrix4f().identity());
 	}
 	
+	/**
+	 * Set the window for this renderer to get window dimensions from
+	 * Used to set the orthogonal matrix transformation
+	 */
 	public void setWindow(Window window)
 	{
-		this.window = window;
 		viewMatrix.ortho2D(0, window.getWidth(), window.getHeight(), 0);
 	}
 	
@@ -77,13 +78,16 @@ public class Renderer
 		currentTransform = transformStack.peek();
 	}
 	
+	/*
+	 * Update shader uniforms.
+	 * Called after setting the current transformation
+	 */
 	public void updateUniforms()
 	{
 		shader.useProgram();
 		
 		shader.setUniformMat4f("view", viewMatrix);
 		shader.setUniformMat4f("transform", currentTransform);
-		// TODO: fill in this stubby stub some more
 	}
 	
 	public Shader getShader()
@@ -96,6 +100,9 @@ public class Renderer
 		// TODO: fill in this stubby stub
 	}
 	
+	/*
+	 * Begin the sprite batch. Must be called before any draw calls
+	 */
 	public void begin()
 	{
 		if(drawing)
@@ -104,7 +111,12 @@ public class Renderer
 		shader.useProgram();
 		texture = null;
 	}
-	
+
+	/**
+	 * Adds more vertices for a texture to the vertex array objct
+	 * @param texture the texture to draw
+	 * @param frame the current animation frame to draw
+	 */
 	public void drawTexture(Texture texture, IntRect frame)
 	{
 		this.texture = texture;
@@ -120,6 +132,10 @@ public class Renderer
         data.put(new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t));
 	}
 	
+	/*
+	 * Draw all the vertices in the vertex array. Must be called after all
+	 * draw calls
+	 */
 	public void end()
 	{
 		if(!drawing)
@@ -134,6 +150,9 @@ public class Renderer
 		// TODO: fill in this stubby stub
 	}
 	
+	/*
+	 * Actually draw the vertices in the vertex array
+	 */
 	private void render()
 	{
 		if(texture != null)
@@ -144,6 +163,9 @@ public class Renderer
 		shader.reset();
 	}
 	
+	/*
+	 * Delete the vertex array. Called when closing the program
+	 */
 	public void delete()
 	{
 		data.delete();
