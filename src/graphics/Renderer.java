@@ -33,26 +33,53 @@ public class Renderer
 	{
 		shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
 		data.init();
+		
+		// Initialize renderer with identity matrix
+		transformStack.push(new Matrix4f().identity());
 	}
 	
 	public void setWindow(Window window)
 	{
 		this.window = window;
+		viewMatrix.ortho2D(0, window.getWidth(), window.getHeight(), 0);
 	}
 	
+	/**
+	 * Adds a new matrix transform to the transformation stack
+	 * @param matrix the matrix that will be multiplied by the previous matrix
+	 */
 	public void pushMatrix(Matrix4f matrix)
 	{
-		// TODO: fill in this stubby stub
+		if(transformStack.isEmpty())
+		{
+			transformStack.push(new Matrix4f().identity());
+		}
+		else
+		{
+			Matrix4f prevTransform = new Matrix4f(transformStack.peek());
+			prevTransform.mul(matrix);
+			transformStack.push(prevTransform);
+		}
+
+		currentTransform = transformStack.peek();
+		updateUniforms();
 	}
 	
+	/**
+	 * Reverts back to a previous coordinate system (matrix)
+	 * Must be called sometime after every pushTransform() call
+	 */
 	public void popMatrix()
 	{
-		// TODO: fill in this stubby stub
+		if(transformStack.size() > 1)
+			transformStack.pop();
+	
+		currentTransform = transformStack.peek();
 	}
 	
 	public void updateUniforms()
 	{
-		viewMatrix.ortho2D(0, window.getWidth(), window.getHeight(), 0);
+		shader.useProgram();
 		
 		shader.setUniformMat4f("view", viewMatrix);
 		shader.setUniformMat4f("transform", currentTransform);
@@ -87,7 +114,6 @@ public class Renderer
 		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
 		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
 
-		// temp
 		data.put(new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0).setST(s, t));
         data.put(new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1));
         data.put(new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1));

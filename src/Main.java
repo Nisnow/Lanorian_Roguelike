@@ -23,8 +23,8 @@ public class Main
     private final int HEIGHT = 600;
     
     private Window window;
-    private Shader shader;
     private Texture tex1;
+    private Texture tex2;
     private Renderer renderer;
      
     public Main() 
@@ -38,7 +38,6 @@ public class Main
         
         renderer = new Renderer();
         renderer.setWindow(window);
-    	renderer.updateUniforms();
         // Game loop
         while (!window.closing()) 
         {
@@ -55,10 +54,12 @@ public class Main
             float time = ((float) GLFW.glfwGetTime());
             //transform.translate((float) Math.cos(time), 0, 0);
             //transform.rotate((float)Math.toRadians(60*time), 0.0f, 1.0f, 1.0f);
-           
+            transform.scale(3.0f, 3.0f, 0.0f);
+            
             renderer.begin();
-
+            	renderer.pushMatrix(transform);
             	soda.draw(renderer);
+            	renderer.popMatrix();
             	// renderList.draw(renderer);
             renderer.end();
             
