@@ -15,7 +15,7 @@ public class Renderer
 	
 	private VertexArray data = new VertexArray();
 	private Shader shader;
-	private Texture texture;
+	private Texture currentTexture;
 
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f currentTransform = new Matrix4f();
@@ -23,6 +23,8 @@ public class Renderer
 	private boolean drawing = false;
 	
 	private Stack<Matrix4f> transformStack = new Stack<Matrix4f>();
+	
+	private int idx = 0;
 	
 	/*
 	 * Initialize the renderer with the default shader
@@ -109,7 +111,7 @@ public class Renderer
 			throw new IllegalStateException("Must not be drawing before calling begin()!");	
 		drawing = true;
 		shader.useProgram();
-		texture = null;
+		currentTexture = null;
 	}
 
 	/**
@@ -119,7 +121,7 @@ public class Renderer
 	 */
 	public void drawTexture(Texture texture, IntRect frame)
 	{
-		this.texture = texture;
+		checkStatus(texture);
 		
 		float s = (float) frame.x / texture.getWidth();
 		float t = (float) frame.y / texture.getHeight();
@@ -130,6 +132,19 @@ public class Renderer
         data.put(new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1));
         data.put(new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1));
         data.put(new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t));
+        
+        idx += 6;
+	}
+	
+	public void flush()
+	{
+		if(idx > 0)
+		{
+			data.flip();
+			render();
+			idx = 0;
+			data.reset();
+		}
 	}
 	
 	/*
@@ -141,24 +156,31 @@ public class Renderer
 		if(!drawing)
 			throw new IllegalStateException("Must be drawing before calling end()!");
 		drawing = false;
-		data.flip();
-		render();
+		flush();
 	}
 	
-	private void checkStatus()
+	private void checkStatus(Texture texture)
 	{
-		// TODO: fill in this stubby stub
+		if(texture == null)
+			throw new NullPointerException("Null texture");
+		
+		if(currentTexture != texture)
+		{
+			// apply last texture
+			flush();
+			currentTexture = texture;
+		}
 	}
-	
+		
 	/*
 	 * Actually draw the vertices in the vertex array
 	 */
 	private void render()
 	{
-		if(texture != null)
-			texture.bind();
+		if(currentTexture != null)
+			currentTexture.bind();
 		data.bind();
-		data.draw();
+		data.draw(idx);
 		data.reset();
 		shader.reset();
 	}

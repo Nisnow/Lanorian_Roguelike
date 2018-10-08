@@ -1,11 +1,6 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
-import org.lwjgl.glfw.GLFW;
-
 import graphics.Renderer;
 import graphics.Sprite;
 import graphics.Texture;
@@ -13,7 +8,6 @@ import graphics.Window;
  
 public class Main 
 {
-
 	public static void main(String[] args) 
     {
         new Main();
@@ -36,6 +30,9 @@ public class Main
         tex1 = new Texture("resources/images/narry");
         Sprite soda = new Sprite(tex1, "default");
         
+        tex2 = new Texture("resources/images/birboi");
+        Sprite fairy = new Sprite(tex2, "idle");
+        
         renderer = new Renderer();
         renderer.setWindow(window);
 
@@ -52,7 +49,7 @@ public class Main
             	soda.setScale(3.0f, 3.0f);
             	soda.setPosition(200, 100);
             	soda.draw(renderer);
-            	// renderList.draw(renderer);
+            	//fairy.draw(renderer);
             renderer.end();
             
             // Swap buffers
@@ -65,10 +62,8 @@ public class Main
      
     private void destroyOpenGL()
     {  
-    	// TODO: some texture array in renderer
         tex1.deleteTexture();
         renderer.delete();
-        
         glfwTerminate();
     }
 }

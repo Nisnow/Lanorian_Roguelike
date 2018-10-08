@@ -148,9 +148,9 @@ public class VertexArray
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
     }
     
-    public void draw()
+    public void draw(int indexCount)
     {
-    	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_BYTE, 0);
+    	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_BYTE, 0);
     }
     
     /*
