@@ -31,16 +31,16 @@ public class Animation
 	/**
 	 * Get frame at an index. Calculates looping
 	 */
-	public IntRect getFrame(int p_frame)
+	public IntRect getFrame(int frame)
 	{
 		int frameIdx = 0;
 		if(loop)
-			frameIdx = (p_frame % frameCount + frameCount) % frameCount;
+			frameIdx = (frame % frameCount + frameCount) % frameCount;
 		else
-			frameIdx = Math.max(Math.min(p_frame, frameCount - 1), 0);
+			frameIdx = Math.max(Math.min(frame, frameCount - 1), 0);
 		
-		IntRect currentFrame = new IntRect(frame);
-		currentFrame.x += frame.w * frameIdx;
+		IntRect currentFrame = new IntRect(this.frame);
+		currentFrame.x += this.frame.w * frameIdx;
 		return currentFrame;
 	}
 
@@ -81,34 +81,34 @@ public class Animation
 	
 	/**
 	 * Parse animation information from a JSON Object
-	 * @param p_object the JSONObject to retrieve data from
+	 * @param object the JSONObject to retrieve data from
 	 */
-	public void parse(JsonObject p_object)
+	public void parse(JsonObject object)
 	{
-		name = p_object.get("name").getAsString();
+		name = object.get("name").getAsString();
 		
-		frame.x = p_object.get("x").getAsInt();
-		frame.y = p_object.get("y").getAsInt();
-		frame.w = p_object.get("w").getAsInt();
-		frame.h = p_object.get("h").getAsInt();
+		frame.x = object.get("x").getAsInt();
+		frame.y = object.get("y").getAsInt();
+		frame.w = object.get("w").getAsInt();
+		frame.h = object.get("h").getAsInt();
 		
-		if(hasObject(p_object, "frames"))
-			frameCount = p_object.get("frames").getAsInt();
+		if(hasObject(object, "frames"))
+			frameCount = object.get("frames").getAsInt();
 		else
 			frameCount = 1;
 		
-		if(hasObject(p_object, "interval"))
-			interval =  p_object.get("interval").getAsFloat() /1000f; // convert from milliseconds to seconds
+		if(hasObject(object, "interval"))
+			interval =  object.get("interval").getAsFloat() /1000f; // convert from milliseconds to seconds
 		
-		if(hasObject(p_object, "loop"))
-			loop =  p_object.get("loop").getAsBoolean();;
+		if(hasObject(object, "loop"))
+			loop =  object.get("loop").getAsBoolean();;
 	}
 	
 	/**
 	 * Checks if an animation has a certain value from a JSON key
 	 */
-	private boolean hasObject(JsonObject p_object, String p_key)
+	private boolean hasObject(JsonObject object, String key)
 	{
-		return p_object.get(p_key) != null;
+		return object.get(key) != null;
 	}
 }

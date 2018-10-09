@@ -1,7 +1,5 @@
 package graphics.graphicsUtil;
 
-import java.util.Arrays;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -10,8 +8,8 @@ public class Vertex
 {
     // Vertex data
     public Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
-    public Vector4f color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
-    public Vector2f st = new Vector2f(0.0f, 0.0f);
+    public Vector4f color	 = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    public Vector2f st 		 = new Vector2f(0.0f, 0.0f);
     
     /*
      * Default constructor
@@ -25,8 +23,8 @@ public class Vertex
     public Vertex(Vertex copy)
     {
     	position = copy.getPosition();
-    	color = copy.getColor();
-    	st = copy.getST();
+    	color 	 = copy.getColor();
+    	st 		 = copy.getST();
     }
     
     /**

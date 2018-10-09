@@ -6,7 +6,7 @@ import org.joml.Vector2f;
 import util.Clock;
 import util.IntRect;
 
-public class Sprite implements Drawable
+public class Sprite implements Renderable
 {
 	private final Vector2f DEFAULT_SCALE = new Vector2f(1.0f, 1.0f);
 	

@@ -1,6 +1,7 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
+import graphics.RenderList;
 import graphics.Renderer;
 import graphics.Sprite;
 import graphics.Texture;
@@ -27,11 +28,19 @@ public class Main
     	window = new Window();
         window.init(WIDTH, HEIGHT, "Lanorian Roguelite");
          
+        RenderList renderList = new RenderList();
+        
         tex1 = new Texture("resources/images/narry");
         Sprite soda = new Sprite(tex1, "default");
         
+    	soda.setPosition(200, 50);
+    	soda.setScale(3.0f, 3.0f);
+    	renderList.add(soda);
+        
         tex2 = new Texture("resources/images/birboi");
-        Sprite fairy = new Sprite(tex2, "fly");
+        Sprite mountainDew = new Sprite(tex2, "fly");
+        mountainDew.setPosition(100, 300);
+        renderList.add(mountainDew);
         
         renderer = new Renderer();
         renderer.setWindow(window);
@@ -46,11 +55,7 @@ public class Main
             window.clear();
            
             renderer.begin();
-            	soda.setPosition(200, 50);
-            	soda.setScale(3.0f, 3.0f);
-            	soda.draw(renderer);
-            	fairy.setPosition(100, 300);
-            	fairy.draw(renderer);
+            	renderList.draw(renderer);
             renderer.end();
             
             // Swap buffers

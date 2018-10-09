@@ -1,6 +1,6 @@
 package graphics;
 
-public interface Drawable
+public interface Renderable
 {
 	public void draw(Renderer renderer);
 }
