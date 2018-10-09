@@ -31,7 +31,7 @@ public class Main
         Sprite soda = new Sprite(tex1, "default");
         
         tex2 = new Texture("resources/images/birboi");
-        Sprite fairy = new Sprite(tex2, "idle");
+        Sprite fairy = new Sprite(tex2, "fly");
         
         renderer = new Renderer();
         renderer.setWindow(window);
@@ -46,10 +46,10 @@ public class Main
             window.clear();
            
             renderer.begin();
-            	soda.setScale(3.0f, 3.0f);
-            	soda.setPosition(200, 100);
+            	soda.setPosition(200, 50);
             	soda.draw(renderer);
-            	//fairy.draw(renderer);
+            //	fairy.setPosition(100, 300);
+            	fairy.draw(renderer);
             renderer.end();
             
             // Swap buffers

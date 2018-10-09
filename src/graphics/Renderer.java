@@ -3,6 +3,8 @@ package graphics;
 import java.util.Stack;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
@@ -45,6 +47,8 @@ public class Renderer
 	public void setWindow(Window window)
 	{
 		viewMatrix.ortho2D(0, window.getWidth(), window.getHeight(), 0);
+		shader.useProgram();
+		shader.setUniformMat4f("view", viewMatrix);
 	}
 	
 	/**
@@ -63,9 +67,8 @@ public class Renderer
 			prevTransform.mul(matrix);
 			transformStack.push(prevTransform);
 		}
-
+		
 		currentTransform = transformStack.peek();
-		updateUniforms();
 	}
 	
 	/**
@@ -78,18 +81,6 @@ public class Renderer
 			transformStack.pop();
 	
 		currentTransform = transformStack.peek();
-	}
-	
-	/*
-	 * Update shader uniforms.
-	 * Called after setting the current transformation
-	 */
-	public void updateUniforms()
-	{
-		shader.useProgram();
-		
-		shader.setUniformMat4f("view", viewMatrix);
-		shader.setUniformMat4f("transform", currentTransform);
 	}
 	
 	public Shader getShader()
@@ -128,11 +119,19 @@ public class Renderer
 		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
 		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
 
-		data.put(new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0).setST(s, t));
-        data.put(new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1));
-        data.put(new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1));
-        data.put(new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t));
-        
+		Vertex[] verts = new Vertex[4];
+		verts[0] = new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0).setST(s, t);
+		verts[1] = new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1);
+		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1);
+		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t);
+
+		// Transform vertices
+		for(int i = 0; i < 4; i++)
+		{
+			Vector4f vec = currentTransform.transform(new Vector4f(verts[i].position, 1.0f));
+			verts[i].setPosition(vec.x, vec.y, vec.z);
+			data.put(verts[i]);
+		}
         idx += 6;
 	}
 	
@@ -182,7 +181,6 @@ public class Renderer
 		data.bind();
 		data.draw(idx);
 		data.reset();
-		shader.reset();
 	}
 	
 	/*

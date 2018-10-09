@@ -2,12 +2,17 @@ package graphics.graphicsUtil;
 
 import java.util.Arrays;
 
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 public class Vertex 
 {
     // Vertex data
-    private float[] position = new float[] {0.0f, 0.0f, 0.0f};
-    private float[] color 	 = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
-    private float[] st 		 = new float[] {0.0f, 0.0f};
+    public Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
+    public Vector4f color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    public Vector2f st = new Vector2f(0.0f, 0.0f);
+    
     /*
      * Default constructor
      */
@@ -33,18 +38,18 @@ public class Vertex
      */
     public Vertex setPosition(float x, float y, float z)
     {
-    	position[0] = x;
-    	position[1] = y;
-    	position[2] = z;
+    	position.x = x;
+    	position.y = y;
+    	position.z = z;
     	return this;
     }
     
     /**
      * @return a copy of this vertex's position array
      */
-    public float[] getPosition()
+    public Vector3f getPosition()
     {
-    	return Arrays.copyOf(position, position.length);
+    	return new Vector3f(position);
     }
      
     /**
@@ -56,18 +61,18 @@ public class Vertex
      */
     public Vertex setColor(float r, float g, float b)
     {
-    	color[0] = r;
-    	color[1] = g;
-    	color[2] = b;
+    	color.x = r;
+    	color.y = g;
+    	color.z = b;
         return this;
     }
     
     /**
      * @return a copy of this vertex's color array
      */
-    public float[] getColor()
+    public Vector4f getColor()
     {
-    	return Arrays.copyOf(color, color.length);
+    	return new Vector4f(color);
     }
      
     /**
@@ -78,34 +83,17 @@ public class Vertex
      */
     public Vertex setST(float s, float t)
     {
-    	st[0] = s;
-    	st[1] = t;
+    	st.x = s;
+    	st.y = t;
     	return this;
     }
     
     /**
      * @return a copy of this vertex's ST array
      */
-    public float[] getST()
+    public Vector2f getST()
     {
-    	return Arrays.copyOf(st, st.length);
-    }
-
-    /**
-     * Set the position (0.0f--1.0f) of this vertex
-     * @param x the x-value
-     * @param y the y-value
-     * @param z the z-value
-     * @param w the w-value
-     * @return this vertex for further editing
-     */
-    public Vertex setPosition(float x, float y, float z, float w)
-    {
-    	position[0] = x;
-    	position[1] = y;
-    	position[2] = z;
-    	position[3] = w;
-    	return this;
+    	return new Vector2f(st);
     }
 
     /**
@@ -118,9 +106,9 @@ public class Vertex
      */
     public Vertex setColor(float r, float g, float b, float a)
     {
-    	color[0] = r;
-    	color[1] = g;
-    	color[2] = b;
+    	color.x = r;
+    	color.y = g;
+    	color.z = b;
         return this;
     }
 }

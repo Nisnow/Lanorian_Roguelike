@@ -93,9 +93,13 @@ public class VertexArray
      */
     public VertexArray put(Vertex vert)
     {
-    	buffer.put(vert.getPosition());
-		buffer.put(vert.getColor());
-		buffer.put(vert.getST());
+    	float[] position = {vert.position.x, vert.position.y, vert.position.z};
+    	float[] color = {vert.color.x, vert.color.y, vert.color.z, vert.color.w};
+    	float[] st = {vert.st.x, vert.st.y};
+    	
+    	buffer.put(position);
+		buffer.put(color);
+		buffer.put(st);
 	
     	return this;
     }
