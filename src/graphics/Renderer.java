@@ -3,7 +3,6 @@ package graphics;
 import java.util.Stack;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import graphics.graphicsUtil.Vertex;
@@ -135,6 +134,9 @@ public class Renderer
         idx += 6;
 	}
 	
+	/*
+	 * Draw the previous texture
+	 */
 	public void flush()
 	{
 		if(idx > 0)
@@ -158,6 +160,10 @@ public class Renderer
 		flush();
 	}
 	
+	/**
+	 * Draw any previous textures before drawing the current one
+	 * @param texture the current texture to be drawn
+	 */
 	private void checkStatus(Texture texture)
 	{
 		if(texture == null)

@@ -47,8 +47,9 @@ public class Main
            
             renderer.begin();
             	soda.setPosition(200, 50);
+            	soda.setScale(3.0f, 3.0f);
             	soda.draw(renderer);
-            //	fairy.setPosition(100, 300);
+            	fairy.setPosition(100, 300);
             	fairy.draw(renderer);
             renderer.end();
             
