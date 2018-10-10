@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL15;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -127,6 +126,11 @@ public class VertexArray
     	vboiID = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+
+        // Unbind everything since they're bound
+    	glBindVertexArray(0);
+    	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
     // TODO: put in renderer

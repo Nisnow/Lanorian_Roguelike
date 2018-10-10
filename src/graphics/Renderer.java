@@ -27,6 +27,8 @@ public class Renderer
 	
 	private int idx = 0;
 	
+	Color color = new Color();
+	
 	/*
 	 * Initialize the renderer with the default shader
 	 */
@@ -50,6 +52,15 @@ public class Renderer
 		shader.setUniformMat4f("view", viewMatrix);
 	}
 	
+	public void setColor(Color color)
+	{
+		setColor(color.r, color.g, color.b, color.a);
+	}
+
+	public void setColor(float r, float g, float b, float a)
+	{
+		color.set(r, g, b, a);
+	}	
 	/**
 	 * Adds a new matrix transform to the transformation stack
 	 * @param matrix the matrix that will be multiplied by the previous matrix
