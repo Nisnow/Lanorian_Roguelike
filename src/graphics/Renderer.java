@@ -11,8 +11,8 @@ import util.IntRect;
 
 public class Renderer 
 {
-	private final String DEFAULT_VERTEX = "src/resources/shaders/TestVert.glsl";
-	private final String DEFAULT_FRAG	= "src/resources/shaders/TestFrag.glsl";
+	private final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
+	private final String DEFAULT_FRAG	= "src/resources/shaders/DefaultFrag.glsl";
 	
 	private VertexArray data = new VertexArray();
 	private Shader shader;
@@ -171,6 +171,9 @@ public class Renderer
 		flush();
 	}
 	
+	/*
+	 * Create indices for the given texture
+	 */
 	private void createQuad()
 	{
 		byte[] idx = new byte[6];

@@ -40,6 +40,7 @@ public class Main
         tex2 = new Texture("resources/images/birboi");
         Sprite mountainDew = new Sprite(tex2, "fly");
         mountainDew.setPosition(100, 300);
+        mountainDew.setScale(4.0f, 4.0f);
         renderList.add(mountainDew);
         
         renderer = new Renderer();
@@ -52,7 +53,7 @@ public class Main
             glfwPollEvents();
             
             // Clear the screen before calling anything
-            window.clear();
+            window.clear(0.0f, 0.2f, 0.2f);
            
             renderer.begin();
             	renderList.draw(renderer);

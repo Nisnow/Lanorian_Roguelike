@@ -2,7 +2,6 @@ package graphics.graphicsUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -13,8 +12,6 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class VertexArray
 {
-    private ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-    
     private FloatBuffer buffer;
     
     private int vaoID;
@@ -23,7 +20,10 @@ public class VertexArray
     
     // Bytes per float
     public static final int BPF = 4;
-     
+
+    // Indices per quad
+    private static final int INDICES = 6;
+
     // Elements per parameter
     public static final int POSITION_ELEMENT_COUNT 	= 3;
     public static final int COLOR_ELEMENT_COUNT 	= 4;
@@ -52,16 +52,7 @@ public class VertexArray
     public static final int COLOR_ATTRB = 1;
     public static final int ST_ATTRB = 2;
     
-    private final int INDICES = 6;
-    
     private ByteBuffer indicesBuffer;
-    
-    // OpenGL expects to draw vertices in counter clockwise order by default
-    // TODO: put in renderer
-    private byte[] indices = {
-            0, 1, 2,
-            2, 3, 0
-    };
     
     /*
      * Default constructor
@@ -99,6 +90,13 @@ public class VertexArray
     	return this;
     }
     
+    /**
+     * Put an array of indices into the element buffer for rendering
+     * textures
+     * 
+     * @param indices the array of byte indices
+     * @return this vertex array for further editing
+     */
     public VertexArray put(byte[] indices)
     {
     	indicesBuffer.put(indices);
@@ -130,24 +128,30 @@ public class VertexArray
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
         // Unbind everything since they're bound
-    	//glBindVertexArray(0);
-    	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-    	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    	glBindVertexArray(0);
+    	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
-    
-    // TODO: put in renderer
-    // TODO: put in a drawBatch() method of sorts to be called every frame
+
+    /*
+     * Flip the buffers
+     * This sets the buffers from write mode to read mode
+     */
     public void flip()
     {
     	buffer.flip();
     	indicesBuffer.flip();
     }
     
+    /*
+     * Bind the vertex array object, vertex buffer, and element buffer
+     */
     public void bind()
     {
     	// Bind to the VAO that has all the information about the vertices
     	glBindVertexArray(vaoID);
     	
+    	// Bind the vertex buffer object
     	glBindBuffer(GL_ARRAY_BUFFER, vboID);
     	glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     	
@@ -203,10 +207,5 @@ public class VertexArray
     	// Fnally, delete the VAO
     	glBindVertexArray(0);
     	glDeleteVertexArrays(vaoID);
-    }
-    
-    public int size()
-    {
-    	return vertices.size();
     }
 }
