@@ -101,7 +101,7 @@ public class Animation
 			interval =  object.get("interval").getAsFloat() /1000f; // convert from milliseconds to seconds
 		
 		if(hasObject(object, "loop"))
-			loop =  object.get("loop").getAsBoolean();;
+			loop =  object.get("loop").getAsBoolean();
 	}
 	
 	/**

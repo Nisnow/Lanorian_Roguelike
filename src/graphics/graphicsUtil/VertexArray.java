@@ -52,8 +52,9 @@ public class VertexArray
     public static final int COLOR_ATTRB = 1;
     public static final int ST_ATTRB = 2;
     
+    private final int INDICES = 6;
+    
     private ByteBuffer indicesBuffer;
-    private int indicesCount;
     
     // OpenGL expects to draw vertices in counter clockwise order by default
     // TODO: put in renderer
@@ -76,13 +77,8 @@ public class VertexArray
      */
     public VertexArray(int size)
     {
-    	buffer = BufferUtils.createFloatBuffer(size * indices.length);
-    	
-    	// TODO: move this
-        indicesCount = indices.length;
-        indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
-        indicesBuffer.put(indices);
-        indicesBuffer.flip();
+    	buffer = BufferUtils.createFloatBuffer(size * INDICES);
+    	indicesBuffer = BufferUtils.createByteBuffer(size * INDICES);
     }
     
     /**
@@ -100,6 +96,12 @@ public class VertexArray
 		buffer.put(color);
 		buffer.put(st);
 	
+    	return this;
+    }
+    
+    public VertexArray put(byte[] indices)
+    {
+    	indicesBuffer.put(indices);
     	return this;
     }
     
@@ -128,9 +130,9 @@ public class VertexArray
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
         // Unbind everything since they're bound
-    	glBindVertexArray(0);
-    	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    	//glBindVertexArray(0);
+    	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+    	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
     // TODO: put in renderer
@@ -138,6 +140,7 @@ public class VertexArray
     public void flip()
     {
     	buffer.flip();
+    	indicesBuffer.flip();
     }
     
     public void bind()
@@ -154,6 +157,7 @@ public class VertexArray
     	
     	// Bind to the index VBO that has all the information about the order of the vertices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboiID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
     }
     
     public void draw(int indexCount)
@@ -168,6 +172,7 @@ public class VertexArray
     public void reset()
     {
     	buffer.clear();
+    	indicesBuffer.clear();
     	
     	glBindVertexArray(0);
     	glBindBuffer(GL_ARRAY_BUFFER, 0);

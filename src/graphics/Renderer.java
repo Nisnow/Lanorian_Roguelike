@@ -25,7 +25,7 @@ public class Renderer
 	
 	private Stack<Matrix4f> transformStack = new Stack<Matrix4f>();
 	
-	private int idx = 0;
+	private int startIndex = 0;
 	
 	Color color = new Color();
 	
@@ -142,7 +142,7 @@ public class Renderer
 			verts[i].setPosition(vec.x, vec.y, vec.z);
 			data.put(verts[i]);
 		}
-        idx += 6;
+		createQuad();
 	}
 	
 	/*
@@ -150,11 +150,11 @@ public class Renderer
 	 */
 	public void flush()
 	{
-		if(idx > 0)
+		if(startIndex > 0)
 		{
 			data.flip();
 			render();
-			idx = 0;
+			startIndex = 0;
 			data.reset();
 		}
 	}
@@ -169,6 +169,24 @@ public class Renderer
 			throw new IllegalStateException("Must be drawing before calling end()!");
 		drawing = false;
 		flush();
+	}
+	
+	private void createQuad()
+	{
+		byte[] idx = new byte[6];
+			
+		// Triangle 1
+		idx[0] = (byte) (startIndex);
+		idx[1] = (byte) (startIndex + 1);
+		idx[2] = (byte) (startIndex + 2);
+		
+		// Triangle 2
+		idx[3] = (byte) (startIndex + 2);
+		idx[4] = (byte) (startIndex + 3);
+		idx[5] = (byte) (startIndex);
+	
+		data.put(idx);
+		startIndex += 6;
 	}
 	
 	/**
@@ -196,7 +214,7 @@ public class Renderer
 		if(currentTexture != null)
 			currentTexture.bind();
 		data.bind();
-		data.draw(idx);
+		data.draw(startIndex);
 		data.reset();
 	}
 	
