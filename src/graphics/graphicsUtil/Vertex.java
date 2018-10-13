@@ -107,6 +107,7 @@ public class Vertex
     	color.x = r;
     	color.y = g;
     	color.z = b;
+    	color.w = a;
         return this;
     }
 }

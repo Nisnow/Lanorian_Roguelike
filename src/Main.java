@@ -96,6 +96,7 @@ public class Main
     private void destroyOpenGL()
     {  
         tex1.deleteTexture();
+        fbo.delete();
         renderer.delete();
         glfwTerminate();
     }

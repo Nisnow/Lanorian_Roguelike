@@ -1,12 +1,12 @@
 package graphics.graphicsUtil;
 
-import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import org.lwjgl.opengl.GL;
 
 import graphics.Window;
+
 /*
  * Frame buffer for render-to-texture functionality
  * and post-processing effects
@@ -70,6 +70,10 @@ public class Framebuffer
 		this.window = window;
 	}
 	
+	/*
+	 * Start drawing to this framebuffer
+	 * Must be called before starting the sprite batch
+	 */
 	public void begin()
 	{
 		if(id == 0)
@@ -84,11 +88,15 @@ public class Framebuffer
 				window.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
 	
+	/*
+	 * Reset the frame buffer
+	 * Must be called some time after begin() when finished
+	 */
 	public void end()
 	{
 		if(id == 0)
-			return;
-		glViewport(0, 0, window.getWidth(), window.getHeight());
+			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	
@@ -127,5 +135,18 @@ public class Framebuffer
 	public int getHeight()
 	{
 		return height;
+	}
+	
+	/*
+	 * Dispose of this framebuffer once the user closes
+	 * the program
+	 */
+	public void delete()
+	{
+		if(id == 0)
+			return;
+		
+		glDeleteTextures(textureId);
+		glDeleteFramebuffers(id);
 	}
 }

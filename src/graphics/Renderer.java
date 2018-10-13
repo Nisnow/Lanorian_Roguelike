@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
+import graphics.graphicsUtil.Color;
 import util.IntRect;
 
 public class Renderer 
@@ -131,16 +132,21 @@ public class Renderer
 	{
 		checkStatus(texture);
 		
+		float r = color.r;
+		float g = color.g;
+		float b = color.b;
+		float a = color.a;
+		
 		float s = (float) frame.x / texture.getWidth();
 		float t = (float) frame.y / texture.getHeight();
 		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
 		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
 
 		Vertex[] verts = new Vertex[4];
-		verts[0] = new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0).setST(s, t);
-		verts[1] = new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0).setST(s, t1);
-		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1).setST(s1, t1);
-		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1).setST(s1, t);
+		verts[0] = new Vertex().setPosition(0, 0, 0).setColor(r, g, b, a).setST(s, t);
+		verts[1] = new Vertex().setPosition(0, frame.h, 0).setColor(r, g, b, a).setST(s, t1);
+		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(r, g, b, a).setST(s1, t1);
+		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(r, g, b, a).setST(s1, t);
 
 		// Transform vertices
 		for(int i = 0; i < 4; i++)
