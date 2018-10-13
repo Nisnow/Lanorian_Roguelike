@@ -40,6 +40,7 @@ public class Texture
 	{
 		textureCount++;
 		textureUnit = textureCount;
+		textureID = glGenTextures();
 	}
 	
 	/**
@@ -203,6 +204,14 @@ public class Texture
 	public int getTextureUnit()
 	{
 		return textureUnit;
+	}
+	
+	/**
+	 * @return the raw GL texture ID
+	 */
+	public int getTextureId()
+	{
+		return textureID;
 	}
 	
 	/**

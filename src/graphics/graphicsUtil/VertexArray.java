@@ -170,7 +170,8 @@ public class VertexArray
     }
     
     /*
-     * Puts everything back to default. 
+     * Puts everything back to default and clears the buffers
+     * for the next frame 
      * Called at the end of the rendering loop.
      */
     public void reset()

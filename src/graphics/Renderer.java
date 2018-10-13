@@ -61,6 +61,13 @@ public class Renderer
 	{
 		color.set(r, g, b, a);
 	}	
+	
+	public void resize(int width, int height)
+	{
+		viewMatrix = new Matrix4f().ortho2D(0, width, height, 0);
+		shader.setUniformMat4f("view", viewMatrix);
+	}
+	
 	/**
 	 * Adds a new matrix transform to the transformation stack
 	 * @param matrix the matrix that will be multiplied by the previous matrix
