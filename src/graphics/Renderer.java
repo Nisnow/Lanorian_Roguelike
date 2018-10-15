@@ -5,18 +5,26 @@ import java.util.Stack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import graphics.graphicsUtil.Color;
+import graphics.graphicsUtil.Framebuffer;
 import graphics.graphicsUtil.Vertex;
 import graphics.graphicsUtil.VertexArray;
-import graphics.graphicsUtil.Color;
 import util.IntRect;
 
 public class Renderer 
 {
-	private final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
-	private final String DEFAULT_FRAG	= "src/resources/shaders/DefaultFrag.glsl";
+	public static final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
+	public static final String DEFAULT_FRAG	= "src/resources/shaders/DefaultFrag.glsl";
 	
+	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
+	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
+	
+	public Shader shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+	public Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
+	
+	private Shader currentShader;
+
 	private VertexArray data = new VertexArray();
-	private Shader shader;
 	private Texture currentTexture;
 
 	private Matrix4f viewMatrix = new Matrix4f();
@@ -35,7 +43,8 @@ public class Renderer
 	 */
 	public Renderer()
 	{
-		shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+		currentShader = shader;
+		
 		data.init();
 		
 		// Initialize renderer with identity matrix
@@ -66,8 +75,15 @@ public class Renderer
 	public void resize(int width, int height)
 	{
 		viewMatrix = new Matrix4f().ortho2D(0, width, height, 0);
-		shader.setUniformMat4f("view", viewMatrix);
+		currentShader.setUniformMat4f("view", viewMatrix);
 	}
+	
+	public void updateUniforms()
+	{
+		currentShader.useProgram();
+		
+		currentShader.setUniformVec4f("tint_Color", color.getColorAsVector());
+	}	
 	
 	/**
 	 * Adds a new matrix transform to the transformation stack
@@ -103,12 +119,28 @@ public class Renderer
 	
 	public Shader getShader()
 	{
-		return shader;
+		return currentShader;
+	}
+	
+	public void setShader(String vert, String frag)
+	{
+		//this.setShader(new Shader(vert, frag), true);
 	}
 	
 	public void setShader(Shader shader, boolean needsUpdate)
 	{
-		// TODO: fill in this stubby stub
+		if(shader == null)
+			throw new NullPointerException("Shader cannot be null!");
+		
+		if(drawing)
+			flush();
+		
+		this.currentShader = shader;
+		
+		if(needsUpdate)
+			updateUniforms();
+		else if(drawing)
+			shader.useProgram();
 	}
 	
 	/*
@@ -119,7 +151,7 @@ public class Renderer
 		if(drawing)
 			throw new IllegalStateException("Must not be drawing before calling begin()!");	
 		drawing = true;
-		shader.useProgram();
+		currentShader.useProgram();
 		currentTexture = null;
 	}
 
@@ -227,8 +259,12 @@ public class Renderer
 	 */
 	private void render()
 	{
+		updateUniforms();
 		if(currentTexture != null)
+		{
 			currentTexture.bind();
+			currentShader.setUniform1i("texture_diffuse", currentTexture.getTextureUnit());
+		}
 		data.bind();
 		data.draw(startIndex);
 		data.reset();

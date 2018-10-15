@@ -20,6 +20,7 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import graphics.graphicsUtil.VertexArray;
 
+// TODO: refactor + cleanup so there's not so much copied code
 public class Texture 
 {
 	private ArrayList<Animation> animationList = new ArrayList<Animation>();
@@ -41,6 +42,28 @@ public class Texture
 		textureCount++;
 		textureUnit = textureCount;
 		textureID = glGenTextures();
+	}
+	
+	/*
+	 * Creates an empty texture with a given width and height
+	 */
+	public Texture(int width, int height)
+	{
+		textureCount++;
+		textureUnit = textureCount;
+		
+		textureID = glGenTextures();
+
+		this.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, 
+				GL_RGB, GL_UNSIGNED_BYTE, 0);
+	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		// Reset the texture now that it's bound
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 	}
 	
 	/**
@@ -182,7 +205,7 @@ public class Texture
 	 */
 	public void bind()
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 	
@@ -190,7 +213,7 @@ public class Texture
 	 * Delete this texture upon closing the window with
 	 * OpenGL context
 	 */
-	public void deleteTexture()
+	public void delete()
 	{
 		glDeleteTextures(0);
 	}
@@ -209,7 +232,7 @@ public class Texture
 	/**
 	 * @return the raw GL texture ID
 	 */
-	public int getTextureId()
+	public int getID()
 	{
 		return textureID;
 	}

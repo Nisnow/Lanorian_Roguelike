@@ -56,6 +56,26 @@ public class Shader
 	}
 	
 	/**
+	 * Set an int uniform for this shader to use
+	 * 
+	 * @param name the name of the uniform (must match in shader)
+	 * @param value the value of the int to pass through the shader
+	 */
+	public void setUniform1i(String name, int value)
+	{
+		int location = glGetUniformLocation(shaderProgram, name);
+		
+		if(location < 0)
+		{
+			System.out.println("Failed to get uniform integer");
+			return;
+		}
+		
+		this.useProgram();
+		glUniform1i(location, value);
+	}
+	
+	/**
 	 * Set a Vector2f uniform for this shader to use
 	 * 
 	 * @param name the name of the uniform (must match in shader)

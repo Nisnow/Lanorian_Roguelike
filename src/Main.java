@@ -1,14 +1,16 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 import graphics.RenderList;
 import graphics.Renderer;
 import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
+import graphics.graphicsUtil.Color;
 import graphics.graphicsUtil.Framebuffer;
+import util.IntRect;
  
 public class Main 
 {
@@ -43,7 +45,7 @@ public class Main
     	soda.setPosition(200, 50);
     	soda.setScale(3.0f, 3.0f);
     	
-    	soda2.setPosition(250, 0);
+    	soda2.setPosition(300, 0);
     	soda2.setScale(-4f, 4f);
     	renderList.add(soda);
     	renderList.add(soda2);
@@ -72,10 +74,13 @@ public class Main
             
             // Clear the screen before calling anything
             window.clear(0.0f, 0.2f, 0.2f);
+    		glClear(GL_COLOR_BUFFER_BIT);
            
     		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
             
             renderer.begin();
+            	renderer.setColor(Color.WHITE);
+            	//renderer.setShader(renderer.shader, false);
             	renderList.draw(renderer);
             renderer.end();
             
@@ -83,9 +88,15 @@ public class Main
             
             renderer.resize(window.getWidth(), window.getHeight());
             
+           // renderer.begin();
+            //	renderer.setColor(1, 1, 1f, 0.5f);
+            	//renderer.setShader(renderer.postProcessor, true);
+            	//renderer.drawTexture(fbo.getFboTexture(), new IntRect(0, 0, window.getWidth(), window.getHeight()));
+            //renderer.end();
+            
     		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    		
-            // Swap buffers
+ 		
+    		// Swap buffers
             window.display();
                          
             window.printFPS();
@@ -95,7 +106,7 @@ public class Main
      
     private void destroyOpenGL()
     {  
-        tex1.deleteTexture();
+        tex1.delete();
         fbo.delete();
         renderer.delete();
         glfwTerminate();

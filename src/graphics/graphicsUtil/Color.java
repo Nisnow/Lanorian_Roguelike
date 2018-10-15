@@ -1,5 +1,7 @@
 package graphics.graphicsUtil;
 
+import org.joml.Vector4f;
+
 public class Color 
 {
 	// BEGIN COLOR DECLARATION
@@ -120,5 +122,19 @@ public class Color
 		this.r = r;
 		this.g = g;
 		this.b = b;
+	}
+	
+	/**
+	 * @return this color represented as a vector4f
+	 */
+	public Vector4f getColorAsVector()
+	{
+		return new Vector4f(r, g, b, a);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "("+r+", "+g+", "+b+", "+a+")";
 	}
 }

@@ -1,10 +1,34 @@
 package graphics.graphicsUtil;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGB;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDrawBuffer;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glReadBuffer;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_DRAW_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
+import static org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30.glBlitFramebuffer;
+import static org.lwjgl.opengl.GL30.glCheckFramebufferStatus;
+import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
+import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 
 import org.lwjgl.opengl.GL;
 
+import graphics.Texture;
 import graphics.Window;
 
 /*
@@ -13,7 +37,8 @@ import graphics.Window;
  */
 public class Framebuffer
 {
-	private int id, textureId;
+	private int id;
+	private Texture fboTexture;
 	private int width, height;
 	
 	private Window window;
@@ -36,17 +61,11 @@ public class Framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
 
 		// Create the texture to draw on
-		textureId = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, 
-				GL_RGB, GL_UNSIGNED_BYTE, 0);
-	
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
+		fboTexture = new Texture(width, height);
+		
 		// Attach the texture to this frame buffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-				GL_TEXTURE_2D, textureId, 0);
+				GL_TEXTURE_2D, fboTexture.getID(), 0);
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		
@@ -54,6 +73,7 @@ public class Framebuffer
 		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDeleteTextures(fboTexture.getID());
 			glDeleteFramebuffers(id);
 			throw new IllegalStateException("Incomplete frambuffer!");
 		} 	
@@ -105,7 +125,7 @@ public class Framebuffer
 		if(width <= 0 || height <= 0)
 			throw new IllegalArgumentException("Width and height of framebuffer must be positive!");
 		
-		glBindTexture(GL_TEXTURE_2D, textureId);
+		glBindTexture(GL_TEXTURE_2D, fboTexture.getID());
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
@@ -113,12 +133,9 @@ public class Framebuffer
 		this.height = height;
 	}
 	
-	/**
-	 * @return the texture id 
-	 */
-	public int getTextureId()
+	public Texture getFboTexture()
 	{
-		return textureId;
+		return fboTexture;
 	}
 	
 	/**
@@ -146,7 +163,7 @@ public class Framebuffer
 		if(id == 0)
 			return;
 		
-		glDeleteTextures(textureId);
+		fboTexture.delete();
 		glDeleteFramebuffers(id);
 	}
 }
