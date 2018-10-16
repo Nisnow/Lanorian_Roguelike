@@ -1,33 +1,16 @@
 package graphics.graphicsUtil;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_RGB;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glDrawBuffer;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glReadBuffer;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_DRAW_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
-import static org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
-import static org.lwjgl.opengl.GL30.glBlitFramebuffer;
-import static org.lwjgl.opengl.GL30.glCheckFramebufferStatus;
-import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
-import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
-import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL30.*;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL;
 
+import graphics.Shader;
 import graphics.Texture;
 import graphics.Window;
 
@@ -41,9 +24,32 @@ public class Framebuffer
 	private Texture fboTexture;
 	private int width, height;
 	
+	private int vao, vbo;
+	
 	private Window window;
 	
-	/*
+	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
+	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
+	public Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
+	
+	
+	// FIXME: automate this later
+    float quadVertices[] = { 
+            // positions   // texCoords
+            -1.0f,  1.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f,
+             1.0f, -1.0f, 1.0f, 0.0f,
+
+            -1.0f,  1.0f, 0.0f, 1.0f,
+             1.0f, -1.0f, 1.0f, 0.0f,
+             1.0f,  1.0f, 1.0f, 1.0f
+        };
+    byte indices[] = {0, 1, 2, 2, 3, 0};
+    
+    private FloatBuffer quadBuffer = BufferUtils.createFloatBuffer(quadVertices.length);
+    private ByteBuffer indexBuffer = BufferUtils.createByteBuffer(indices.length);
+    
+    /*
 	 * Create a frame buffer with a specified width and height
 	 */
 	public Framebuffer(int width, int height)
@@ -53,8 +59,22 @@ public class Framebuffer
 		
 		if(!GL.getCapabilities().GL_EXT_framebuffer_object)
 			throw new IllegalStateException("FBO not supported with this hardware!");
-			
-		System.out.println("Init framebuffer");
+		
+		quadBuffer.put(quadVertices);
+		quadBuffer.flip();
+		
+		vao = glGenVertexArrays();
+		vbo = glGenBuffers();
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, quadBuffer, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+						// position 0, vec2 for position, float, false, 6 elements total*BPF, offset 0
+		glVertexAttribPointer(0, 2, GL_FLOAT, false, 4*4, 0);
+		//tex coordinates
+		glEnableVertexAttribArray(1);
+	    glVertexAttribPointer(1, 2, GL_FLOAT, false, 4*4, 2*4);
+
 		
 		// Create the frame buffer
 		id = glGenFramebuffers();
@@ -67,8 +87,6 @@ public class Framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 				GL_TEXTURE_2D, fboTexture.getID(), 0);
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		
 		// Check if the framebuffer is complete
 		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -118,6 +136,11 @@ public class Framebuffer
 			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		postProcessor.useProgram();
+		glBindVertexArray(vao);
+		fboTexture.bind();
+		//postProcessor.setUniform1i("framebuffer", fboTexture.getTextureUnit());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	
 	public void resize(int width, int height)

@@ -88,12 +88,6 @@ public class Main
             
             renderer.resize(window.getWidth(), window.getHeight());
             
-           // renderer.begin();
-            //	renderer.setColor(1, 1, 1f, 0.5f);
-            	//renderer.setShader(renderer.postProcessor, true);
-            	//renderer.drawTexture(fbo.getFboTexture(), new IntRect(0, 0, window.getWidth(), window.getHeight()));
-            //renderer.end();
-            
     		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  		
     		// Swap buffers

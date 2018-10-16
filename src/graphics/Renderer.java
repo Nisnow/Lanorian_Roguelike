@@ -16,12 +16,9 @@ public class Renderer
 	public static final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
 	public static final String DEFAULT_FRAG	= "src/resources/shaders/DefaultFrag.glsl";
 	
-	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
-	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
 	
 	public Shader shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
-	public Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
-	
+
 	private Shader currentShader;
 
 	private VertexArray data = new VertexArray();
