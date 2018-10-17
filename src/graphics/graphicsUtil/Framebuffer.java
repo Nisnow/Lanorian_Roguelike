@@ -22,9 +22,9 @@ public class Framebuffer
 {
 	private int id;
 	private Texture fboTexture;
+	private VertexArray va;
 	private int width, height;
 	
-	private int vao, vbo;
 	
 	private Window window;
 	
@@ -32,23 +32,6 @@ public class Framebuffer
 	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
 	public Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
 	
-	
-	// FIXME: automate this later
-    float quadVertices[] = { 
-            // positions   // texCoords
-            -1.0f,  1.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f,
-             1.0f, -1.0f, 1.0f, 0.0f,
-
-            -1.0f,  1.0f, 0.0f, 1.0f,
-             1.0f, -1.0f, 1.0f, 0.0f,
-             1.0f,  1.0f, 1.0f, 1.0f
-        };
-    byte indices[] = {0, 1, 2, 2, 3, 0};
-    
-    private FloatBuffer quadBuffer = BufferUtils.createFloatBuffer(quadVertices.length);
-    private ByteBuffer indexBuffer = BufferUtils.createByteBuffer(indices.length);
-    
     /*
 	 * Create a frame buffer with a specified width and height
 	 */
@@ -60,21 +43,8 @@ public class Framebuffer
 		if(!GL.getCapabilities().GL_EXT_framebuffer_object)
 			throw new IllegalStateException("FBO not supported with this hardware!");
 		
-		quadBuffer.put(quadVertices);
-		quadBuffer.flip();
-		
-		vao = glGenVertexArrays();
-		vbo = glGenBuffers();
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, quadBuffer, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-						// position 0, vec2 for position, float, false, 6 elements total*BPF, offset 0
-		glVertexAttribPointer(0, 2, GL_FLOAT, false, 4*4, 0);
-		//tex coordinates
-		glEnableVertexAttribArray(1);
-	    glVertexAttribPointer(1, 2, GL_FLOAT, false, 4*4, 2*4);
-
+		va = new VertexArray();
+		va.init();
 		
 		// Create the frame buffer
 		id = glGenFramebuffers();
@@ -87,6 +57,8 @@ public class Framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 				GL_TEXTURE_2D, fboTexture.getID(), 0);
 
+		glDrawBuffers(GL_COLOR_ATTACHMENT0);
+		
 		// Check if the framebuffer is complete
 		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -96,9 +68,6 @@ public class Framebuffer
 			throw new IllegalStateException("Incomplete frambuffer!");
 		} 	
 		
-		// Draw to default frame buffer
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		
 		this.width = width;
 		this.height = height;
 	}
@@ -106,6 +75,17 @@ public class Framebuffer
 	public void setWindow(Window window)
 	{
 		this.window = window;
+	}
+	
+	public void createVAO()
+	{
+        va.put(new Vertex().setPosition(-1.0f,  1.0f, 0.0f).setST(0.0f, 1.0f));
+        va.put(new Vertex().setPosition(-1.0f, -1.0f, 0.0f).setST(0.0f, 0.0f));
+        va.put(new Vertex().setPosition(1.0f, -1.0f, 0.0f).setST(1.0f, 0.0f));
+        va.put(new Vertex().setPosition(1.0f,  1.0f, 0.0f).setST(1.0f, 1.0f));
+		
+        byte indices[] = {0, 1, 2, 2, 3, 0};
+        va.put(indices);
 	}
 	
 	/*
@@ -119,11 +99,8 @@ public class Framebuffer
 		
 		// Read from this framebuffer
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
-		glReadBuffer(GL_COLOR_ATTACHMENT0);
-		
-		// Copy framebuffer data to default
-		glBlitFramebuffer(0, 0, width, height, 0, 0, window.getWidth(), 
-				window.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glViewport(0, 0, width, height);
+		createVAO();
 	}
 	
 	/*
@@ -136,11 +113,14 @@ public class Framebuffer
 			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
 		postProcessor.useProgram();
-		glBindVertexArray(vao);
+		va.flip();
 		fboTexture.bind();
-		//postProcessor.setUniform1i("framebuffer", fboTexture.getTextureUnit());
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		postProcessor.setUniform1i("framebuffer", fboTexture.getTextureUnit());
+		va.bind();
+		va.draw(6);
+		va.reset();
 	}
 	
 	public void resize(int width, int height)

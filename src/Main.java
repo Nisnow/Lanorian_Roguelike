@@ -79,7 +79,7 @@ public class Main
     		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
             
             renderer.begin();
-            	renderer.setColor(Color.WHITE);
+            	//renderer.setColor(Color.WHITE);
             	//renderer.setShader(renderer.shader, false);
             	renderList.draw(renderer);
             renderer.end();
