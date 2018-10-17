@@ -72,14 +72,16 @@ public class Renderer
 	public void resize(int width, int height)
 	{
 		viewMatrix = new Matrix4f().ortho2D(0, width, height, 0);
-		currentShader.setUniformMat4f("view", viewMatrix);
+		if(currentShader.equals(shader))
+			currentShader.setUniformMat4f("view", viewMatrix);
 	}
 	
 	public void updateUniforms()
 	{
 		currentShader.useProgram();
 		
-		currentShader.setUniformVec4f("tint_Color", color.getColorAsVector());
+		if(currentShader.equals(shader))
+			currentShader.setUniformVec4f("tint_Color", color.getColorAsVector());
 	}	
 	
 	/**
@@ -121,7 +123,7 @@ public class Renderer
 	
 	public void setShader(String vert, String frag)
 	{
-		//this.setShader(new Shader(vert, frag), true);
+		this.setShader(new Shader(vert, frag), true);
 	}
 	
 	public void setShader(Shader shader, boolean needsUpdate)
@@ -260,7 +262,7 @@ public class Renderer
 		if(currentTexture != null)
 		{
 			currentTexture.bind();
-			currentShader.setUniform1i("texture_diffuse", currentTexture.getTextureUnit());
+			currentShader.setUniform1i("texture_diffuse", 0);
 		}
 		data.bind();
 		data.draw(startIndex);

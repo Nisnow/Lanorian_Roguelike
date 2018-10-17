@@ -40,7 +40,7 @@ public class Texture
 	public Texture() 
 	{
 		textureCount++;
-		textureUnit = textureCount;
+		//textureUnit = textureCount;
 		textureID = glGenTextures();
 	}
 	
@@ -50,7 +50,7 @@ public class Texture
 	public Texture(int width, int height)
 	{
 		textureCount++;
-		textureUnit = textureCount;
+		//textureUnit = textureCount;
 		
 		textureID = glGenTextures();
 
@@ -78,7 +78,7 @@ public class Texture
 	{
 		openResource(path);
 		textureCount++;
-		textureUnit = textureCount;
+		//textureUnit = textureCount;
 	}
 	
 	/**
@@ -205,8 +205,12 @@ public class Texture
 	 */
 	public void bind()
 	{
-		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_2D, textureID);
+	}
+	
+	public void unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
 	/*

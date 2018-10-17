@@ -31,8 +31,8 @@ public class Framebuffer
 	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
 	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
 	public Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
-	
-    /*
+
+	/*
 	 * Create a frame buffer with a specified width and height
 	 */
 	public Framebuffer(int width, int height)
@@ -97,9 +97,7 @@ public class Framebuffer
 		if(id == 0)
 			throw new IllegalStateException("Can't use FBO because it doesn't exist!");
 		
-		// Read from this framebuffer
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
-		glViewport(0, 0, width, height);
+		glBindFramebuffer(GL_FRAMEBUFFER, id); // Make sure your multisampled FBO is the read framebuffer
 		createVAO();
 	}
 	
@@ -113,11 +111,12 @@ public class Framebuffer
 			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
 		
 		postProcessor.useProgram();
 		va.flip();
 		fboTexture.bind();
-		postProcessor.setUniform1i("framebuffer", fboTexture.getTextureUnit());
+		postProcessor.setUniform1i("texture_diffuse", 0);
 		va.bind();
 		va.draw(6);
 		va.reset();

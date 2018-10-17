@@ -52,8 +52,7 @@ public class Main
         
         tex2 = new Texture("resources/images/birboi");
         Sprite mountainDew = new Sprite(tex2, "fly");
-        mountainDew.setPosition(100, 300);
-        mountainDew.setScale(4.0f, 4.0f);
+ mountainDew.setScale(4.0f, 4.0f);
         renderList.add(mountainDew);
         
         renderer = new Renderer();
@@ -61,7 +60,7 @@ public class Main
         
         fbo = new Framebuffer(window.getWidth(), window.getHeight());
         fbo.setWindow(window);
-        
+        int i = 0;
         // Game loop
         while (!window.closing()) 
         {
@@ -74,13 +73,16 @@ public class Main
             
             // Clear the screen before calling anything
             window.clear(0.0f, 0.2f, 0.2f);
-    		glClear(GL_COLOR_BUFFER_BIT);
-           
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
     		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
             
             renderer.begin();
             	//renderer.setColor(Color.WHITE);
             	//renderer.setShader(renderer.shader, false);
+            	
+            	mountainDew.setPosition(100+i, 300);
+            	i++;
             	renderList.draw(renderer);
             renderer.end();
             
