@@ -23,12 +23,14 @@ public class SpriteBatch
 	private VertexArray data = new VertexArray();
 	private Texture currentTexture;
 
+
+	//TODO: put these in TransformComponent
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f currentTransform = new Matrix4f();
-
+	private Stack<Matrix4f> transformStack = new Stack<Matrix4f>();
+	
 	private boolean drawing = false;
 	
-	private Stack<Matrix4f> transformStack = new Stack<Matrix4f>();
 	
 	private int startIndex = 0;
 	
@@ -58,16 +60,6 @@ public class SpriteBatch
 		shader.setUniformMat4f("view", viewMatrix);
 	}
 	
-	public void setColor(Color color)
-	{
-		setColor(color.r, color.g, color.b, color.a);
-	}
-
-	public void setColor(float r, float g, float b, float a)
-	{
-		color.set(r, g, b, a);
-	}	
-	
 	public void resize(int width, int height)
 	{
 		viewMatrix = new Matrix4f().ortho2D(0, width, height, 0);
@@ -75,13 +67,6 @@ public class SpriteBatch
 			currentShader.setUniformMat4f("view", viewMatrix);
 	}
 	
-	public void updateUniforms()
-	{
-		currentShader.useProgram();
-		
-		if(currentShader.equals(shader))
-			currentShader.setUniformVec4f("tint_Color", color.getColorAsVector());
-	}	
 	
 	/**
 	 * Adds a new matrix transform to the transformation stack
@@ -118,27 +103,6 @@ public class SpriteBatch
 	public Shader getShader()
 	{
 		return currentShader;
-	}
-	
-	public void setShader(String vert, String frag)
-	{
-		this.setShader(new Shader(vert, frag), true);
-	}
-	
-	public void setShader(Shader shader, boolean needsUpdate)
-	{
-		if(shader == null)
-			throw new NullPointerException("Shader cannot be null!");
-		
-		if(drawing)
-			flush();
-		
-		this.currentShader = shader;
-		
-		if(needsUpdate)
-			updateUniforms();
-		else if(drawing)
-			shader.useProgram();
 	}
 	
 	/*
@@ -257,7 +221,6 @@ public class SpriteBatch
 	 */
 	private void render()
 	{
-		updateUniforms();
 		if(currentTexture != null)
 		{
 			currentTexture.bind();

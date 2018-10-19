@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 import graphics.RenderList;
+import graphics.Renderer;
 import graphics.SpriteBatch;
 import graphics.Sprite;
 import graphics.Texture;
@@ -60,12 +61,16 @@ public class Main
         
         fbo = new Framebuffer(window.getWidth(), window.getHeight());
         fbo.setWindow(window);
+        
+        Renderer renderer = new Renderer(renderList);
+        renderer.setFramebuffer(fbo);
         // Game loop
         while (!window.closing()) 
         {
         	// Get input
             glfwPollEvents();
             
+            /*
             fbo.begin();
             
             batch.resize(fbo.getWidth(), fbo.getHeight());
@@ -88,8 +93,16 @@ public class Main
  		
     		// Swap buffers
             window.display();
-                         
+        
+                         */
             window.printFPS();
+            
+              glfwPollEvents();
+             // renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));
+              //renderer.drawTexture(tex2, new IntRect(0, 0, 64, 64));
+              renderer.render();
+              window.display();
+             
         }
         this.destroyOpenGL();
     }
