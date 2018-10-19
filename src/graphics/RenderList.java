@@ -6,7 +6,7 @@ public class RenderList
 {
 	private ArrayList<Renderable> renderList = new ArrayList<Renderable>();
 
-	public void draw(Renderer renderer)
+	public void draw(SpriteBatch renderer)
 	{
 		for(Renderable r : renderList)
 		{

@@ -25,7 +25,6 @@ public class Framebuffer
 	private VertexArray va;
 	private int width, height;
 	
-	
 	private Window window;
 	
 	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
@@ -43,6 +42,7 @@ public class Framebuffer
 		if(!GL.getCapabilities().GL_EXT_framebuffer_object)
 			throw new IllegalStateException("FBO not supported with this hardware!");
 		
+		// Create the vertex array to hold the texture data
 		va = new VertexArray();
 		va.init();
 		
@@ -56,8 +56,6 @@ public class Framebuffer
 		// Attach the texture to this frame buffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 				GL_TEXTURE_2D, fboTexture.getID(), 0);
-
-		glDrawBuffers(GL_COLOR_ATTACHMENT0);
 		
 		// Check if the framebuffer is complete
 		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -77,15 +75,16 @@ public class Framebuffer
 		this.window = window;
 	}
 	
+	// TODO: put this somewhere else
 	public void createVAO()
 	{
-        va.put(new Vertex().setPosition(-1.0f,  1.0f, 0.0f).setST(0.0f, 1.0f));
-        va.put(new Vertex().setPosition(-1.0f, -1.0f, 0.0f).setST(0.0f, 0.0f));
-        va.put(new Vertex().setPosition(1.0f, -1.0f, 0.0f).setST(1.0f, 0.0f));
-        va.put(new Vertex().setPosition(1.0f,  1.0f, 0.0f).setST(1.0f, 1.0f));
+        va.putVert(new Vertex().setPosition(-1.0f,  1.0f, 0.0f).setST(0.0f, 1.0f));
+        va.putVert(new Vertex().setPosition(-1.0f, -1.0f, 0.0f).setST(0.0f, 0.0f));
+        va.putVert(new Vertex().setPosition(1.0f, -1.0f, 0.0f).setST(1.0f, 0.0f));
+        va.putVert(new Vertex().setPosition(1.0f,  1.0f, 0.0f).setST(1.0f, 1.0f));
 		
         byte indices[] = {0, 1, 2, 2, 3, 0};
-        va.put(indices);
+        va.putIdx(indices);
 	}
 	
 	/*
@@ -111,6 +110,8 @@ public class Framebuffer
 			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+		// TODO: put all this stuff below in Renderer
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		postProcessor.useProgram();

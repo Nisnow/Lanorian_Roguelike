@@ -11,6 +11,15 @@ import util.ResourceManager;
 
 public class Shader 
 {
+	public static final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
+	public static final String DEFAULT_FRAG	  = "src/resources/shaders/DefaultFrag.glsl";
+
+	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
+	public static final String POST_PROCESS_FRAG   = "src/resources/shaders/PostProcessFrag.glsl";
+
+	public static final Shader shader = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+	public static final Shader postProcessor = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
+
 	private int shaderProgram;
 	
 	/*
@@ -85,7 +94,7 @@ public class Shader
 	{
 		int location = glGetUniformLocation(shaderProgram, name);
 		
-		if (location < 0)
+		if(location < 0)
 		{
 			System.out.println("Failed to get uniform vector 2f");
 			return;
@@ -105,7 +114,7 @@ public class Shader
 	{
 		int location = glGetUniformLocation(shaderProgram, name);
 
-		if (location < 0)
+		if(location < 0)
 		{
 			System.out.println("Failed to get uniform Matrix4f");
 			return;

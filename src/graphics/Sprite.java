@@ -31,7 +31,7 @@ public class Sprite implements Renderable
 	}
 
 	@Override
-	public void draw(Renderer renderer) 
+	public void draw(SpriteBatch renderer) 
 	{
 		IntRect frame;
 		

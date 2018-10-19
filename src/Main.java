@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 import graphics.RenderList;
-import graphics.Renderer;
+import graphics.SpriteBatch;
 import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
@@ -26,7 +26,7 @@ public class Main
     private Texture tex1;
     private Texture tex10;
     private Texture tex2;
-    private Renderer renderer;
+    private SpriteBatch batch;
     private Framebuffer fbo;
      
     public Main() 
@@ -52,15 +52,14 @@ public class Main
         
         tex2 = new Texture("resources/images/birboi");
         Sprite mountainDew = new Sprite(tex2, "fly");
- mountainDew.setScale(4.0f, 4.0f);
+        mountainDew.setScale(4.0f, 4.0f);
         renderList.add(mountainDew);
         
-        renderer = new Renderer();
-        renderer.setWindow(window);
+        batch = new SpriteBatch();
+        batch.setWindow(window);
         
         fbo = new Framebuffer(window.getWidth(), window.getHeight());
         fbo.setWindow(window);
-        int i = 0;
         // Game loop
         while (!window.closing()) 
         {
@@ -69,7 +68,7 @@ public class Main
             
             fbo.begin();
             
-            renderer.resize(fbo.getWidth(), fbo.getHeight());
+            batch.resize(fbo.getWidth(), fbo.getHeight());
             
             // Clear the screen before calling anything
             window.clear(0.0f, 0.2f, 0.2f);
@@ -77,18 +76,13 @@ public class Main
             
     		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
             
-            renderer.begin();
-            	//renderer.setColor(Color.WHITE);
-            	//renderer.setShader(renderer.shader, false);
-            	
-            	mountainDew.setPosition(100+i, 300);
-            	i++;
-            	renderList.draw(renderer);
-            renderer.end();
+            batch.begin();
+            	renderList.draw(batch);
+            batch.end();
             
             fbo.end();
             
-            renderer.resize(window.getWidth(), window.getHeight());
+            batch.resize(window.getWidth(), window.getHeight());
             
     		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  		
@@ -104,7 +98,7 @@ public class Main
     {  
         tex1.delete();
         fbo.delete();
-        renderer.delete();
+        batch.delete();
         glfwTerminate();
     }
 }

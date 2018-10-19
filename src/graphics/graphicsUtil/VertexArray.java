@@ -12,8 +12,9 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class VertexArray
 {
-    private FloatBuffer buffer;
-    
+    private FloatBuffer verticesBuffer;
+    private ByteBuffer indicesBuffer;
+
     private int vaoID;
     private int vboID;
     private int vboiID;
@@ -52,8 +53,6 @@ public class VertexArray
     public static final int COLOR_ATTRB = 1;
     public static final int ST_ATTRB = 2;
     
-    private ByteBuffer indicesBuffer;
-    
     /*
      * Default constructor
      */
@@ -68,7 +67,7 @@ public class VertexArray
      */
     public VertexArray(int size)
     {
-    	buffer = BufferUtils.createFloatBuffer(size * INDICES);
+    	verticesBuffer = BufferUtils.createFloatBuffer(size * INDICES);
     	indicesBuffer = BufferUtils.createByteBuffer(size * INDICES);
     }
     
@@ -77,15 +76,15 @@ public class VertexArray
      * @param vert the vertex to add
      * @return this vertex array for further editing
      */
-    public VertexArray put(Vertex vert)
+    public VertexArray putVert(Vertex vert)
     {
     	float[] position = {vert.position.x, vert.position.y, vert.position.z};
     	float[] color = {vert.color.x, vert.color.y, vert.color.z, vert.color.w};
     	float[] st = {vert.st.x, vert.st.y};
     	
-    	buffer.put(position);
-		buffer.put(color);
-		buffer.put(st);
+    	verticesBuffer.put(position);
+		verticesBuffer.put(color);
+		verticesBuffer.put(st);
 	
     	return this;
     }
@@ -97,7 +96,7 @@ public class VertexArray
      * @param indices the array of byte indices
      * @return this vertex array for further editing
      */
-    public VertexArray put(byte[] indices)
+    public VertexArray putIdx(byte[] indices)
     {
     	indicesBuffer.put(indices);
     	return this;
@@ -112,7 +111,7 @@ public class VertexArray
     	// Create the vertex buffer object ahead of time and bind it
     	vboID = glGenBuffers();
     	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-    	glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    	glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
     
     	// Create vertex attributes
     	glVertexAttribPointer(POSITION_ATTRB, POSITION_ELEMENT_COUNT, GL_FLOAT,
@@ -139,7 +138,7 @@ public class VertexArray
      */
     public void flip()
     {
-    	buffer.flip();
+    	verticesBuffer.flip();
     	indicesBuffer.flip();
     }
     
@@ -153,7 +152,7 @@ public class VertexArray
     	
     	// Bind the vertex buffer object
     	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-    	glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    	glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
     	
     	glEnableVertexAttribArray(POSITION_ATTRB);
     	glEnableVertexAttribArray(COLOR_ATTRB);
@@ -176,7 +175,7 @@ public class VertexArray
      */
     public void reset()
     {
-    	buffer.clear();
+    	verticesBuffer.clear();
     	indicesBuffer.clear();
     	
     	glBindVertexArray(0);
@@ -208,5 +207,15 @@ public class VertexArray
     	// Fnally, delete the VAO
     	glBindVertexArray(0);
     	glDeleteVertexArrays(vaoID);
+    }
+    
+    public ByteBuffer getIndexBuffer()
+    {
+    	return indicesBuffer;
+    }
+    
+    public FloatBuffer getVertexBuffer()
+    {
+    	return verticesBuffer;
     }
 }
