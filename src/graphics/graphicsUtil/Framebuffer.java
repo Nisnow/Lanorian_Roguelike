@@ -110,10 +110,12 @@ public class Framebuffer
 			throw new IllegalStateException("Can't reset FBO because it doesn't exist!");
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		drawFbo();
+	}
 	
-		// TODO: put all this stuff below in Renderer
+	public void drawFbo()
+	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		
 		postProcessor.useProgram();
 		va.flip();
 		fboTexture.bind();

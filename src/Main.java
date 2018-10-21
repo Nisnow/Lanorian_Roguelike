@@ -1,14 +1,11 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 import graphics.RenderList;
-import graphics.SpriteBatch;
+import graphics.Renderer;
 import graphics.Sprite;
 import graphics.Texture;
 import graphics.Window;
-import graphics.graphicsUtil.Color;
 import graphics.graphicsUtil.Framebuffer;
 import util.IntRect;
  
@@ -26,7 +23,6 @@ public class Main
     private Texture tex1;
     private Texture tex10;
     private Texture tex2;
-    private SpriteBatch batch;
     private Framebuffer fbo;
      
     public Main() 
@@ -55,17 +51,19 @@ public class Main
         mountainDew.setScale(4.0f, 4.0f);
         renderList.add(mountainDew);
         
-        batch = new SpriteBatch();
-        batch.setWindow(window);
-        
         fbo = new Framebuffer(window.getWidth(), window.getHeight());
         fbo.setWindow(window);
+        
+        Renderer renderer = new Renderer();
+        renderer.setFramebuffer(fbo);
+        
         // Game loop
         while (!window.closing()) 
         {
         	// Get input
             glfwPollEvents();
             
+            /*
             fbo.begin();
             
             batch.resize(fbo.getWidth(), fbo.getHeight());
@@ -88,8 +86,16 @@ public class Main
  		
     		// Swap buffers
             window.display();
-                         
+        
+                         */
             window.printFPS();
+            
+              glfwPollEvents();
+              renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));
+              renderer.drawTexture(tex2, new IntRect(0, 0, 64, 64));
+              renderer.render();
+              window.display();
+             
         }
         this.destroyOpenGL();
     }
@@ -98,7 +104,6 @@ public class Main
     {  
         tex1.delete();
         fbo.delete();
-        batch.delete();
         glfwTerminate();
     }
 }

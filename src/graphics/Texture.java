@@ -205,6 +205,7 @@ public class Texture
 	 */
 	public void bind()
 	{
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 	

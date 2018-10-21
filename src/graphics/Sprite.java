@@ -31,7 +31,7 @@ public class Sprite implements Renderable
 	}
 
 	@Override
-	public void draw(SpriteBatch renderer) 
+	public void draw(Renderer renderer) 
 	{
 		IntRect frame;
 		
@@ -57,9 +57,9 @@ public class Sprite implements Renderable
 		spriteTransform.rotate((float) rotation, 0.0f, 0.0f, 1.0f);
 		spriteTransform.scale((float) scale.x, (float) scale.y, 0.0f);
 		
-		renderer.pushMatrix(spriteTransform);
+		//renderer.pushMatrix(spriteTransform);
 		renderer.drawTexture(texture, frame);
-		renderer.popMatrix();
+		//renderer.popMatrix();
 	}
 	
 	public Texture getTexture()

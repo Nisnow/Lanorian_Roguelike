@@ -1,6 +1,5 @@
 #version 150 core
 
-uniform vec4 tint_Color;
 uniform sampler2D texture_diffuse;
 
 in vec4 pass_Color;
@@ -12,5 +11,5 @@ void main(void)
 {
 	out_Color = pass_Color;
 	// Override out_Color with our texture pixel
-	out_Color = tint_Color * texture(texture_diffuse, pass_TextureCoord);
+	out_Color = texture(texture_diffuse, pass_TextureCoord);
 }
