@@ -178,9 +178,4 @@ public class Renderer
 		data.draw(batch.indices.length);
 		batch.reset();
 	}
-	
-	private void drawFramebuffer()
-	{
-		
-	}
 }
