@@ -44,6 +44,9 @@ public class GraphicsComponent implements Component
 		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1, 0).setST(s1, t1);
 		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1, 1).setST(s1, t);
 
+		// TODO: get transformation and transform the vertices here
+		// before sending to renderer
+		
 		Renderer.Batch batch = renderer.new Batch();
 		batch.setTexture(texture);
 		batch.addVertices(verts);
