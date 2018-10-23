@@ -26,7 +26,6 @@ public class Texture
 	private ArrayList<Animation> animationList = new ArrayList<Animation>();
 	
 	private int textureID;
-	private int textureUnit;
 	
 	private int width;
 	private int height;

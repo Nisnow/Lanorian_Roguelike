@@ -1,11 +1,11 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
+import components.GraphicsComponent;
 import graphics.Renderer;
 import graphics.Texture;
 import graphics.Window;
 import graphics.graphicsUtil.Framebuffer;
-import util.IntRect;
  
 public class Main 
 {
@@ -37,14 +37,18 @@ public class Main
         Renderer renderer = new Renderer();
         renderer.setFramebuffer(fbo);
         
+        GraphicsComponent gc1 = new GraphicsComponent(tex1, "default");
+        GraphicsComponent gc2 = new GraphicsComponent(tex2, "idle");
+        
         // Game loop
         while (!window.closing()) 
         {
         	// Get input
             glfwPollEvents();
             
-            renderer.drawTexture(tex1, new IntRect(0, 0, 32, 32));
-            renderer.drawTexture(tex2, new IntRect(0, 0, 64, 64));
+            gc1.render(renderer);
+            gc2.render(renderer);
+            
             renderer.render();
             window.display();
             window.printFPS();

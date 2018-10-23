@@ -12,6 +12,8 @@ public class Animation
 	private boolean loop;
 	private String name;
 	
+	// TODO: enums for other animation types
+	
 	public Animation()
 	{
 		frame = new IntRect(0, 0, 0, 0);

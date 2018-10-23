@@ -1,29 +1,55 @@
 package components;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import graphics.Animation;
 import graphics.Renderer;
 import graphics.Texture;
-import util.JsonFile;
+import graphics.graphicsUtil.Vertex;
+import util.Clock;
+import util.IntRect;
 
-public class GraphicsComponent implements Component, JsonFile
+public class GraphicsComponent implements Component
 {
-	private ArrayList<Animation> animationList = new ArrayList<Animation>();
 	private Texture texture;
 	private Animation currentAnimation;
+	private Clock clock = new Clock();
+	
+	public GraphicsComponent() {}
+	
+	public GraphicsComponent(Texture texture)
+	{
+		this.texture = texture;
+	}
+	
+	public GraphicsComponent(Texture texture, String animation)
+	{
+		this.texture = texture;
+		setAnimation(animation);
+	}
 	
 	/*
 	 * Create a batch for the renderer to use
 	 */
 	public void render(Renderer renderer)
 	{
+		IntRect frame = getCurrentFrame();
+		
+		float s = (float) frame.x / texture.getWidth();
+		float t = (float) frame.y / texture.getHeight();
+		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
+		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
 
+		Vertex[] verts = new Vertex[4];
+		verts[0] = new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0, 0).setST(s, t);
+		verts[1] = new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0, 0).setST(s, t1);
+		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1, 0).setST(s1, t1);
+		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1, 1).setST(s1, t);
+
+		Renderer.Batch batch = renderer.new Batch();
+		batch.setTexture(texture);
+		batch.addVertices(verts);
+		batch.addQuad();
+		
+		renderer.getBatches().add(batch);
 	}
 	
 	public Texture getTexture()
@@ -35,36 +61,71 @@ public class GraphicsComponent implements Component, JsonFile
 	{
 		this.texture = texture;
 	}
+	
 
-	@Override
-	public void openJson(String path) throws Exception
+	public Animation getAnimation() 
 	{
-		JsonParser parser = new JsonParser();
-		
-		try
-		{
-			// Parse the document
-			Object obj = parser.parse(path);
-			JsonObject jsonObject = (JsonObject) obj;
+		return currentAnimation;
+	}
 
-			// Get the array of animation data
-			JsonArray atlas = (JsonArray) jsonObject.get("atlas");
-			Iterator i = atlas.iterator();
-			
-			// Create an Animation object for each animation JSON object
-			while(i.hasNext())
-			{
-				JsonObject data = (JsonObject) i.next();
-				Animation animation = new Animation();
-				animation.parse(data);
-				animationList.add(animation);
-			}
-			
-		}
-		catch (Exception e)
+	public void setAnimation(String animationName)
+	{
+		if(currentAnimation == null || !animationName.equals(currentAnimation.getName()))
 		{
-			e.printStackTrace();
-			throw e;
+			currentAnimation = texture.getAnimation(animationName);
+			clock.restart();
 		}
+	}
+	
+	public void setAnimation(Animation animation)
+	{
+		if(currentAnimation == null || currentAnimation != animation)
+		{
+			currentAnimation = animation;
+			clock.restart();
+		}
+	}
+	
+	public void playAnimation()
+	{
+		clock.start();
+	}
+	
+	public void pauseAnimation()
+	{
+		clock.pause();
+	}
+	
+	public void stopAnimation()
+	{
+		clock.stop();
+	}
+	
+	public void restartAnimation()
+	{
+		clock.restart();
+	}
+	
+	private IntRect getCurrentFrame()
+	{
+		IntRect frame;
+		
+		if(currentAnimation  == null)
+			throw new NullPointerException("Please specify an animation!");
+		
+		if(currentAnimation.getFrameCount() > 1 
+				&& currentAnimation.getInterval() > 0)
+		{
+			// Display current frame of an animation
+			int frameIdx = (int) (clock.getElapse() / currentAnimation.getInterval());
+			frame = currentAnimation.getFrame(frameIdx);
+		}
+		else
+		{
+			// Unmoving image
+			frame = currentAnimation.getFrame();
+		}
+		
+		return frame;
 	}
 }
