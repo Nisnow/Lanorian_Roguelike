@@ -1,5 +1,7 @@
 package components;
 
+import org.joml.Vector4f;
+
 import graphics.Animation;
 import graphics.Renderer;
 import graphics.Texture;
@@ -9,6 +11,8 @@ import util.IntRect;
 
 public class GraphicsComponent implements Component
 {
+	private TransformComponent transform;
+	
 	private Texture texture;
 	private Animation currentAnimation;
 	private Clock clock = new Clock();
@@ -31,8 +35,15 @@ public class GraphicsComponent implements Component
 	 */
 	public void render(Renderer renderer)
 	{
+		if(this.texture == null)
+			throw new NullPointerException("Must have a texture to draw!");
+		
+		if(this.transform == null)
+			throw new NullPointerException("Must have a transform component to draw!");
+		
 		IntRect frame = getCurrentFrame();
 		
+		// Get the texture coordinates of the current frame
 		float s = (float) frame.x / texture.getWidth();
 		float t = (float) frame.y / texture.getHeight();
 		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
@@ -44,15 +55,25 @@ public class GraphicsComponent implements Component
 		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1, 0).setST(s1, t1);
 		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1, 1).setST(s1, t);
 
-		// TODO: get transformation and transform the vertices here
-		// before sending to renderer
+		// Transform the vertices to the current transformation
+		for(int i = 0; i < 4; i++)
+		{
+			Vector4f vec = transform.getParentTransform().transform(new Vector4f(verts[i].position, 1.0f));
+			verts[i].setPosition(vec.x, vec.y, vec.z);
+		}
 		
+		// Prepare a batch to send to the renderer
 		Renderer.Batch batch = renderer.new Batch();
 		batch.setTexture(texture);
 		batch.addVertices(verts);
 		batch.addQuad();
 		
 		renderer.getBatches().add(batch);
+	}
+	
+	public void setTransformComponent(TransformComponent transform)
+	{
+		this.transform = transform;
 	}
 	
 	public Texture getTexture()
