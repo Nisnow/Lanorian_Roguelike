@@ -1,7 +1,7 @@
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
-import org.joml.Matrix4f;
+import org.lwjgl.glfw.GLFW;
 
 import components.GraphicsComponent;
 import components.TransformComponent;
@@ -41,17 +41,15 @@ public class Main
         renderer.setFramebuffer(fbo);
            
         GraphicsComponent gc1 = new GraphicsComponent(tex1, "default");
-        GraphicsComponent gc2 = new GraphicsComponent(tex2, "idle");
+        GraphicsComponent gc2 = new GraphicsComponent(tex2, "fly");
         
         TransformComponent t1 = new TransformComponent();
-        t1.setPosition(100, 50);
-        t1.setScale(2.0f, 2.0f);
-        t1.updateLocal();
-        t1.updateParent();
+        t1.setPosition(200, 100);
+        t1.setScale(4.0f, 4.0f);
+        t1.setAsParent();
         
         TransformComponent t2 = new TransformComponent();
         t2.setPosition(10, 10);
-        t2.updateLocal();
         t1.addChild(t2);
         
         gc1.setTransformComponent(t1);
@@ -63,7 +61,11 @@ public class Main
         	// Get input
             glfwPollEvents();
 
-            t1.render(new TransformComponent());
+            // render the parent 
+            // TODO: basic world transform + camera
+            t1.setRotation((float) Math.cos(GLFW.glfwGetTime()));
+            t1.setScale(4*(float)Math.cos(GLFW.glfwGetTime()), 4*(float)Math.cos(GLFW.glfwGetTime()));
+            t1.render(new TransformComponent(), true);
             
             gc1.render(renderer);
             gc2.render(renderer);
@@ -72,7 +74,6 @@ public class Main
             
             window.display();
             window.printFPS();
-             
         }
         this.destroyOpenGL();
     }

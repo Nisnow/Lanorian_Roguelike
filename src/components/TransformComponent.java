@@ -21,40 +21,70 @@ public class TransformComponent
 	private ArrayList<TransformComponent> children = new ArrayList<TransformComponent>(); // long boi
 
 	private boolean needsUpdate = false;
-	private boolean parentNeedsUpdate = false;
 	
 	private Matrix4f parentTransform = new Matrix4f();
 	private Matrix4f transform = new Matrix4f();
 	
-	public TransformComponent()
-	{
-		this.transform.identity();
-	}
+	/**
+	 * Initialize a TransformComponent with the identity matrix
+	 * set as its local and parent transforms
+	 */
+	public TransformComponent() {}
 	
 	public TransformComponent(Matrix4f transform)
 	{
 		this.transform = transform;
 	}
 	
+	/*
+	 * Add a transformation node relative to this one
+	 */
 	public void addChild(TransformComponent tc)
 	{
 		children.add(tc);
 	}
 	
-	public void updateParent()
+	public void removeChild(TransformComponent tc)
+	{
+		children.remove(tc);
+	}
+	
+	/*
+	 * This transformation will be at the top of the
+	 * transformation tree. All of its children transformation
+	 * will be relative to this
+	 */
+	public void setAsParent()
 	{
 		parentTransform = transform;
 	}
 	
-	public void render(TransformComponent parent)
+	/**
+	 * Render all the transformations relative to this one (i.e.
+	 * all the transformations stored in the children ArrayList)
+	 * 
+	 * @param parent the transformation this one is relative to. 
+	 * If this transformation is the parent, its parent is the identity
+	 * matrix
+	 * @param needsUpdate the dirty flag to update only when 
+	 * this transformation has been updated
+	 */
+	public void render(TransformComponent parent, boolean needsUpdate)
 	{
 		updateLocal();
-		Matrix4f world = transform.mul(parent.getTransform());
-	
+		Matrix4f world = transform;
+		
+		if(needsUpdate)
+		{
+			world = transform.mul(parent.getTransform());
+			needsUpdate = false;
+		}
+		
+		// Render all of the transformations relative to this one
 		for(TransformComponent child : children)
 		{
 			child.setParentTransform(world);
-			child.render(new TransformComponent(world));
+			child.render(new TransformComponent(world), needsUpdate);
 		}
 	}
 	
@@ -64,7 +94,7 @@ public class TransformComponent
 		{
 			transform.identity();
 			transform.translate(position.x, position.y, 0.0f);
-			transform.rotate(rotation, 0.0f, 0.0f, 0.0f);
+			transform.rotate(rotation, 0.0f, 0.0f, 1.0f);
 			transform.scale(scale.x, scale.y, 1.0f);
 			needsUpdate = false;
 		}
@@ -84,7 +114,6 @@ public class TransformComponent
 	public void setParentTransform(Matrix4f transform)
 	{
 		parentTransform = transform;
-		// TODO: other necessary things
 	}
 
 	public Matrix4f getParentTransform()
@@ -150,11 +179,6 @@ public class TransformComponent
 	public float getParentRotation()
 	{
 		return parentRotation;
-	}
-	
-	public void onTransformChanged()
-	{
-		parentNeedsUpdate = true;
 	}
 	
 	public void reset()
