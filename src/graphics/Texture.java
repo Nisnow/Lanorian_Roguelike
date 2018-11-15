@@ -24,12 +24,8 @@ import graphics.graphicsUtil.VertexArray;
 public class Texture 
 {
 	private ArrayList<Animation> animationList = new ArrayList<Animation>();
-
-	// This value is incremented whenever a texture is created
-	private static int textureCount = -1;
 	
 	private int textureID;
-	private int textureUnit;
 	
 	private int width;
 	private int height;
@@ -39,8 +35,6 @@ public class Texture
 	 */
 	public Texture() 
 	{
-		textureCount++;
-		//textureUnit = textureCount;
 		textureID = glGenTextures();
 	}
 	
@@ -49,9 +43,6 @@ public class Texture
 	 */
 	public Texture(int width, int height)
 	{
-		textureCount++;
-		//textureUnit = textureCount;
-		
 		textureID = glGenTextures();
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -77,8 +68,6 @@ public class Texture
 	public Texture(String path)
 	{
 		openResource(path);
-		textureCount++;
-		//textureUnit = textureCount;
 	}
 	
 	/**
@@ -221,17 +210,6 @@ public class Texture
 	public void delete()
 	{
 		glDeleteTextures(0);
-	}
-	
-	/**
-	 * Used in setting sampler2D uniform-1i and 
-	 * texture binding in the rendering loop
-	 *
-	 * @return the texture unit of this texture
-	 */
-	public int getTextureUnit()
-	{
-		return textureUnit;
 	}
 	
 	/**

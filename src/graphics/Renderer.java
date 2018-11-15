@@ -106,26 +106,9 @@ public class Renderer
 		return this.fbo;
 	}
 	
-	// TEMP
-	// TODO: put in SpriteComponent
-	public void drawTexture(Texture texture, IntRect frame)
+	public ArrayList<Batch> getBatches()
 	{
-		float s = (float) frame.x / texture.getWidth();
-		float t = (float) frame.y / texture.getHeight();
-		float s1 = (float) (frame.x + frame.w) / texture.getWidth();
-		float t1 = (float) (frame.y + frame.h) / texture.getHeight();
-
-		Vertex[] verts = new Vertex[4];
-		verts[0] = new Vertex().setPosition(0, 0, 0).setColor(1, 0, 0, 0).setST(s, t);
-		verts[1] = new Vertex().setPosition(0, frame.h, 0).setColor(0, 1, 0, 0).setST(s, t1);
-		verts[2] = new Vertex().setPosition(frame.w, frame.h, 0).setColor(0, 0, 1, 0).setST(s1, t1);
-		verts[3] = new Vertex().setPosition(frame.w, 0, 0).setColor(1, 1, 1, 1).setST(s1, t);
-
-		Batch batch = new Batch();
-		batch.setTexture(texture);
-		batch.addVertices(verts);
-		batch.addQuad();
-		batches.add(batch);
+		return batches;
 	}
 	
 	/*
@@ -177,10 +160,5 @@ public class Renderer
 		data.bind();
 		data.draw(batch.indices.length);
 		batch.reset();
-	}
-	
-	private void drawFramebuffer()
-	{
-		
 	}
 }
