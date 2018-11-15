@@ -1,4 +1,4 @@
-package graphics;
+package engine.graphics;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_BLEND;

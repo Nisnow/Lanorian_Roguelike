@@ -1,4 +1,4 @@
-package graphics;
+package engine.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -18,7 +18,8 @@ import com.google.gson.JsonParser;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
-import graphics.graphicsUtil.VertexArray;
+
+import engine.graphics.graphicsUtil.VertexArray;
 
 // TODO: refactor + cleanup so there's not so much copied code
 public class Texture 

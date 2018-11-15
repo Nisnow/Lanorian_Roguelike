@@ -1,8 +1,8 @@
-package graphics;
+package engine.graphics;
 
 import com.google.gson.JsonObject;
 
-import util.IntRect;
+import engine.util.IntRect;
 
 public class Animation
 {

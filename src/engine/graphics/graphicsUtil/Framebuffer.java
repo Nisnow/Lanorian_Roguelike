@@ -1,13 +1,13 @@
-package graphics.graphicsUtil;
+package engine.graphics.graphicsUtil;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import org.lwjgl.opengl.GL;
 
-import graphics.Shader;
-import graphics.Texture;
-import graphics.Window;
+import engine.graphics.Shader;
+import engine.graphics.Texture;
+import engine.graphics.Window;
 
 /*
  * Frame buffer for render-to-texture functionality

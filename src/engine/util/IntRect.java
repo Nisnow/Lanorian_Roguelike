@@ -1,17 +1,17 @@
-package util;
+package engine.util;
 
 /*
  * Get rekt
  */
-public class FloatRect 
+public class IntRect 
 {
 	//coordinates of the rectangle, width, and height
-	public float x, y, w, h;
+	public int x, y, w, h;
 	
 	/**
 	 * Default constructor
 	 */
-	public FloatRect()
+	public IntRect()
 	{
 		x = 0;
 		y = 0;
@@ -23,7 +23,7 @@ public class FloatRect
 	 * Copy constructor
 	 * @param p_copy Rect to be copied
 	 */
-	public FloatRect(FloatRect p_copy)
+	public IntRect(IntRect p_copy)
 	{
 		x = p_copy.x;
 		y = p_copy.y;
@@ -38,7 +38,7 @@ public class FloatRect
 	 * @param p_w width
 	 * @param p_h height
 	 */
-	public FloatRect(float p_x, float p_y, float p_w, float p_h)
+	public IntRect(int p_x, int p_y, int p_w, int p_h)
 	{
 		x = p_x;
 		y = p_y;
@@ -51,7 +51,7 @@ public class FloatRect
 	 * @param p_rect the Rect to check overlap
 	 * @return whether two Rects overlap
 	 */
-	public boolean overlaps(FloatRect p_rect)
+	public boolean overlaps(IntRect p_rect)
 	{
 		return (x <= (p_rect.x + p_rect.w) && 
 				x+w >= p_rect.x &&
@@ -71,7 +71,6 @@ public class FloatRect
 	
 	public String toString()
 	{
-		String formattedCoords = String.format("(%.2f, %.2f", x, y);
-		return "Coordinates: (" + formattedCoords + ") width: " + w + " height: " + h;
+		return "Coordinates: (" + x + ", " + y + ") width: " + w + " height: " + h;
 	}
 }

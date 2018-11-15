@@ -1,4 +1,4 @@
-package graphics;
+package engine.graphics;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -7,7 +7,7 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
-import util.ResourceManager;
+import engine.util.ResourceManager;
 
 public class Shader 
 {

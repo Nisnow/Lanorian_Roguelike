@@ -1,4 +1,4 @@
-package util;
+package engine.util;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import graphics.graphicsUtil.VertexArray;
+import engine.graphics.graphicsUtil.VertexArray;
 
 public class ResourceManager
 {

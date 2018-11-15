@@ -1,4 +1,4 @@
-package graphics;
+package engine.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 
-import graphics.graphicsUtil.Framebuffer;
-import graphics.graphicsUtil.Vertex;
-import graphics.graphicsUtil.VertexArray;
-import util.IntRect;
+import engine.graphics.graphicsUtil.Framebuffer;
+import engine.graphics.graphicsUtil.Vertex;
+import engine.graphics.graphicsUtil.VertexArray;
+import engine.util.IntRect;
 
 public class Renderer
 {

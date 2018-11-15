@@ -1,4 +1,4 @@
-package graphics.graphicsUtil;
+package engine.graphics.graphicsUtil;
 
 import org.joml.Vector4f;
 

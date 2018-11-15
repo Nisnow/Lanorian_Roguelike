@@ -1,13 +1,13 @@
-package components;
+package engine.components;
 
 import org.joml.Vector4f;
 
-import graphics.Animation;
-import graphics.Renderer;
-import graphics.Texture;
-import graphics.graphicsUtil.Vertex;
-import util.Clock;
-import util.IntRect;
+import engine.graphics.Animation;
+import engine.graphics.Renderer;
+import engine.graphics.Texture;
+import engine.graphics.graphicsUtil.Vertex;
+import engine.util.Clock;
+import engine.util.IntRect;
 
 public class GraphicsComponent implements Component
 {

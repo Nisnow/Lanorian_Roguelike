@@ -3,12 +3,12 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import org.lwjgl.glfw.GLFW;
 
-import components.GraphicsComponent;
-import components.TransformComponent;
-import graphics.Renderer;
-import graphics.Texture;
-import graphics.Window;
-import graphics.graphicsUtil.Framebuffer;
+import engine.components.GraphicsComponent;
+import engine.components.TransformComponent;
+import engine.graphics.Renderer;
+import engine.graphics.Texture;
+import engine.graphics.Window;
+import engine.graphics.graphicsUtil.Framebuffer;
  
 public class Main 
 {
@@ -44,7 +44,7 @@ public class Main
         GraphicsComponent gc2 = new GraphicsComponent(tex2, "fly");
         
         TransformComponent t1 = new TransformComponent();
-        t1.setPosition(200, 100);
+        t1.setPosition(300, 300);
         t1.setScale(4.0f, 4.0f);
         t1.setAsParent();
         

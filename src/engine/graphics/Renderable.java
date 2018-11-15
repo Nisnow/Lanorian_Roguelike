@@ -1,4 +1,4 @@
-package graphics;
+package engine.graphics;
 
 public interface Renderable
 {
