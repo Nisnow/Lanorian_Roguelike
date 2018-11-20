@@ -1,24 +1,20 @@
 package engine.components;
 
-import java.util.ArrayList;
-
+/*
+ * A container of Components. An entity is only an integer.
+ */
 public class Entity
 {
-	private ArrayList<Component> components;
-	
+	private static int entityCount = 0;
+	private int id;
+
 	public Entity()
 	{
-		components = new ArrayList<Component>();
+		id = entityCount++;
 	}
-	
-	public Entity addComponent(Component component)
+
+	public int getId()
 	{
-		components.add(component);
-		return this;
-	}
-	
-	public <T extends Component> T getComponent(int index)
-	{
-		return null;
+		return id;
 	}
 }

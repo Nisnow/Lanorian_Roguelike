@@ -6,7 +6,7 @@ import org.joml.Matrix4f;
 
 import com.sun.javafx.geom.Vec2f;
 
-public class TransformComponent 
+public class TransformComponent implements Component
 {
 	// Parent transformations, if this component has
 	private Vec2f parentPosition = new Vec2f(0.0f, 0.0f);

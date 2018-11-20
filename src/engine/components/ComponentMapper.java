@@ -3,23 +3,47 @@ package engine.components;
 import java.util.HashMap;
 
 /*
- * This class maps a Component with all the entities that have it
+ * This class maps a Component T with all the entities that have it
  * for easy access
  */
 public final class ComponentMapper<T extends Component>
 {
-	private HashMap<Entity, Class<? extends Component>> activeComponents;
+	public final static int MAX_ENTITIES = 100;
 	
-	private static int componentIndex = 0;
-	private int id;
+	private HashMap<Entity, T> mapper;
 	
-	public ComponentMapper(Class<T> component)
+	public ComponentMapper()
 	{
-		id = componentIndex++;
+		mapper = new HashMap<>();
+	}
+
+	/*
+	 * Attach a component to an entity. This method maps that component
+	 * to that entity.
+	 */
+	public void add(Entity entity, T component)
+	{
+		if(mapper.size() == MAX_ENTITIES)
+			return;
+		
+		mapper.put(entity, component);
 	}
 	
-	public T getEntity(Entity entity)
+	/*
+	 * Retrieve a component from an entity
+	 */
+	public T getFrom(Entity entity)
 	{
-		return entity.getComponent(id);
+		return mapper.get(entity);
+	}
+	
+	public int getEntityCount()
+	{
+		return mapper.size();
+	}
+	
+	public HashMap<Entity, T> getEntites()
+	{
+		return mapper;
 	}
 }
