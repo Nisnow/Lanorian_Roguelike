@@ -151,7 +151,7 @@ public class Texture
 			glGenerateMipmap(GL_TEXTURE_2D);
 		
 			setWrap(DEFAULT_WRAP);
-			setFilter(NEAREST, LINEAR_MIPMAP_LINEAR);
+			setFilter(LINEAR_MIPMAP_LINEAR, NEAREST);
 		}
 		catch(IOException e)
 		{
