@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.lwjgl.BufferUtils;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,6 +26,22 @@ import engine.graphics.graphicsUtil.VertexArray;
 // TODO: refactor + cleanup so there's not so much copied code
 public class Texture 
 {
+	// Filters
+	public static final int LINEAR = GL_LINEAR;
+	public static final int NEAREST = GL_NEAREST;
+	public static final int LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR;
+	public static final int LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST;
+	public static final int NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST;
+	public static final int NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR;
+	
+	// Wrap modes
+	public static final int CLAMP = GL_CLAMP;
+	public static final int CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE;
+	public static final int REPEAT = GL_REPEAT;
+	
+	public static final int DEFAULT_FILTER = NEAREST;
+	public static final int DEFAULT_WRAP = REPEAT;
+	
 	private ArrayList<Animation> animationList = new ArrayList<Animation>();
 	
 	private int textureID;
@@ -45,17 +63,15 @@ public class Texture
 	public Texture(int width, int height)
 	{
 		textureID = glGenTextures();
-
+		
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, 
 				GL_RGB, GL_UNSIGNED_BYTE, 0);
 	
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		setFilter(DEFAULT_FILTER, DEFAULT_FILTER);
 
 		// Reset the texture now that it's bound
-		glBindTexture(GL_TEXTURE_2D, 0);
-
+		unbind();
 	}
 	
 	/**
@@ -130,20 +146,12 @@ public class Texture
 			this.bind();
 			
 			// Tell OpenGL that each RGB byte component is one byte
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			uploadImageData(GL_RGBA, buffer);
 			
-			// Upload texture data and generate mipmaps for better scaling
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-					GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		
-			// Set up ST coordinate system
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			
-			// Set up mipmap parameters (scaling)
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			setWrap(DEFAULT_WRAP);
+			setFilter(NEAREST, LINEAR_MIPMAP_LINEAR);
 		}
 		catch(IOException e)
 		{
@@ -186,6 +194,46 @@ public class Texture
 			e.printStackTrace();
 			throw e;
 		}
+	}
+	
+	/**
+	 * Set the filters required for mipmaps (image scaling)
+	 * 
+	 * @param minFilter
+	 * @param magFilter
+	 */
+	public void setFilter(int minFilter, int magFilter)
+	{
+		bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+	}
+	
+	/**
+	 * Set up the texture ST coordinate system according to
+	 * @param wrap
+	 */
+	public void setWrap(int wrap)
+	{
+		bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+	}
+	
+	/**
+	 * Upload buffer data to a new GL texture
+	 * 
+	 * @param imageFormat GL_RGBA, GL_RGB, etc.
+	 * @param data the buffer from the decoded PNG image
+	 */
+	public void uploadImageData(int imageFormat, ByteBuffer data)
+	{
+		bind();
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, width, height, 0,
+				imageFormat, GL_UNSIGNED_BYTE, data);
 	}
 	
 	/*
