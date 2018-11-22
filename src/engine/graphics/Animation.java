@@ -21,6 +21,14 @@ public class Animation
 		frameCount = 0;
 		interval = 0;
 	}
+	
+	public Animation(IntRect frame, boolean loop, int frameCount, int interval)
+	{
+		this.frame = frame;
+		this.loop = loop;
+		this.frameCount = frameCount;
+		this.interval = interval;
+	}
 
 	/*
 	 * Get root frame

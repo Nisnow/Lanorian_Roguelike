@@ -144,6 +144,12 @@ public class TransformComponent implements Component
 		this.scale = new Vec2f(x, y);
 		needsUpdate = true;
 	}
+	
+	public void setScale(float scale)
+	{
+		this.scale = new Vec2f(scale, scale);
+		needsUpdate = true;
+	}
 
 	public void setRotation(float rotation) 
 	{

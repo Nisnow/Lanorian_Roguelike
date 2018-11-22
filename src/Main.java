@@ -10,7 +10,7 @@ import engine.components.Entity;
 import engine.components.GraphicsComponent;
 import engine.components.TransformComponent;
 import engine.graphics.Renderer;
-import engine.graphics.Text;
+import engine.graphics.Font;
 import engine.graphics.Texture;
 import engine.graphics.Window;
 import engine.graphics.graphicsUtil.Framebuffer;
@@ -22,6 +22,8 @@ public class Main
         new Main();
     }
      
+	private final boolean PRINT_FPS = false;
+	
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
     
@@ -76,7 +78,12 @@ public class Main
         transMap.add(narry, narryTrans);
         transMap.add(birboi, birbTrans);
         
-        Text text = new Text("resources/fonts/MONO");
+        Font font = new Font("resources/fonts/alegreya-sans-sc.regular.ttf");
+        TransformComponent tt = new TransformComponent();
+        tt.setScale(2.0f);
+        tt.setPosition(50, 50);
+        tt.setAsParent();
+        font.setTransformComponent(tt);
         
         // Game loop
         while (!window.closing()) 
@@ -90,13 +97,17 @@ public class Main
             narryTrans.setScale(4*(float)Math.cos(GLFW.glfwGetTime()), 4*(float)Math.cos(GLFW.glfwGetTime()));
             narryTrans.render(new TransformComponent(), true);
             
+            tt.render(new TransformComponent(), true);
+            font.drawText(renderer, "swoodle mc doodles");
+            
             for(Entity e : entities)
             	graphMap.getFrom(e).render(renderer);
             
             renderer.render();
             
             window.display();
-            window.printFPS();
+            if(PRINT_FPS)
+            	window.printFPS();
         }
         this.destroyOpenGL();
     }

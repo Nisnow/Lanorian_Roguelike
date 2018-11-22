@@ -62,16 +62,45 @@ public class Texture
 	 */
 	public Texture(int width, int height)
 	{
+		this(width, height, GL_RGB);
+	}
+	
+	public Texture(int width, int height, int format)
+	{
 		textureID = glGenTextures();
 		
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, 
-				GL_RGB, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, 
+				format, GL_UNSIGNED_BYTE, 0);
 	
 		setFilter(DEFAULT_FILTER, DEFAULT_FILTER);
 
 		// Reset the texture now that it's bound
 		unbind();
+	}
+	
+	public Texture(int width, int height, int format, ByteBuffer data)
+	{
+		textureID = glGenTextures();
+		
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, 
+				format, GL_UNSIGNED_BYTE, data);
+	
+		setFilter(DEFAULT_FILTER, DEFAULT_FILTER);
+
+		// Reset the texture now that it's bound
+		unbind();
+	}
+	
+	/*
+	 * Copy constructor
+	 */
+	public Texture(Texture copy)
+	{
+		this.textureID = copy.getID();
+		this.width = copy.getWidth();
+		this.height = copy.getHeight();
 	}
 	
 	/**

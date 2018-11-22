@@ -1,170 +1,158 @@
 package engine.graphics;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetPackedQuad;
+import static org.lwjgl.stb.STBTruetype.stbtt_PackBegin;
+import static org.lwjgl.stb.STBTruetype.stbtt_PackEnd;
+import static org.lwjgl.stb.STBTruetype.stbtt_PackFontRange;
+import static org.lwjgl.stb.STBTruetype.stbtt_PackSetOversampling;
+import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.memAllocFloat;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
-import engine.util.IntRect;
+import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.stb.STBTTAlignedQuad;
+import org.lwjgl.stb.STBTTPackContext;
+import org.lwjgl.stb.STBTTPackedchar;
 
-public class Text
-{
-	//https://stackoverflow.com/questions/19610697/lwjgl-opengl-font-rendering
-	private int lineHeight;
-	private int baseLine;
-	private int descent;
-	private int pages;
-	private Glyph[] glyphs;
-	private Texture[] texPages;
+import engine.components.TransformComponent;
+import engine.graphics.Texture;
+import engine.graphics.graphicsUtil.Vertex;
+import engine.util.IOUtil;
+
+public class Font
+{	
+	private static final int BITMAP_W = 512;
+	private static final int BITMAP_H = 512;
 	
-	private class Glyph
+	private static final float[] scale = {
+	    24.0f,
+	    14.0f
+	};
+	
+	private static final int[] sf = {
+	    0, 1, 2,
+	    0, 1, 2
+	};
+	
+	// ----
+	
+	private final STBTTAlignedQuad q  = STBTTAlignedQuad.malloc();
+	private final FloatBuffer      xb = memAllocFloat(1);
+	private final FloatBuffer      yb = memAllocFloat(1);
+	
+	// ----
+	
+	private Texture fontTexture;
+	
+	private int ww = 1024;
+	private int wh = 768;
+	
+	private int font_tex;
+	
+	private STBTTPackedchar.Buffer chardata;
+	
+	private int font = 3;
+
+	private TransformComponent transform;
+	
+	// TODO: Do things with JSON?
+	
+	public Font(String filePath)
 	{
-		public int chr;
-		public IntRect region;
-		public int xOffset, yOffset, xAdvance;
-		public int[] kerning;
-		public int page;
-		public Texture texture;
-		
-		public int getKerning(int nextChar)
-		{
-			if(kerning == null)
-				return 0;
-			
-			return kerning[nextChar];
-		}
-		
-		public void updateTexture(Texture tex)
-		{
-			if(this.texture == null)
-				this.texture = new Texture(tex.getWidth(), tex.getHeight());
-			//this.texture = tex;
-		}
+		loadFont(filePath);
 	}
 	
-	public Text(String fontPath)
+	public void setTransformComponent(TransformComponent tc)
 	{
-		try
-		{
-			InputStream fontStream = getClass().getClassLoader().getResourceAsStream(fontPath + ".bmp");
-			if (fontStream == null)
-				throw new FileNotFoundException("Could not find font resource for \"" + fontPath + ".bmp\"");
-			parseFont(fontStream, Charset.defaultCharset());
-			
-			System.out.println("Loaded font " + fontPath + ".png");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		this.transform = tc;
 	}
 	
-	public void parseFont(InputStream fontFile, Charset charset) throws IOException
+	public void drawText(Renderer renderer, String text)
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(fontFile, charset), 512);
-		String info = br.readLine();
-		String common = br.readLine();
-		lineHeight = parseInt(common, "lineHeight");				
-		baseLine = parseInt(common, "base");
-		pages = parseInt(common, "pages");
+		if(transform == null)
+			throw new NullPointerException("Text must have a transformComponent to be drawn!");
 		
-		String line = "";
-		ArrayList<Glyph> glyphList = null;
-		int maxCodePoint = 0;
+		xb.put(0, transform.getPosition().x);
+        yb.put(0, transform.getPosition().y);
+
+        chardata.position(font * 128);
 		
-		while (true) 
+        for(int i = 0; i < text.length(); i++)
+        {
+        	stbtt_GetPackedQuad(chardata, BITMAP_W, BITMAP_H, text.charAt(i), xb, yb, q, font == 0);
+            // draw batch here
+        	
+        	Vertex[] verts = new Vertex[4];
+        	verts[0] = new Vertex().setPosition(q.x0(), q.y0(), 0).setST(q.s0(), q.t0());
+        	verts[1] = new Vertex().setPosition(q.x1(), q.y0(), 0).setST(q.s1(), q.t0());
+        	verts[2] = new Vertex().setPosition(q.x1(), q.y1(), 0).setST(q.s1(), q.t1());
+        	verts[3] = new Vertex().setPosition(q.x0(), q.y1(), 0).setST(q.s0(), q.t1());
+      
+    		for(int j = 0; j < 4; j++)
+    		{
+    			Vector4f vec = transform.getParentTransform().transform(new Vector4f(verts[j].position, 1.0f));
+    			verts[j].setPosition(vec.x, vec.y, vec.z);
+    		}
+    		
+    		Renderer.Batch batch = renderer.new Batch();
+    		batch.setTexture(fontTexture);
+    		batch.addVertices(verts);
+    		batch.addQuad();
+    		
+    		renderer.getBatches().add(batch);
+        }
+
+	}
+	
+	private void loadFont(String filePath)
+	{
+		//font_tex = glGenTextures();
+
+		chardata = STBTTPackedchar.malloc(6 * 128);
+		
+		try (STBTTPackContext pc = STBTTPackContext.malloc())
 		{
-			line = br.readLine();
-			if (line == null) break;
-			if (line.startsWith("chars"))
+		    ByteBuffer ttf = IOUtil.ioResourceToByteBuffer(filePath, 512 * 1024);
+			
+			ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_W * BITMAP_H);
+			
+			stbtt_PackBegin(pc, bitmap, BITMAP_W, BITMAP_H, 0, 1, NULL);
+			
+			for (int i = 0; i < 2; i++) 
 			{
-				System.out.println(line);
-				int count = parseInt(line, "count");
-				glyphList = new ArrayList<Glyph>(count);
-				continue;
+			    int p = (i * 3 + 0) * 128 + 32;
+			    chardata.limit(p + 95);
+			    chardata.position(p);
+			    stbtt_PackSetOversampling(pc, 1, 1);
+			    stbtt_PackFontRange(pc, ttf, 0, scale[i], 32, chardata);
+			
+			    p = (i * 3 + 1) * 128 + 32;
+			    chardata.limit(p + 95);
+			    chardata.position(p);
+			    stbtt_PackSetOversampling(pc, 2, 2);
+			    stbtt_PackFontRange(pc, ttf, 0, scale[i], 32, chardata);
+			
+			    p = (i * 3 + 2) * 128 + 32;
+			    chardata.limit(p + 95);
+			    chardata.position(p);
+			    stbtt_PackSetOversampling(pc, 3, 1);
+			    stbtt_PackFontRange(pc, ttf, 0, scale[i], 32, chardata);
 			}
 			
-			if (line.startsWith("kernings ")) 
-				break;
-			if (!line.startsWith("char ")) 
-				continue;
-			
-			Glyph glyph = new Glyph();
-
-			StringTokenizer tokens = new StringTokenizer(line, " =");
-			tokens.nextToken();
-			tokens.nextToken();
-			
-			int ch = Integer.parseInt(tokens.nextToken());
-			if (ch > Character.MAX_VALUE) 
-				continue;
-			
-			if (glyphList==null) //incase some doofus deleted a line in the font def
-				glyphList = new ArrayList<Glyph>();
-			
-			glyphList.add(glyph);
-			glyph.chr = ch;
-			
-			if (ch > maxCodePoint)
-				maxCodePoint = ch;
-			
-				tokens.nextToken();
-			glyph.region.x = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.region.y = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.region.w = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.region.h = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.xOffset = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.yOffset = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-			glyph.xAdvance = Integer.parseInt(tokens.nextToken());
-			
-			//page ID
-				tokens.nextToken();
-			glyph.page = Integer.parseInt(tokens.nextToken());
-			
-			if (glyph.page > texPages.length)
-				throw new IOException("not enough texturePages supplied; glyph "+glyph.chr+" expects page index "+glyph.page);
-			
-			glyph.updateTexture(texPages[glyph.page]);
-			
-			if (glyph.region.w > 0 && glyph.region.h > 0) 
-				descent = Math.min(baseLine + glyph.yOffset, descent);
-		}
-	}
-	
-	private String parse(String line, String tag)
-	{
-		tag += "=";
-		int start = line.indexOf(tag);
-		if (start==-1)
-			return "";
-		
-		int end = line.indexOf(' ', start+tag.length());
-		
-		if (end==-1)
-			end = line.length();
-		
-		return line.substring(start+tag.length(), end);
-	}
-	
-	private int parseInt(String line, String tag) throws IOException
-	{
-		try
+			chardata.clear();
+			stbtt_PackEnd(pc);
+				
+			fontTexture = new Texture(BITMAP_W, BITMAP_H, GL_ALPHA, bitmap);
+			fontTexture.setFilter(Texture.LINEAR, Texture.LINEAR);
+		} 
+		catch (IOException e) 
 		{
-			return Integer.parseInt(parse(line, tag));
-		}
-		catch(NumberFormatException e)
-		{
-			throw new IOException("Missing/corrupt "+tag+": "+parse(line, tag));
-		}
-	}
+			throw new RuntimeException(e);
+		}		
+	}	
 }
