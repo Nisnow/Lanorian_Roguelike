@@ -17,6 +17,15 @@ public class Shader
 	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
 	public static final String POST_PROCESS_FRAG   = "src/resources/shaders/PostProcessFrag.glsl";
 
+	public static final String TEXT_VERTEX = "src/resources/shaders/TextVert.glsl";
+	public static final String TEXT_FRAG = "src/resources/shaders/TextFrag.glsl";
+	
+	// ---
+	
+	public static final Shader DEFAULT = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+	public static final Shader POST_PROCESS_DEFAULT = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
+	public static final Shader TEXT = new Shader(TEXT_VERTEX, TEXT_FRAG);
+	
 	private int shaderProgram;
 	
 	/*
