@@ -3,20 +3,19 @@ package engine.components;
 import java.util.ArrayList;
 
 import org.joml.Matrix4f;
-
-import com.sun.javafx.geom.Vec2f;
+import org.joml.Vector2f;
 
 public class TransformComponent implements Component
 {
 	// Parent transformations, if this component has
-	private Vec2f parentPosition = new Vec2f(0.0f, 0.0f);
+	private Vector2f parentPosition = new Vector2f(0.0f, 0.0f);
 	private float parentRotation = 0.0f; // in radians
-	private Vec2f parentScale = new Vec2f(1.0f, 1.0f);
+	private Vector2f parentScale = new Vector2f(1.0f, 1.0f);
 
 	// local matrix properties relative to the parent
-	private Vec2f position = new Vec2f(0.0f, 0.0f);
+	private Vector2f position = new Vector2f(0.0f, 0.0f);
 	private float rotation = 0.0f; // in radians
-	private Vec2f scale = new Vec2f(1.0f, 1.0f);
+	private Vector2f scale = new Vector2f(1.0f, 1.0f);
 	
 	private ArrayList<TransformComponent> children = new ArrayList<TransformComponent>(); // long boi
 
@@ -121,7 +120,7 @@ public class TransformComponent implements Component
 		return parentTransform;
 	}
 	
-	public void setPosition(Vec2f position) 
+	public void setPosition(Vector2f position) 
 	{
 		this.position = position;
 		needsUpdate = true;
@@ -129,11 +128,11 @@ public class TransformComponent implements Component
 	
 	public void setPosition(float x, float y)
 	{
-		this.position = new Vec2f(x, y);
+		this.position = new Vector2f(x, y);
 		needsUpdate = true;
 	}
 
-	public void setScale(Vec2f scale)
+	public void setScale(Vector2f scale)
 	{
 		this.scale = scale;
 		needsUpdate = true;
@@ -141,13 +140,13 @@ public class TransformComponent implements Component
 	
 	public void setScale(float x, float y)
 	{
-		this.scale = new Vec2f(x, y);
+		this.scale = new Vector2f(x, y);
 		needsUpdate = true;
 	}
 	
 	public void setScale(float scale)
 	{
-		this.scale = new Vec2f(scale, scale);
+		this.scale = new Vector2f(scale, scale);
 		needsUpdate = true;
 	}
 
@@ -157,22 +156,22 @@ public class TransformComponent implements Component
 		needsUpdate = true;
 	}
 
-	public Vec2f getPosition()
+	public Vector2f getPosition()
 	{
 		return position;
 	}
 	
-	public Vec2f getParentPosition()
+	public Vector2f getParentPosition()
 	{
 		return parentPosition;
 	}
 
-	public Vec2f getScale() 
+	public Vector2f getScale() 
 	{
 		return scale;
 	}
 	
-	public Vec2f getParentScale()
+	public Vector2f getParentScale()
 	{
 		return parentScale;
 	}
