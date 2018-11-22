@@ -10,6 +10,7 @@ import engine.components.Entity;
 import engine.components.GraphicsComponent;
 import engine.components.TransformComponent;
 import engine.graphics.Renderer;
+import engine.graphics.Text;
 import engine.graphics.Texture;
 import engine.graphics.Window;
 import engine.graphics.graphicsUtil.Framebuffer;
@@ -74,6 +75,8 @@ public class Main
         graphMap.add(birboi, birbG);
         transMap.add(narry, narryTrans);
         transMap.add(birboi, birbTrans);
+        
+        Text text = new Text("resources/fonts/MONO");
         
         // Game loop
         while (!window.closing()) 
