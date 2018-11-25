@@ -12,20 +12,24 @@ import engine.util.ResourceManager;
 public class Shader 
 {
 	// TODO: JSON serialization?
-	public static final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
-	public static final String DEFAULT_FRAG	  = "src/resources/shaders/DefaultFrag.glsl";
+	public static final String DEFAULT_VERTEX 		= "src/resources/shaders/DefaultVert.glsl";
+	public static final String DEFAULT_FRAG	  		= "src/resources/shaders/DefaultFrag.glsl";
+	
+	public static final String TEXTURE_VERTEX 		= "src/resources/shaders/TextureVert.glsl";
+	public static final String TEXTURE_FRAG	  		= "src/resources/shaders/TextureFrag.glsl";
 
-	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
-	public static final String POST_PROCESS_FRAG   = "src/resources/shaders/PostProcessFrag.glsl";
-
-	public static final String TEXT_VERTEX = "src/resources/shaders/TextVert.glsl";
-	public static final String TEXT_FRAG = "src/resources/shaders/TextFrag.glsl";
+	public static final String POST_PROCESS_VERTEX 	= "src/resources/shaders/PostProcessVert.glsl";
+	public static final String POST_PROCESS_FRAG 	= "src/resources/shaders/PostProcessFrag.glsl";
+	
+	public static final String TEXT_VERTEX 			= "src/resources/shaders/TextVert.glsl";
+	public static final String TEXT_FRAG 			= "src/resources/shaders/TextFrag.glsl";
 	
 	// ---
 	
-	public static final Shader DEFAULT = new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+	public static final Shader DEFAULT 				= new Shader(DEFAULT_VERTEX, DEFAULT_FRAG);
+	public static final Shader TEXTURE 				= new Shader(TEXTURE_VERTEX, TEXTURE_FRAG);
 	public static final Shader POST_PROCESS_DEFAULT = new Shader(POST_PROCESS_VERTEX, POST_PROCESS_FRAG);
-	public static final Shader TEXT = new Shader(TEXT_VERTEX, TEXT_FRAG);
+	public static final Shader TEXT 				= new Shader(TEXT_VERTEX, TEXT_FRAG);
 	
 	private int shaderProgram;
 	

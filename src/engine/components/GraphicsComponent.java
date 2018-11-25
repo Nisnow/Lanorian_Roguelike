@@ -15,7 +15,7 @@ public class GraphicsComponent implements Component
 	private TransformComponent transform;
 	
 	private Texture texture;
-	private Shader shader = Shader.DEFAULT;
+	private Shader shader = Shader.TEXTURE;
 	private Animation currentAnimation;
 	private Clock clock = new Clock();
 	
