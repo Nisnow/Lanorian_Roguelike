@@ -4,6 +4,7 @@ import org.joml.Vector4f;
 
 import engine.graphics.Animation;
 import engine.graphics.Renderer;
+import engine.graphics.Shader;
 import engine.graphics.Texture;
 import engine.graphics.graphicsUtil.Vertex;
 import engine.util.Clock;
@@ -14,6 +15,7 @@ public class GraphicsComponent implements Component
 	private TransformComponent transform;
 	
 	private Texture texture;
+	private Shader shader = Shader.DEFAULT;
 	private Animation currentAnimation;
 	private Clock clock = new Clock();
 	
@@ -65,6 +67,7 @@ public class GraphicsComponent implements Component
 		// Prepare a batch to send to the renderer
 		Renderer.Batch batch = renderer.new Batch();
 		batch.setTexture(texture);
+		batch.setShader(Shader.DEFAULT);
 		batch.addVertices(verts);
 		batch.addQuad();
 		
@@ -74,6 +77,11 @@ public class GraphicsComponent implements Component
 	public void setTransformComponent(TransformComponent transform)
 	{
 		this.transform = transform;
+	}
+	
+	public void setShader(Shader shader)
+	{
+		this.shader = shader;
 	}
 	
 	public Texture getTexture()

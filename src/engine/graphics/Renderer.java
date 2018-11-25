@@ -15,7 +15,7 @@ import engine.util.IntRect;
 public class Renderer
 {
 	private Framebuffer fbo;
-	private Shader currentShader = new Shader(Shader.DEFAULT_VERTEX, Shader.DEFAULT_FRAG);
+	private Shader currentShader = Shader.DEFAULT;
  
 	private Matrix4f viewMatrix;
 
@@ -30,8 +30,8 @@ public class Renderer
 	 */
 	public class Batch
 	{
-
 		public Texture texture;
+		public Shader shader;
 		public Vertex[] vertices;
 		public byte[] indices = new byte[6];
 		
@@ -41,6 +41,11 @@ public class Renderer
 		public void setTexture(Texture texture)
 		{
 			this.texture = texture;
+		}
+		
+		public void setShader(Shader shader)
+		{
+			this.shader = shader;
 		}
 
 		/*
@@ -129,6 +134,7 @@ public class Renderer
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
 		viewMatrix = new Matrix4f().ortho2D(0, fbo.getWidth(), fbo.getHeight(), 0);
+		currentShader = Shader.DEFAULT;
 		currentShader.useProgram();
 		currentShader.setUniformMat4f("view", viewMatrix);
 		
@@ -144,6 +150,8 @@ public class Renderer
 
 	private void renderBatch(Batch batch)
 	{
+		batch.shader.useProgram();
+		
 		for(Vertex v : batch.vertices)
 			data.putVert(v);
 		
@@ -154,7 +162,7 @@ public class Renderer
 		if(batch.texture != null)
 		{
 			batch.texture.bind();
-			currentShader.setUniform1i("texture_diffuse", 0);
+			batch.shader.setUniform1i("texture_diffuse", 0);
 		}
 		
 		data.bind();
