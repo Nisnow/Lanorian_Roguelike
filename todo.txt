@@ -1,0 +1,4 @@
+JSON Serialization list maybe?
+	- Shaders (file names and stuff)
+	- Fonts (then load JSON file from Font class)
+	- 
