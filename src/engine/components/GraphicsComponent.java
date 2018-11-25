@@ -67,7 +67,7 @@ public class GraphicsComponent implements Component
 		// Prepare a batch to send to the renderer
 		Renderer.Batch batch = renderer.new Batch();
 		batch.setTexture(texture);
-		batch.setShader(Shader.DEFAULT);
+		batch.setShader(shader);
 		batch.addVertices(verts);
 		batch.addQuad();
 		

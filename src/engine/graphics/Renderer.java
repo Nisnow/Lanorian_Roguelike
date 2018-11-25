@@ -134,12 +134,13 @@ public class Renderer
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
 		viewMatrix = new Matrix4f().ortho2D(0, fbo.getWidth(), fbo.getHeight(), 0);
-		currentShader = Shader.DEFAULT;
-		currentShader.useProgram();
-		currentShader.setUniformMat4f("view", viewMatrix);
 		
 		for(Batch b : batches)
+		{
+			b.shader.useProgram();
+			b.shader.setUniformMat4f("view", viewMatrix);
 			renderBatch(b);
+		}
 		
 		fbo.end();
 		
@@ -150,8 +151,6 @@ public class Renderer
 
 	private void renderBatch(Batch batch)
 	{
-		batch.shader.useProgram();
-		
 		for(Vertex v : batch.vertices)
 			data.putVert(v);
 		

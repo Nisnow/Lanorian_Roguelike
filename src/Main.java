@@ -98,7 +98,7 @@ public class Main
             narryTrans.render(new TransformComponent(), true);
             
             tt.render(new TransformComponent(), true);
-            font.drawText(renderer, "swoodle mc doodles");
+            font.drawText(renderer, "swoodle mc doodles i hate this");
             
             for(Entity e : entities)
             	graphMap.getFrom(e).render(renderer);

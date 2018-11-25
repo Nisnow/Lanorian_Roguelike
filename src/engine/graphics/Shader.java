@@ -11,6 +11,7 @@ import engine.util.ResourceManager;
 
 public class Shader 
 {
+	// TODO: JSON serialization?
 	public static final String DEFAULT_VERTEX = "src/resources/shaders/DefaultVert.glsl";
 	public static final String DEFAULT_FRAG	  = "src/resources/shaders/DefaultFrag.glsl";
 

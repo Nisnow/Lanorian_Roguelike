@@ -22,8 +22,6 @@ public class Framebuffer
 	
 	private Window window;
 	
-	public static final String POST_PROCESS_VERTEX = "src/resources/shaders/PostProcessVert.glsl";
-	public static final String POST_PROCESS_FRAG 	 = "src/resources/shaders/PostProcessFrag.glsl";
 	public Shader postProcessor = Shader.POST_PROCESS_DEFAULT;
 
 	/*

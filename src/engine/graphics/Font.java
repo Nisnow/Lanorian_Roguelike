@@ -21,9 +21,14 @@ import org.lwjgl.stb.STBTTPackedchar;
 
 import engine.components.TransformComponent;
 import engine.graphics.Texture;
+import engine.graphics.graphicsUtil.Color;
 import engine.graphics.graphicsUtil.Vertex;
 import engine.util.IOUtil;
 
+/*
+ * Loads a Truetype font file (.ttf) to enable
+ * text rendering
+ */
 public class Font
 {	
 	private static final int BITMAP_W = 512;
@@ -48,16 +53,8 @@ public class Font
 	// ----
 	
 	private Texture fontTexture;
-	
-	private int ww = 1024;
-	private int wh = 768;
-	
-	private int font_tex;
-	
 	private STBTTPackedchar.Buffer chardata;
-	
-	private int font = 3;
-
+	private int font = 0;
 	private TransformComponent transform;
 	
 	// TODO: Do things with JSON?
@@ -85,8 +82,8 @@ public class Font
         for(int i = 0; i < text.length(); i++)
         {
         	stbtt_GetPackedQuad(chardata, BITMAP_W, BITMAP_H, text.charAt(i), xb, yb, q, font == 0);
-            // draw batch here
         	
+        	// FIXME: Do things in renderer so I don't have to do it again here
         	Vertex[] verts = new Vertex[4];
         	verts[0] = new Vertex().setPosition(q.x0(), q.y0(), 0).setST(q.s0(), q.t0());
         	verts[1] = new Vertex().setPosition(q.x1(), q.y0(), 0).setST(q.s1(), q.t0());
@@ -101,18 +98,18 @@ public class Font
     		
     		Renderer.Batch batch = renderer.new Batch();
     		batch.setTexture(fontTexture);
+    		batch.setShader(Shader.TEXT);
+    		//batch.shader.useProgram();
+    		//batch.shader.setUniformVec4f("textColor", Color.BLUE.getColorAsVector());
     		batch.addVertices(verts);
     		batch.addQuad();
     		
     		renderer.getBatches().add(batch);
         }
-
 	}
 	
 	private void loadFont(String filePath)
 	{
-		//font_tex = glGenTextures();
-
 		chardata = STBTTPackedchar.malloc(6 * 128);
 		
 		try (STBTTPackContext pc = STBTTPackContext.malloc())
@@ -147,8 +144,9 @@ public class Font
 			chardata.clear();
 			stbtt_PackEnd(pc);
 				
-			fontTexture = new Texture(BITMAP_W, BITMAP_H, GL_ALPHA, bitmap);
+			fontTexture = new Texture(BITMAP_W, BITMAP_H, GL_RED, bitmap);
 			fontTexture.setFilter(Texture.LINEAR, Texture.LINEAR);
+			fontTexture.setWrap(Texture.CLAMP_TO_EDGE);
 		} 
 		catch (IOException e) 
 		{
