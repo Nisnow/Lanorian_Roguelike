@@ -9,10 +9,11 @@ import engine.components.ComponentMapper;
 import engine.components.Entity;
 import engine.components.GraphicsComponent;
 import engine.components.TransformComponent;
-import engine.graphics.Renderer;
 import engine.graphics.Font;
+import engine.graphics.Renderer;
 import engine.graphics.Texture;
 import engine.graphics.Window;
+import engine.graphics.graphicsUtil.Color;
 import engine.graphics.graphicsUtil.Framebuffer;
  
 public class Main 
@@ -78,7 +79,8 @@ public class Main
         transMap.add(narry, narryTrans);
         transMap.add(birboi, birbTrans);
         
-        Font font = new Font("resources/fonts/alegreya-sans-sc.regular.ttf");
+        Font font = new Font(Font.ALEGREYA_SANS);
+        font.setTextColor(Color.BLUE);
         TransformComponent tt = new TransformComponent();
         tt.setScale(2.0f);
         tt.setPosition(50, 50);
@@ -90,15 +92,16 @@ public class Main
         {
         	// Get input
             glfwPollEvents();
-
+            
             // render the parent 
             // TODO: basic world transform + camera
             narryTrans.setRotation((float) Math.cos(GLFW.glfwGetTime()));
             narryTrans.setScale(4*(float)Math.cos(GLFW.glfwGetTime()), 4*(float)Math.cos(GLFW.glfwGetTime()));
             narryTrans.render(new TransformComponent(), true);
             
+            tt.setScale(1.0f, 4*Math.abs((float)Math.cos(GLFW.glfwGetTime())));
             tt.render(new TransformComponent(), true);
-            font.drawText(renderer, "swoodle mc doodles i hate this");
+            font.drawText(renderer, "Phantom cheese doodles");
             
             for(Entity e : entities)
             	graphMap.getFrom(e).render(renderer);

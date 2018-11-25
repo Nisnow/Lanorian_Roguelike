@@ -15,7 +15,6 @@ import engine.util.IntRect;
 public class Renderer
 {
 	private Framebuffer fbo;
-	private Shader currentShader = Shader.DEFAULT;
  
 	private Matrix4f viewMatrix;
 

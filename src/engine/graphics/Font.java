@@ -31,6 +31,10 @@ import engine.util.IOUtil;
  */
 public class Font
 {	
+	// BEGIN PRESET FONT DECLARATION
+	public static final String ALEGREYA_SANS = "resources/fonts/alegreya-sans-sc.regular.ttf";
+	// END PRESET FONT DECLARATION
+	
 	private static final int BITMAP_W = 512;
 	private static final int BITMAP_H = 512;
 	
@@ -56,6 +60,7 @@ public class Font
 	private STBTTPackedchar.Buffer chardata;
 	private int font = 0;
 	private TransformComponent transform;
+	private Color textColor;
 	
 	// TODO: Do things with JSON?
 	
@@ -69,6 +74,12 @@ public class Font
 		this.transform = tc;
 	}
 	
+	public void setTextColor(Color color)
+	{
+		textColor = color;
+	}
+	
+	// TODO: Put this somewhere else
 	public void drawText(Renderer renderer, String text)
 	{
 		if(transform == null)
@@ -99,8 +110,7 @@ public class Font
     		Renderer.Batch batch = renderer.new Batch();
     		batch.setTexture(fontTexture);
     		batch.setShader(Shader.TEXT);
-    		//batch.shader.useProgram();
-    		//batch.shader.setUniformVec4f("textColor", Color.BLUE.getColorAsVector());
+    		batch.shader.setUniformVec4f("textColor", textColor.getColorAsVector());
     		batch.addVertices(verts);
     		batch.addQuad();
     		
