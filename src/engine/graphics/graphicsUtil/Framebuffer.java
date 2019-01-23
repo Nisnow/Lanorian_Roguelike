@@ -3,6 +3,8 @@ package engine.graphics.graphicsUtil;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL;
 
 import engine.graphics.Shader;
@@ -20,7 +22,7 @@ public class Framebuffer
 	private VertexArray va;
 	private int width, height;
 	
-	private Window window;
+	private Vertex[] vertices = new Vertex[4];
 	
 	public Shader postProcessor = Shader.POST_PROCESS_DEFAULT;
 
@@ -63,21 +65,40 @@ public class Framebuffer
 		this.height = height;
 	}
 
-	public void setWindow(Window window)
-	{
-		this.window = window;
-	}
-	
-	// TODO: put this somewhere else
+	// TODO: put this somewhere else?
 	public void createVAO()
 	{
-        va.putVert(new Vertex().setPosition(-1.0f,  1.0f, 0.0f).setST(0.0f, 1.0f));
-        va.putVert(new Vertex().setPosition(-1.0f, -1.0f, 0.0f).setST(0.0f, 0.0f));
-        va.putVert(new Vertex().setPosition(1.0f, -1.0f, 0.0f).setST(1.0f, 0.0f));
-        va.putVert(new Vertex().setPosition(1.0f,  1.0f, 0.0f).setST(1.0f, 1.0f));
+        vertices[0] = new Vertex().setPosition(-1.0f,  1.0f, 0.0f).setST(0.0f, 1.0f); // Top left
+        vertices[1] = new Vertex().setPosition(-1.0f, -1.0f, 0.0f).setST(0.0f, 0.0f); // Bottom left
+        vertices[2] = new Vertex().setPosition(1.0f, -1.0f, 0.0f).setST(1.0f, 0.0f); // Bottom right
+        vertices[3] = new Vertex().setPosition(1.0f,  1.0f, 0.0f).setST(1.0f, 1.0f); // Top right
 		
         byte indices[] = {0, 1, 2, 2, 3, 0};
         va.putIdx(indices);
+        for(Vertex v : vertices)
+        	va.putVert(v);
+	}
+	
+	// for resizing purposes
+	public void calculateNewVertexPositions(float originalWidth, float originalHeight,
+											float newWidth, float newHeight)
+	{
+		float arOrigin = (float) originalWidth / (float) originalHeight;
+		float arNew = (float) width / (float) height;
+		
+		float scaleW = (float) newWidth / (float) originalWidth;
+		float scaleH = (float) newHeight / (float) originalHeight;
+		
+		if(arNew > arOrigin)
+			scaleW = scaleH;
+		else
+			scaleH = scaleW;
+			
+		float marginX = (newWidth - originalWidth * scaleW) / 2;
+		float marginY = (newHeight - originalHeight * scaleH) / 2;
+		
+		glViewport((int) marginX, (int) marginY, (int) (originalWidth * scaleW), (int) (originalHeight * scaleH));
+		//glOrtho(0.0, (double) originalWidth / arOrigin, 0.0, (double) originalHeight / arOrigin, 0.0, 1.0);
 	}
 	
 	/*
@@ -118,13 +139,15 @@ public class Framebuffer
 		va.reset();
 	}
 	
+	// TODO: Resize FB according to the correct ratio
 	public void resize(int width, int height)
 	{
 		if(width <= 0 || height <= 0)
 			throw new IllegalArgumentException("Width and height of framebuffer must be positive!");
 		
+		calculateNewVertexPositions(800, 600, width, height);
 		glBindTexture(GL_TEXTURE_2D, fboTexture.getID());
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this.width, this.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		this.width = width;

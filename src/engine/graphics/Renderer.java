@@ -128,7 +128,7 @@ public class Renderer
 
 		glClearColor(0.0f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, fbo.getWidth(), fbo.getHeight());
+		//glViewport(0, 0, fbo.getWidth(), fbo.getHeight());
 		
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 

@@ -1,16 +1,7 @@
 package engine.graphics;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.DoubleBuffer;
@@ -23,9 +14,12 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import engine.graphics.graphicsUtil.Framebuffer;
+
 public class Window
 {
 	private long window;
+	private Framebuffer framebuffer;
 	private GLFWWindowSizeCallback windowSizeCallback;
 
 	// TODO: Move this eventually to some "Game" class
@@ -33,7 +27,7 @@ public class Window
 	public void init(int width, int height, String title)
 	{
 		System.out.println("Initializing window...");
-
+	
 		glfwInit();
 
 		glfwDefaultWindowHints();
@@ -52,7 +46,7 @@ public class Window
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 
-		// Enable alpha blending
+		// Enable alpha blending for transparency
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -64,6 +58,9 @@ public class Window
 				// TODO: adjust matrix transformations
 				// TODO: adjust sprite scale as well
 				glViewport(0, 0, width, height);
+
+				if(framebuffer != null);
+					framebuffer.resize(width, height);
 			}
 		});
 
@@ -84,6 +81,11 @@ public class Window
 			frameCount = 0;
 			lastTime += 1.0;
 		}
+    }
+    
+    public void setFramebuffer(Framebuffer framebuffer)
+    {
+    	this.framebuffer = framebuffer;
     }
 
 	/*
@@ -130,14 +132,6 @@ public class Window
 	public void display()
 	{
 		glfwSwapBuffers(window);
-	}
-
-	/**
-	 * Use this window for rendering
-	 */
-	public void useGLContext()
-	{
-
 	}
 
 	public int getWidth()

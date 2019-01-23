@@ -23,7 +23,7 @@ public class Main
         new Main();
     }
      
-	private final boolean PRINT_FPS = false;
+	private final boolean PRINT_FPS = true;
 	
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
@@ -43,7 +43,7 @@ public class Main
         birboiTex = new Texture("resources/images/birboi");
         
         fbo = new Framebuffer(window.getWidth(), window.getHeight());
-        fbo.setWindow(window);
+        window.setFramebuffer(fbo);
         
         Renderer renderer = new Renderer();
         renderer.setFramebuffer(fbo);
@@ -101,7 +101,7 @@ public class Main
             
             tt.setScale(1.0f, 4*Math.abs((float)Math.cos(GLFW.glfwGetTime())));
             tt.render(new TransformComponent(), true);
-            font.drawText(renderer, "Phantom cheese doodles");
+            //font.drawText(renderer, "Phantom cheese doodles");
             
             for(Entity e : entities)
             	graphMap.getFrom(e).render(renderer);
